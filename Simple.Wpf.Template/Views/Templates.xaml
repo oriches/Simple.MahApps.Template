@@ -1,0 +1,156 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels">
+
+    <DataTemplate DataType="{x:Type vm:MainViewModel}">
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"
+                       Text="{Binding Path=Title, Mode=OneTime}" />
+
+            <Button Grid.Column="0"
+                    Grid.Row="2"
+                    Content="Show Diagnostics"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=DiagnosticsCommand, Mode=OneWay}" />
+
+            <Button Grid.Column="0"
+                    Grid.Row="4"
+                    Content="Show Message"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=MessageCommand, Mode=OneWay}" />
+
+        </Grid>
+
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:DateOfBirthViewModel}">
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0"
+                        Grid.Row="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Orientation="Horizontal">
+
+                <ComboBox Margin="10,0"
+                          Width="100"
+                          ItemsSource="{Binding Path=Days, Mode=OneWay}"
+                          SelectedValue="{Binding Path=Day, Mode=TwoWay, Converter={StaticResource NumberToStringConverter}}"
+                          SelectedValuePath="Value"
+                          DisplayMemberPath="Name">
+                </ComboBox>
+
+                <ComboBox Margin="10,0"
+                          Width="100"
+                          ItemsSource="{Binding Path=Months, Mode=OneWay}"
+                          SelectedValue="{Binding Path=Month, Mode=TwoWay, Converter={StaticResource NumberToStringConverter}}"
+                          SelectedValuePath="Value"
+                          DisplayMemberPath="Name">
+                </ComboBox>
+
+                <ComboBox Margin="10,0"
+                          Width="100"
+                          ItemsSource="{Binding Path=Years, Mode=OneWay}"
+                          SelectedValue="{Binding Path=Year, Mode=TwoWay, Converter={StaticResource NumberToStringConverter}}"
+                          SelectedValuePath="Value"
+                          DisplayMemberPath="Name">
+                </ComboBox>
+                
+            </StackPanel>
+
+            <StackPanel Grid.Column="0"
+                        Grid.Row="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+
+                <Button Margin="10,0"
+                        Content="Save"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Command="{Binding Path=SaveCommand, Mode=OneWay}" />
+
+                <Button Margin="10,0"
+                        Content="Close"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Command="{Binding Path=CloseCommand, Mode=OneWay}" />
+
+            </StackPanel>
+
+        </Grid>
+
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:DiagnosticsViewModel}">
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Left">
+                <Run Text="{Binding Path=Id, Mode=OneWay}" />
+                <LineBreak />
+                <LineBreak />
+                <Run FontStyle="Italic"
+                     Text="A new instance of the view model is created everytime the 'Show Diagnostics' button is pressed, the instance is scoped with a IoC lifetime and is disposed off when no longer required..." />
+            </TextBlock>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       HorizontalAlignment="Left"
+                       Text="{Binding Path=Fps, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="3"
+                       HorizontalAlignment="Left"
+                       Text="{Binding Path=Cpu, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="5"
+                       HorizontalAlignment="Left"
+                       Text="{Binding Path=ManagedMemory, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="7"
+                       HorizontalAlignment="Left"
+                       Text="{Binding Path=TotalMemory, Mode=OneWay}" />
+
+        </Grid>
+
+    </DataTemplate>
+
+</ResourceDictionary>
