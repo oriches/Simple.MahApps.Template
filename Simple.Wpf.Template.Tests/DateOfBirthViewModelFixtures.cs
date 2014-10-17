@@ -16,7 +16,7 @@ namespace Simple.Wpf.Template.Tests
         public void can_not_save_when_dob_is_not_specified()
         {
             // ARRANGE
-            var gestureService = new Mock<IGestureService>(MockBehavior.Strict);
+            var gestureService = new Mock<IGestureService>();
             gestureService.Setup(x => x.SetBusy()).Verifiable();
 
             // ACT
@@ -30,15 +30,15 @@ namespace Simple.Wpf.Template.Tests
         public void can_save_when_dob_specified()
         {
             // ARRANGE
-            var gestureService = new Mock<IGestureService>(MockBehavior.Strict);
+            var gestureService = new Mock<IGestureService>();
             gestureService.Setup(x => x.SetBusy()).Verifiable();
 
             var viewModel = new DateOfBirthViewModel(gestureService.Object);
 
             // ACT
-            viewModel.Day = viewModel.Days.First().Value;
-            viewModel.Month = viewModel.Months.First().Value;
-            viewModel.Year = viewModel.Years.First().Value;
+            viewModel.Day = viewModel.Days.First();
+            viewModel.Month = viewModel.Months.First();
+            viewModel.Year = viewModel.Years.First();
             
             // ASSERT
             Assert.That(viewModel.SaveCommand.CanExecute(null), Is.True);
@@ -48,13 +48,13 @@ namespace Simple.Wpf.Template.Tests
         public void busy_gestures_when_saving()
         {
             // ARRANGE
-            var gestureService = new Mock<IGestureService>(MockBehavior.Strict);
+            var gestureService = new Mock<IGestureService>();
             gestureService.Setup(x => x.SetBusy()).Verifiable();
 
             var viewModel = new DateOfBirthViewModel(gestureService.Object);
-            viewModel.Day = viewModel.Days.First().Value;
-            viewModel.Month = viewModel.Months.First().Value;
-            viewModel.Year = viewModel.Years.First().Value;
+            viewModel.Day = viewModel.Days.First();
+            viewModel.Month = viewModel.Months.First();
+            viewModel.Year = viewModel.Years.First();
 
             // ACT
             viewModel.SaveCommand.Execute(null);
@@ -67,13 +67,13 @@ namespace Simple.Wpf.Template.Tests
         public void close_requested_when_saved()
         {
             // ARRANGE
-            var gestureService = new Mock<IGestureService>(MockBehavior.Strict);
+            var gestureService = new Mock<IGestureService>();
             gestureService.Setup(x => x.SetBusy());
 
             var viewModel = new DateOfBirthViewModel(gestureService.Object);
-            viewModel.Day = viewModel.Days.First().Value;
-            viewModel.Month = viewModel.Months.First().Value;
-            viewModel.Year = viewModel.Years.First().Value;
+            viewModel.Day = viewModel.Days.First();
+            viewModel.Month = viewModel.Months.First();
+            viewModel.Year = viewModel.Years.First();
 
             var closeRequested = false;
             viewModel.CloseRequested.Subscribe(x => closeRequested = true);
@@ -89,7 +89,7 @@ namespace Simple.Wpf.Template.Tests
         public void disposing_clears_commands()
         {
             // ARRANGE
-            var gestureService = new Mock<IGestureService>(MockBehavior.Strict);
+            var gestureService = new Mock<IGestureService>();
             var viewModel = new DateOfBirthViewModel(gestureService.Object);
             
             // ACT

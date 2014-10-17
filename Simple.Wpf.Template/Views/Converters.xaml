@@ -3,6 +3,5 @@
                     xmlns:views="clr-namespace:Simple.Wpf.Template.Views">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <views:NumberToStringConverter x:Key="NumberToStringConverter" />
     
 </ResourceDictionary>

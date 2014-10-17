@@ -45,8 +45,6 @@ namespace Simple.Wpf.Template.ViewModels
             }
         }
 
-        public string Title { get { return "Demo of two types of overlays - flyouts & message dialog"; } }
-
         public ICommand DiagnosticsCommand { get; private set; }
 
         public ICommand MessageCommand { get; private set; }

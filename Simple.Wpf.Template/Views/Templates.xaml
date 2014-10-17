@@ -18,7 +18,7 @@
 
             <TextBlock Grid.Column="0"
                        Grid.Row="0"
-                       Text="{Binding Path=Title, Mode=OneTime}" />
+                       Text="Demo of two types of overlays - flyouts &amp; message dialog" />
 
             <Button Grid.Column="0"
                     Grid.Row="2"
@@ -55,25 +55,19 @@
                 <ComboBox Margin="10,0"
                           Width="100"
                           ItemsSource="{Binding Path=Days, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Day, Mode=TwoWay, Converter={StaticResource NumberToStringConverter}}"
-                          SelectedValuePath="Value"
-                          DisplayMemberPath="Name">
+                          SelectedValue="{Binding Path=Day, Mode=TwoWay}">
                 </ComboBox>
 
                 <ComboBox Margin="10,0"
                           Width="100"
                           ItemsSource="{Binding Path=Months, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Month, Mode=TwoWay, Converter={StaticResource NumberToStringConverter}}"
-                          SelectedValuePath="Value"
-                          DisplayMemberPath="Name">
+                          SelectedValue="{Binding Path=Month, Mode=TwoWay}">
                 </ComboBox>
 
                 <ComboBox Margin="10,0"
                           Width="100"
                           ItemsSource="{Binding Path=Years, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Year, Mode=TwoWay, Converter={StaticResource NumberToStringConverter}}"
-                          SelectedValuePath="Value"
-                          DisplayMemberPath="Name">
+                          SelectedValue="{Binding Path=Year, Mode=TwoWay}">
                 </ComboBox>
                 
             </StackPanel>
@@ -107,6 +101,8 @@
         <Grid Margin="10">
 
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
@@ -128,24 +124,38 @@
                 <Run FontStyle="Italic"
                      Text="A new instance of the view model is created everytime the 'Show Diagnostics' button is pressed, the instance is scoped with a IoC lifetime and is disposed off when no longer required..." />
             </TextBlock>
-
-            <TextBlock Grid.Column="0"
-                       Grid.Row="1"
-                       HorizontalAlignment="Left"
-                       Text="{Binding Path=Fps, Mode=OneWay}" />
+            
+            <DataGrid Grid.Column="0"
+                      Grid.Row="2"
+                      AutoGenerateColumns="False"
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                      ItemsSource="{Binding Path=Log, Mode=OneWay}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Log Entry"
+                                        MinWidth="800"
+                                        Binding="{Binding .}" />
+                </DataGrid.Columns>
+            </DataGrid>
 
             <TextBlock Grid.Column="0"
                        Grid.Row="3"
                        HorizontalAlignment="Left"
-                       Text="{Binding Path=Cpu, Mode=OneWay}" />
+                       Text="{Binding Path=Fps, Mode=OneWay}" />
 
             <TextBlock Grid.Column="0"
                        Grid.Row="5"
                        HorizontalAlignment="Left"
-                       Text="{Binding Path=ManagedMemory, Mode=OneWay}" />
+                       Text="{Binding Path=Cpu, Mode=OneWay}" />
 
             <TextBlock Grid.Column="0"
                        Grid.Row="7"
+                       HorizontalAlignment="Left"
+                       Text="{Binding Path=ManagedMemory, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="9"
                        HorizontalAlignment="Left"
                        Text="{Binding Path=TotalMemory, Mode=OneWay}" />
 

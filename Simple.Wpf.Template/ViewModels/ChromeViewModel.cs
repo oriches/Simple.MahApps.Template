@@ -39,9 +39,7 @@ namespace Simple.Wpf.Template.ViewModels
                 _disposable.Dispose();
             }
         }
-
-        public string Title { get { return "Main"; } }
-
+        
         public MainViewModel Main { get; private set; }
         
         public ICommand CloseOverlayCommand { get; private set; }

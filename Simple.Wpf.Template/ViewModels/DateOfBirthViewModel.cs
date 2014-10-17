@@ -2,7 +2,6 @@ namespace Simple.Wpf.Template.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Reactive.Disposables;
     using System.Windows.Input;
@@ -26,15 +25,13 @@ namespace Simple.Wpf.Template.ViewModels
             _gestureService = gestureService;
 
             Days = Enumerable.Range(1, 31)
-                .Select(x => new NameValueViewModel<int>(x.ToString(CultureInfo.InvariantCulture), x))
                 .ToObservableCollection();
 
             Months = Enumerable.Range(1, 12)
-                .Select(x => new NameValueViewModel<int>(x.ToString(CultureInfo.InvariantCulture), x))
                 .ToObservableCollection();
 
-            Years = Enumerable.Range(DateTime.Now.Year - 120, 121).OrderByDescending(x => x)
-                .Select(x => new NameValueViewModel<int>(x.ToString(CultureInfo.InvariantCulture), x))
+            Years = Enumerable.Range(DateTime.Now.Year - 120, 121)
+                .OrderByDescending(x => x)
                 .ToObservableCollection();
 
             SaveCommand = new RelayCommand(Save, CanSave);
@@ -57,11 +54,11 @@ namespace Simple.Wpf.Template.ViewModels
 
         public ICommand SaveCommand { get; private set; }
 
-        public IEnumerable<NameValueViewModel<int>> Days { get; private set; }
+        public IEnumerable<int> Days { get; private set; }
 
-        public IEnumerable<NameValueViewModel<int>> Months { get; private set; }
+        public IEnumerable<int> Months { get; private set; }
 
-        public IEnumerable<NameValueViewModel<int>> Years { get; private set; }
+        public IEnumerable<int> Years { get; private set; }
 
         public int? Day
         {

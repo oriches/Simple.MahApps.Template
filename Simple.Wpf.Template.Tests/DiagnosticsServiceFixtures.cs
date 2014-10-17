@@ -24,7 +24,7 @@ namespace Simple.Wpf.Template.Tests
             _testScheduler = new TestScheduler();
             _schedulerService = new MockSchedulerService(_testScheduler);
             
-            _idleService = new Mock<IIdleService>(MockBehavior.Strict);
+            _idleService = new Mock<IIdleService>();
             
             _idling = new Subject<Unit>();
             _idleService.Setup(x => x.Idling).Returns(_idling);

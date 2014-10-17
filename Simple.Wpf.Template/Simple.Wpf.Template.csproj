@@ -103,6 +103,7 @@
     <Compile Include="Extensions\ToObservableCollectionExtensions.cs" />
     <Compile Include="Extensions\UnitExtensions.cs" />
     <Compile Include="Heartbeat.cs" />
+    <Compile Include="LimitedMemoryTarget.cs" />
     <Compile Include="Models\MemoryUnits.cs" />
     <Compile Include="NLogFormattedThreadIdLayoutRenderer.cs" />
     <Compile Include="Services\DiagnosticsService.cs" />
@@ -114,22 +115,18 @@
     <Compile Include="Services\IOverlayService.cs" />
     <Compile Include="Services\IGestureService.cs" />
     <Compile Include="Services\IIdleService.cs" />
-    <Compile Include="Commands\IObservableCommand.cs" />
     <Compile Include="Services\IMessageService.cs" />
     <Compile Include="Services\ISchedulerService.cs" />
     <Compile Include="Models\Memory.cs" />
-    <Compile Include="Commands\ObservableCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Services\MessageService.cs" />
     <Compile Include="Services\SchedulerService.cs" />
     <Compile Include="ViewModels\CloseableViewModel.cs" />
     <Compile Include="ViewModels\DiagnosticsViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
-    <Compile Include="ViewModels\NameValueViewModel.cs" />
     <Compile Include="ViewModels\OverlayViewModel.cs" />
     <Compile Include="ViewModels\ChromeViewModel.cs" />
     <Compile Include="Views\MessageDialog.cs" />
-    <Compile Include="Views\NumberToStringConverter.cs" />
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
