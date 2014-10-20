@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -103,6 +103,7 @@
     <Compile Include="Extensions\ToObservableCollectionExtensions.cs" />
     <Compile Include="Extensions\UnitExtensions.cs" />
     <Compile Include="Heartbeat.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="LimitedMemoryTarget.cs" />
     <Compile Include="Models\MemoryUnits.cs" />
     <Compile Include="NLogFormattedThreadIdLayoutRenderer.cs" />
@@ -179,9 +180,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NLog.Debug.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="app.config" />
