@@ -34,6 +34,7 @@ namespace Simple.Wpf.Template.Tests
             _diagnosticsService.Setup(x => x.Fps).Returns(Observable.Never<int>);
             _diagnosticsService.Setup(x => x.Cpu).Returns(Observable.Never<int>);
             _diagnosticsService.Setup(x => x.Memory).Returns(Observable.Never<Memory>);
+            _diagnosticsService.Setup(x => x.Log).Returns(Observable.Never<string>);
             _overlayService = new Mock<IOverlayService>();
             _messageService = new Mock<IMessageService>();
             _gestureService = new Mock<IGestureService>();
