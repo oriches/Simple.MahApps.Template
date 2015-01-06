@@ -5,10 +5,11 @@
                 mc:Ignorable="d"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mh="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:viewModels="clr-namespace:Simple.Wpf.Template.ViewModels"
                 Title="MainWindow"
                 BorderBrush="{StaticResource AccentColorBrush}"
                 BorderThickness="1"
-                d:DataContext="{d:DesignInstance vm:ChromeViewModel}">
+                d:DataContext="{d:DesignInstance viewModels:ChromeViewModel}">
 
     <mh:MetroWindow.Flyouts>
         <mh:FlyoutsControl>

@@ -22,7 +22,7 @@ namespace Simple.Wpf.Template.Views
                 var dialog = new MessageDialog
                 {
                     Title = x.Header,
-                    DialogBody = x.ViewModel,
+                    Content = x.ViewModel,
                 };
 
                 _disposable.Disposable = x.ViewModel.CloseRequested
@@ -31,7 +31,7 @@ namespace Simple.Wpf.Template.Views
                     {
                         using (x.Lifetime)
                         {
-                            dialog.DialogBody = null;
+                            dialog.Content = null;
                         }
                     });
 
