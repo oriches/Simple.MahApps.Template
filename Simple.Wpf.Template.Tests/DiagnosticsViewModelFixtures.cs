@@ -33,7 +33,7 @@ namespace Simple.Wpf.Template.Tests
             _diagnosticService = new Mock<IDiagnosticsService>();
 
             _fpsSubject = new Subject<int>();
-            _diagnosticService.Setup(x => x.Fps).Returns(_fpsSubject);
+            _diagnosticService.Setup(x => x.Rps).Returns(_fpsSubject);
 
             _cpuSubject = new Subject<int>();
             _diagnosticService.Setup(x => x.Cpu).Returns(_cpuSubject);
@@ -93,7 +93,7 @@ namespace Simple.Wpf.Template.Tests
 
             // ACT
             // ASSERT
-            Assert.That(viewModel.Fps, Is.EqualTo(Constants.DefaultFpsString));
+            Assert.That(viewModel.Rps, Is.EqualTo(Constants.DefaultFpsString));
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace Simple.Wpf.Template.Tests
             _testScheduler.AdvanceBy(TimeSpan.FromSeconds(2));
 
             // ASSERT
-            Assert.That(viewModel.Fps, Is.EqualTo("Render: 66 FPS"));
+            Assert.That(viewModel.Rps, Is.EqualTo("Render: 66 FPS"));
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace Simple.Wpf.Template.Tests
             _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
-            Assert.That(viewModel.Fps, Is.EqualTo(Constants.DefaultFpsString));
+            Assert.That(viewModel.Rps, Is.EqualTo(Constants.DefaultFpsString));
         }
 
         [Test]
@@ -272,7 +272,7 @@ namespace Simple.Wpf.Template.Tests
             _fpsSubject.OnNext(65);
 
             // ASSERT
-            Assert.That(viewModel.Fps, Is.EqualTo(Constants.DefaultFpsString));
+            Assert.That(viewModel.Rps, Is.EqualTo(Constants.DefaultFpsString));
             Assert.That(viewModel.Cpu, Is.EqualTo(Constants.DefaultCpuString));
             Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.DefaultTotalMemoryString));
             Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));

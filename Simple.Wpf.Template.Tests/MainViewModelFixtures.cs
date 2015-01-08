@@ -31,7 +31,7 @@ namespace Simple.Wpf.Template.Tests
             _schedulerService = new MockSchedulerService(_testScheduler);
 
             _diagnosticsService = new Mock<IDiagnosticsService>();
-            _diagnosticsService.Setup(x => x.Fps).Returns(Observable.Never<int>);
+            _diagnosticsService.Setup(x => x.Rps).Returns(Observable.Never<int>);
             _diagnosticsService.Setup(x => x.Cpu).Returns(Observable.Never<int>);
             _diagnosticsService.Setup(x => x.Memory).Returns(Observable.Never<Memory>);
             _diagnosticsService.Setup(x => x.Log).Returns(Observable.Never<string>);

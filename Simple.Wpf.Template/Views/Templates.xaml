@@ -142,7 +142,7 @@
             <TextBlock Grid.Column="0"
                        Grid.Row="3"
                        HorizontalAlignment="Left"
-                       Text="{Binding Path=Fps, Mode=OneWay}" />
+                       Text="{Binding Path=Rps, Mode=OneWay}" />
 
             <TextBlock Grid.Column="0"
                        Grid.Row="5"
