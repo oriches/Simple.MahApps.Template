@@ -39,7 +39,7 @@ namespace Simple.Wpf.Template.ViewModels
         {
             Id = string.Format("Identifier: {0}", Guid.NewGuid());
 
-            Rps = Constants.DefaultFpsString;
+            Rps = Constants.DefaultRpsString;
             Cpu = Constants.DefaultCpuString;
             ManagedMemory = Constants.DefaultManagedMemoryString;
             TotalMemory = Constants.DefaultTotalMemoryString;
@@ -58,13 +58,13 @@ namespace Simple.Wpf.Template.ViewModels
                         }),
 
                 diagnosticsService.Rps
-                    .Select(FormatFps)
+                    .Select(FormatRps)
                     .ObserveOn(schedulerService.Dispatcher)
                     .Subscribe(x => Rps = x,
                         e =>
                         {
                             Logger.Error(e);
-                            Rps = Constants.DefaultFpsString;
+                            Rps = Constants.DefaultRpsString;
                         }),
 
                 diagnosticsService.Cpu
@@ -157,7 +157,7 @@ namespace Simple.Wpf.Template.ViewModels
             }
         }
 
-        private static string FormatFps(int rps)
+        private static string FormatRps(int rps)
         {
             return "Render: " + rps.ToString(CultureInfo.InvariantCulture) + " RPS";
         }

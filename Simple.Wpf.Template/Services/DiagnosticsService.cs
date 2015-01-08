@@ -24,7 +24,7 @@ namespace Simple.Wpf.Template.Services
         private readonly object _sync;
         private readonly LimitedMemoryTarget _loggingTarget;
 
-        private bool _fpsConnected;
+        private bool _rpsConnected;
         private bool _countersConnected;
         
         internal sealed class Counters
@@ -159,7 +159,7 @@ namespace Simple.Wpf.Template.Services
         {
             get
             {
-                ConnectFpsObservable();
+                ConnectRpsObservable();
                 
                 return _rpsObservable.DistinctUntilChanged();
             }
@@ -326,16 +326,16 @@ namespace Simple.Wpf.Template.Services
             }
         }
 
-        private void ConnectFpsObservable()
+        private void ConnectRpsObservable()
         {
-            if (_fpsConnected)
+            if (_rpsConnected)
             {
                 return;
             }
 
             lock (_sync)
             {
-                if (_fpsConnected)
+                if (_rpsConnected)
                 {
                     return;
                 }
@@ -347,7 +347,7 @@ namespace Simple.Wpf.Template.Services
                     _rpsQueue.Clear();
                 }));
 
-                _fpsConnected = true;
+                _rpsConnected = true;
             }
         }
 
