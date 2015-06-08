@@ -7,6 +7,7 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Windows.Input;
     using Commands;
     using NLog;
+    using Services;
 
     public abstract class CloseableViewModel : BaseViewModel, IDisposable
     {
