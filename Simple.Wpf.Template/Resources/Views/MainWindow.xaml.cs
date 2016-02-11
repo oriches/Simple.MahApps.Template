@@ -1,12 +1,12 @@
-namespace Simple.Wpf.Template.Views
-{
-    using System;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using System.Reactive.Threading.Tasks;
-    using MahApps.Metro.Controls.Dialogs;
-    using Services;
+using System;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using MahApps.Metro.Controls.Dialogs;
+using Simple.Wpf.Template.Services;
 
+namespace Simple.Wpf.Template.Resources.Views
+{
     public partial class MainWindow
     {
         private readonly SerialDisposable _disposable;

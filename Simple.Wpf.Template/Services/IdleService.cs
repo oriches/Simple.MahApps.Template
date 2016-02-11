@@ -8,13 +8,12 @@ namespace Simple.Wpf.Template.Services
     using System.Windows;
     using Extensions;
     using NLog;
-    using Duration = Services.Duration;
 
     public sealed class IdleService : IIdleService, IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IConnectableObservable<EventPattern<EventArgs>> _idleObservable;
+        private readonly IConnectableObservable<EventPattern<object>> _idleObservable;
         private readonly IDisposable _disposable;
 
         public IdleService(ISchedulerService schedulerService)
@@ -40,7 +39,7 @@ namespace Simple.Wpf.Template.Services
 
         public void Dispose()
         {
-            using (Services.Duration.Measure(Logger, "Dispose"))
+            using (Duration.Measure(Logger, "Dispose"))
             {
                 _disposable.Dispose();
             }

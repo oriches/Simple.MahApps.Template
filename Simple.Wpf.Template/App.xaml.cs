@@ -1,3 +1,5 @@
+using Simple.Wpf.Template.Resources.Views;
+
 namespace Simple.Wpf.Template
 {
     using System;
@@ -12,7 +14,6 @@ namespace Simple.Wpf.Template
     using Models;
     using NLog;
     using Services;
-    using Views;
 
     public partial class App : Application
     {

@@ -1,12 +1,13 @@
-﻿namespace Simple.Wpf.Template.Resources
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Markup;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Windows;
+using System.Windows.Markup;
 
-    [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Simple.Wpf.Template")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Simple.Wpf.Template")]
+
+namespace Simple.Wpf.Template.Resources.ResourceDictionaries
+{
     // The shared resource dictionary is a specialized resource dictionary
     // that loads it content only once. If a second instance with the same source
     // is created, it only merges the resources from the cache.
