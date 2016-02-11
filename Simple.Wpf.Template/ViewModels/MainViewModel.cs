@@ -5,25 +5,19 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Windows.Input;
     using Autofac.Features.OwnedInstances;
     using Commands;
-    using NLog;
     using Services;
 
-    public sealed class MainViewModel : BaseViewModel, IDisposable
+    public sealed class MainViewModel : BaseViewModel, IMainViewModel
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly IDisposable _disposable;
 
-        public MainViewModel(Func<Owned<DiagnosticsViewModel>> diagnosticsFactory,
-            Func<Owned<DateOfBirthViewModel>> dateOfBirthFactory,
+        public MainViewModel(Func<Owned<IDateOfBirthViewModel>> dateOfBirthFactory,
+            IDiagnosticsViewModel diagnosticsViewModel,
             IOverlayService overlayService,
             IMessageService messageService)
         {
-            DiagnosticsCommand = new RelayCommand(() =>
-            {
-                var owned = diagnosticsFactory();
-                overlayService.Post("Diagnostics", owned.Value, owned);
-            });
+            Diagnostics = diagnosticsViewModel;
+
             MessageCommand = new RelayCommand(() =>
             {
                 var owned = dateOfBirthFactory();
@@ -32,12 +26,11 @@ namespace Simple.Wpf.Template.ViewModels
             
             _disposable = Disposable.Create(() =>
             {
-                DiagnosticsCommand = null;
                 MessageCommand = null;
             });
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             using (Duration.Measure(Logger, "Dispose"))
             {
@@ -45,8 +38,8 @@ namespace Simple.Wpf.Template.ViewModels
             }
         }
 
-        public ICommand DiagnosticsCommand { get; private set; }
-
         public ICommand MessageCommand { get; private set; }
+
+        public IDiagnosticsViewModel Diagnostics { get; private set; }
     }
 }

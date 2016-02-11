@@ -1,14 +1,12 @@
 namespace Simple.Wpf.Template.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Linq;
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
-    using System.Windows.Media;
     using Models;
     using NLog;
 
@@ -19,12 +17,9 @@ namespace Simple.Wpf.Template.Services
         private readonly ISchedulerService _schedulerService;
         private readonly CompositeDisposable _disposable;
         private readonly IConnectableObservable<Counters> _countersObservable;
-        private readonly IConnectableObservable<int> _rpsObservable;
-        private readonly Queue<long> _rpsQueue;
         private readonly object _sync;
         private readonly LimitedMemoryTarget _loggingTarget;
 
-        private bool _rpsConnected;
         private bool _countersConnected;
         
         internal sealed class Counters
@@ -105,13 +100,6 @@ namespace Simple.Wpf.Template.Services
                 .CombineLatest(idleService.Idling.Buffer(Constants.DiagnosticsIdleBuffer, schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
                 .Replay(1);
 
-            _rpsQueue = new Queue<long>();
-            _rpsObservable = Observable.FromEventPattern<EventHandler, EventArgs>(h => CompositionTarget.Rendering += h,
-                    h => CompositionTarget.Rendering -= h)
-                    .Synchronize()
-                    .Select(x => CalculateRps())
-                    .Publish();
-
             _loggingTarget = (LimitedMemoryTarget)LogManager.Configuration.FindTargetByName("memory");
         }
 
@@ -123,14 +111,8 @@ namespace Simple.Wpf.Template.Services
             }
         }
 
-        public IObservable<string> Log
-        {
-            get
-            {
-                return StartLogObservable();
-            }
-        }
-        
+        public IObservable<string> Log => StartLogObservable();
+
         public IObservable<Memory> Memory
         {
             get
@@ -152,16 +134,6 @@ namespace Simple.Wpf.Template.Services
                     .Delay(Constants.DiagnosticsCpuBuffer, _schedulerService.TaskPool)
                     .DistinctUntilChanged()
                     .Select(DivideByNumberOfProcessors);
-            }
-        }
-
-        public IObservable<int> Rps
-        {
-            get
-            {
-                ConnectRpsObservable();
-                
-                return _rpsObservable.DistinctUntilChanged();
             }
         }
         
@@ -302,7 +274,7 @@ namespace Simple.Wpf.Template.Services
                 }
             }
 
-            throw new ArgumentException(@"Could not find performance counter instance name for current process, name '{0}'", currentProcess.ProcessName);
+            throw new ArgumentException($@"Could not find performance counter instance name for current process, name '{"ARG0"}'", currentProcess.ProcessName);
         }
 
         private void ConnectCountersObservable()
@@ -326,31 +298,6 @@ namespace Simple.Wpf.Template.Services
             }
         }
 
-        private void ConnectRpsObservable()
-        {
-            if (_rpsConnected)
-            {
-                return;
-            }
-
-            lock (_sync)
-            {
-                if (_rpsConnected)
-                {
-                    return;
-                }
-
-                var disposable = _rpsObservable.Connect();
-                _disposable.Add(Disposable.Create(() =>
-                {
-                    disposable.Dispose();
-                    _rpsQueue.Clear();
-                }));
-
-                _rpsConnected = true;
-            }
-        }
-
         private IObservable<string> StartLogObservable()
         {
             var existingLog = Enumerable.Empty<string>();
@@ -366,28 +313,6 @@ namespace Simple.Wpf.Template.Services
                 })
                 .Where(x => x.Any())
                 .SelectMany(x => x);
-        }
-
-        private int CalculateRps()
-        {
-            var now = DateTime.Now;
-            var endTime = now.Ticks;
-            var startTime = now.AddSeconds(-1).Ticks;
-
-            while (_rpsQueue.Any())
-            {
-                if (_rpsQueue.Peek() < startTime)
-                {
-                    _rpsQueue.Dequeue();
-
-                    continue;
-                }
-                
-                break;
-            }
-
-            _rpsQueue.Enqueue(endTime);
-            return _rpsQueue.Count;
         }
     }
 }

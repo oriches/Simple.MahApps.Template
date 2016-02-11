@@ -100,13 +100,13 @@
     </ApplicationDefinition>
     <Compile Include="Collections\RangeObservableCollection.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Extensions\AddRangeExtensions.cs" />
-    <Compile Include="Extensions\ForEachExtensions.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Extensions\BaseViewModelExtensions.cs" />
     <Compile Include="Extensions\MemoryExtensions.cs" />
     <Compile Include="Extensions\NotifyCollectionChangedExtensions.cs" />
     <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Extensions\ToObservableCollectionExtensions.cs" />
-    <Compile Include="Extensions\UnitExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="Resources\ResourceDictionaries\SharedResourceDictionary.cs" />
     <Compile Include="Services\Heartbeat.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
@@ -130,6 +130,12 @@
     <Compile Include="Services\SchedulerService.cs" />
     <Compile Include="ViewModels\CloseableViewModel.cs" />
     <Compile Include="ViewModels\DiagnosticsViewModel.cs" />
+    <Compile Include="ViewModels\IChromeViewModel.cs" />
+    <Compile Include="ViewModels\ICloseableViewModel.cs" />
+    <Compile Include="ViewModels\IDateOfBirthViewModel.cs" />
+    <Compile Include="ViewModels\IDiagnosticsViewModel.cs" />
+    <Compile Include="ViewModels\IMainViewModel.cs" />
+    <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\OverlayViewModel.cs" />
     <Compile Include="ViewModels\ChromeViewModel.cs" />

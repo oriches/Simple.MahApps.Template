@@ -21,7 +21,6 @@ namespace Simple.Wpf.Template.Tests
         private Mock<IDiagnosticsService> _diagnosticService;
         private Subject<int> _cpuSubject;
         private Subject<Memory> _memorySubject;
-        private Subject<int> _rpsSubject;
         private Subject<string> _logSubject;
 
         [SetUp]
@@ -31,9 +30,6 @@ namespace Simple.Wpf.Template.Tests
             _schedulerService = new MockSchedulerService(_testScheduler);
 
             _diagnosticService = new Mock<IDiagnosticsService>();
-
-            _rpsSubject = new Subject<int>();
-            _diagnosticService.Setup(x => x.Rps).Returns(_rpsSubject);
 
             _cpuSubject = new Subject<int>();
             _diagnosticService.Setup(x => x.Cpu).Returns(_cpuSubject);
@@ -52,8 +48,8 @@ namespace Simple.Wpf.Template.Tests
             LogHelper.ReconfigureLoggerToLevel(LogLevel.Error);
             var logger = LogManager.GetCurrentClassLogger();
             
-            var message1 = string.Format("Message 1 - {0}", Guid.NewGuid());
-            var message2 = string.Format("Message 2 - {0}", Guid.NewGuid());
+            var message1 = $"Message 1 - {Guid.NewGuid()}";
+            var message2 = $"Message 2 - {Guid.NewGuid()}";
 
             var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
 
@@ -86,17 +82,6 @@ namespace Simple.Wpf.Template.Tests
         }
         
         [Test]
-        public void when_created_rps_is_default_value()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
-
-            // ACT
-            // ASSERT
-            Assert.That(viewModel.Rps, Is.EqualTo(Constants.DefaultRpsString));
-        }
-
-        [Test]
         public void when_created_cpu_is_default_value()
         {
             // ARRANGE
@@ -127,36 +112,6 @@ namespace Simple.Wpf.Template.Tests
             // ACT
             // ASSERT
             Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));
-        }
-
-        [Test]
-        public void rps_value_is_formatted_when_diagnostics_service_pumps_rps()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
-
-            // ACT
-            _rpsSubject.OnNext(66);
-
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(2));
-
-            // ASSERT
-            Assert.That(viewModel.Rps, Is.EqualTo("Render: 66 RPS"));
-        }
-
-        [Test]
-        public void rps_value_is_default_value_when_diagnostics_service_rps_errors()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
-
-            // ACT
-            _rpsSubject.OnError(new Exception("blah!"));
-
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
-
-            // ASSERT
-            Assert.That(viewModel.Rps, Is.EqualTo(Constants.DefaultRpsString));
         }
 
         [Test]
@@ -269,10 +224,8 @@ namespace Simple.Wpf.Template.Tests
 
             _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
             _cpuSubject.OnNext(42);
-            _rpsSubject.OnNext(65);
 
             // ASSERT
-            Assert.That(viewModel.Rps, Is.EqualTo(Constants.DefaultRpsString));
             Assert.That(viewModel.Cpu, Is.EqualTo(Constants.DefaultCpuString));
             Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.DefaultTotalMemoryString));
             Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));

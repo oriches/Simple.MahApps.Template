@@ -16,7 +16,8 @@ namespace Simple.Wpf.Template.Tests
         private Subject<OverlayViewModel> _show;
 
         private MainViewModel _mainViewModel;
-        
+        private Mock<IDiagnosticsViewModel> _diagnostics;
+
         [SetUp]
         public void Setup()
         {
@@ -25,8 +26,10 @@ namespace Simple.Wpf.Template.Tests
             _show = new Subject<OverlayViewModel>();
             _overlayService.Setup(x => x.Show).Returns(_show);
 
+            _diagnostics = new Mock<IDiagnosticsViewModel>();
+            
             var messageService = new Mock<IMessageService>();
-            _mainViewModel = new MainViewModel(() => null, () => null, _overlayService.Object, messageService.Object);
+            _mainViewModel = new MainViewModel(() => null, _diagnostics.Object, _overlayService.Object, messageService.Object);
         }
 
         [Test]

@@ -6,5 +6,9 @@ namespace Simple.Wpf.Template.Resources.Views
     [ContentProperty("DialogBody")]
     public sealed class MessageDialog : BaseMetroDialog
     {
+        public MessageDialog()
+        {
+            
+        }
     }
 }

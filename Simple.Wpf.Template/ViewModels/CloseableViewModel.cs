@@ -6,39 +6,37 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Reactive.Subjects;
     using System.Windows.Input;
     using Commands;
-    using NLog;
+    using Extensions;
     using Services;
 
-    public abstract class CloseableViewModel : BaseViewModel, IDisposable
+    public abstract class CloseableViewModel : BaseViewModel, ICloseableViewModel
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly Subject<Unit> _closeRequested;
         private readonly IDisposable _disposable;
 
         protected CloseableViewModel()
         {
-            _closeRequested = new Subject<Unit>();
+            _closeRequested = new Subject<Unit>()
+                .DisposeWith(this);
 
             CloseCommand = new RelayCommand(() => _closeRequested.OnNext(Unit.Default));
 
             _disposable = Disposable.Create(() =>
             {
                 CloseCommand = null;
-
-                _closeRequested.OnCompleted();
-                _closeRequested.Dispose();
             });
         }
 
-        public IObservable<Unit> CloseRequested { get { return _closeRequested; } }
+        public IObservable<Unit> CloseRequested => _closeRequested;
 
         public ICommand CloseCommand { get; private set; }
         
-        public virtual void Dispose()
+        public override void Dispose()
         {
             using (Duration.Measure(Logger, "Dispose"))
             {
+                base.Dispose();
+
                 _disposable.Dispose();
             }
         }

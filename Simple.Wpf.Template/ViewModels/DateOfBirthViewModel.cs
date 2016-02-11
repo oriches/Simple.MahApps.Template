@@ -7,13 +7,11 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Windows.Input;
     using Commands;
     using Extensions;
-    using NLog;
     using Services;
 
-    public sealed class DateOfBirthViewModel : CloseableViewModel
+    public sealed class DateOfBirthViewModel : CloseableViewModel, IDateOfBirthViewModel
     {
         private readonly IGestureService _gestureService;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDisposable _disposable;
         private int? _day;

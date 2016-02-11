@@ -10,7 +10,5 @@ namespace Simple.Wpf.Template.Services
         IObservable<Memory> Memory { get; }
 
         IObservable<int> Cpu { get; }
-
-        IObservable<int> Rps { get; }
     }
 }

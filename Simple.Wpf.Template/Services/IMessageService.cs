@@ -7,6 +7,6 @@ namespace Simple.Wpf.Template.Services
     {
         IObservable<MessageViewModel> Show { get; }
 
-        void Post(string header, CloseableViewModel viewModel, IDisposable lifetime);
+        void Post(string header, ICloseableViewModel viewModel, IDisposable lifetime);
     }
 }

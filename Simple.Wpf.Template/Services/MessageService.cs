@@ -32,7 +32,7 @@ namespace Simple.Wpf.Template.Services
             }
         }
 
-        public void Post(string header, CloseableViewModel viewModel, IDisposable lifetime)
+        public void Post(string header, ICloseableViewModel viewModel, IDisposable lifetime)
         {
             _show.OnNext(new MessageViewModel(header, viewModel, lifetime));
         }

@@ -7,10 +7,14 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Reactive.Disposables;
     using Extensions;
     using Helpers;
+    using NLog;
+    using Services;
 
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : IViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private sealed class SuspendedNotifications : IDisposable
         {
@@ -50,7 +54,20 @@ namespace Simple.Wpf.Template.ViewModels
         private static readonly PropertyChangedEventArgs EmptyChangeArgs = new PropertyChangedEventArgs(string.Empty);
         private static readonly IDictionary<string, PropertyChangedEventArgs> ChangedProperties = new Dictionary<string, PropertyChangedEventArgs>();
 
+        private readonly CompositeDisposable _disposable;
+
         private SuspendedNotifications _suspendedNotifications;
+
+        protected BaseViewModel()
+        {
+            _disposable = new CompositeDisposable();
+        }
+
+        public virtual void Dispose()
+        {
+            using (Duration.Measure(Logger, "Dispose"))
+                _disposable.Dispose();
+        }
 
         public IDisposable SuspendNotifications()
         {
@@ -113,6 +130,11 @@ namespace Simple.Wpf.Template.ViewModels
             OnPropertyChanged(expression);
 
             return true;
+        }
+
+        public void Add(IDisposable dispsoable)
+        {
+            _disposable.Add(dispsoable);
         }
     }
 }

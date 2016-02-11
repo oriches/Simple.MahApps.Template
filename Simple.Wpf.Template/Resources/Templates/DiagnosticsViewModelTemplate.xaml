@@ -15,8 +15,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Column="0"
@@ -48,20 +46,15 @@
             <TextBlock Grid.Column="0"
                        Grid.Row="3"
                        HorizontalAlignment="Left"
-                       Text="{Binding Path=Rps, Mode=OneWay}" />
+                       Text="{Binding Path=Cpu, Mode=OneWay}" />
 
             <TextBlock Grid.Column="0"
                        Grid.Row="5"
                        HorizontalAlignment="Left"
-                       Text="{Binding Path=Cpu, Mode=OneWay}" />
-
-            <TextBlock Grid.Column="0"
-                       Grid.Row="7"
-                       HorizontalAlignment="Left"
                        Text="{Binding Path=ManagedMemory, Mode=OneWay}" />
 
             <TextBlock Grid.Column="0"
-                       Grid.Row="9"
+                       Grid.Row="7"
                        HorizontalAlignment="Left"
                        Text="{Binding Path=TotalMemory, Mode=OneWay}" />
 

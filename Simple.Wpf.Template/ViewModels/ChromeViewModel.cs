@@ -4,27 +4,28 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Reactive.Disposables;
     using System.Windows.Input;
     using Commands;
+    using Extensions;
     using NLog;
     using Services;
 
-    public sealed class ChromeViewModel : BaseViewModel, IDisposable
+    public sealed class ChromeViewModel : BaseViewModel, IChromeViewModel
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly IDisposable _disposable;
 
         private OverlayViewModel _overlay;
         
-        public ChromeViewModel(MainViewModel main, IOverlayService overlayService)
+        public ChromeViewModel(IMainViewModel main, IOverlayService overlayService)
         {
             Main = main;
+
+            overlayService.Show
+                .Subscribe(UpdateOverlay)
+                .DisposeWith(this);
 
             CloseOverlayCommand = new RelayCommand(ClearOverlay);
 
             _disposable = new CompositeDisposable(new []
             {
-                overlayService.Show.Subscribe(UpdateOverlay),
-                
                 Disposable.Create(() =>
                 {
                     CloseOverlayCommand = null;
@@ -32,23 +33,24 @@ namespace Simple.Wpf.Template.ViewModels
             });
         }
         
-        public void Dispose()
+        public override void Dispose()
         {
             using (Duration.Measure(Logger, "Dispose"))
             {
+                base.Dispose();
                 _disposable.Dispose();
             }
         }
         
-        public MainViewModel Main { get; private set; }
+        public IMainViewModel Main { get; private set; }
         
         public ICommand CloseOverlayCommand { get; private set; }
 
-        public bool HasOverlay { get { return _overlay != null; } }
+        public bool HasOverlay => _overlay != null;
 
-        public string OverlayHeader { get { return _overlay != null ? _overlay.Header : string.Empty; } }
+        public string OverlayHeader => _overlay != null ? _overlay.Header : string.Empty;
 
-        public BaseViewModel Overlay { get { return _overlay != null ? _overlay.ViewModel : null; } }
+        public BaseViewModel Overlay => _overlay?.ViewModel;
 
         private void ClearOverlay()
         {

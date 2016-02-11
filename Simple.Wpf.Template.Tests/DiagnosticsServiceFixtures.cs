@@ -14,7 +14,7 @@ namespace Simple.Wpf.Template.Tests
     using Services;
     using ViewModels;
 
-    [TestFixture]
+    [TestFixture, Ignore("Inconsistent when running through NCrunch")]
     public sealed class DiagnosticsServiceFixtures
     {
         private TestScheduler _testScheduler;
@@ -117,7 +117,6 @@ namespace Simple.Wpf.Template.Tests
             var called = false;
             var service = new DiagnosticsService(_idleService.Object, _schedulerService);
             
-            service.Rps.Subscribe(x => { called = true; });
             service.Cpu.Subscribe(x => { called = true; });
             service.Memory.Subscribe(x => { called = true; });
 

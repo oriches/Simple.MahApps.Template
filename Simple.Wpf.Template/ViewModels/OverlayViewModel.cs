@@ -17,7 +17,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         public IDisposable Lifetime { get; private set; }
 
-        public bool HasLifetime { get { return Lifetime != null; } }
+        public bool HasLifetime => Lifetime != null;
     }
 
     public sealed class OverlayViewModel : OverlayViewModel<BaseViewModel>

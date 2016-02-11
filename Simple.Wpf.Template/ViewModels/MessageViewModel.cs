@@ -2,9 +2,9 @@ namespace Simple.Wpf.Template.ViewModels
 {
     using System;
 
-    public sealed class MessageViewModel : OverlayViewModel<CloseableViewModel>
+    public sealed class MessageViewModel : OverlayViewModel<ICloseableViewModel>
     {
-        public MessageViewModel(string header, CloseableViewModel viewModel, IDisposable lifetime)
+        public MessageViewModel(string header, ICloseableViewModel viewModel, IDisposable lifetime)
             : base(header, viewModel, lifetime)
         {
         }

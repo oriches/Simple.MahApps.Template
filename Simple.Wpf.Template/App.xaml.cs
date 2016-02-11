@@ -1,5 +1,3 @@
-using Simple.Wpf.Template.Resources.Views;
-
 namespace Simple.Wpf.Template
 {
     using System;
@@ -13,6 +11,7 @@ namespace Simple.Wpf.Template
     using Helpers;
     using Models;
     using NLog;
+    using Resources.Views;
     using Services;
 
     public partial class App : Application
@@ -70,8 +69,7 @@ namespace Simple.Wpf.Template
                 var listenDisposable = heartbeat.Listen
                     .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
                     .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
-                    .SelectMany(x => dianosticsService.Rps.Take(1), (x, y) => new Tuple<Memory, int, int>(x.Item1, x.Item2, y))
-                    .Subscribe(x => Logger.Info("Heartbeat (Memory={0}, CPU={1}%, RPS={2})", x.Item1.WorkingSetPrivateAsString(), x.Item2, x.Item3));
+                    .Subscribe(x => Logger.Info("Heartbeat (Memory={0}, CPU={1}%)", x.Item1.WorkingSetPrivateAsString(), x.Item2));
 
                 _disposable.Add(listenDisposable);
                 _disposable.Add(heartbeat);
