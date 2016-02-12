@@ -69,6 +69,11 @@ namespace Simple.Wpf.Template.ViewModels
                 _disposable.Dispose();
         }
 
+        public void Add(IDisposable dispsoable)
+        {
+            _disposable.Add(dispsoable);
+        }
+
         public IDisposable SuspendNotifications()
         {
             if (_suspendedNotifications == null)
@@ -130,11 +135,6 @@ namespace Simple.Wpf.Template.ViewModels
             OnPropertyChanged(expression);
 
             return true;
-        }
-
-        public void Add(IDisposable dispsoable)
-        {
-            _disposable.Add(dispsoable);
         }
     }
 }

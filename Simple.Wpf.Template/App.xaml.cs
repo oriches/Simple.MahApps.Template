@@ -14,7 +14,7 @@ namespace Simple.Wpf.Template
     using Resources.Views;
     using Services;
 
-    public partial class App : Application
+    public partial class App
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -41,6 +41,8 @@ namespace Simple.Wpf.Template
             BootStrapper.Start();
 
             var messageService = BootStrapper.Resolve<IMessageService>();
+
+            Extensions.ObservableExtensions.GestureService = BootStrapper.Resolve<IGestureService>();
 
             var window = new MainWindow(messageService);
 

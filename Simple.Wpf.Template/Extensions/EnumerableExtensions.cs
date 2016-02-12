@@ -8,9 +8,9 @@ namespace Simple.Wpf.Template.Extensions
     {
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
-            foreach (var i in enumerable)
+            foreach (var item in enumerable)
             {
-                action(i);
+                action(item);
             }
 
             return enumerable;

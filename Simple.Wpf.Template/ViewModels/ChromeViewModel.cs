@@ -1,17 +1,12 @@
 namespace Simple.Wpf.Template.ViewModels
 {
     using System;
-    using System.Reactive.Disposables;
-    using System.Windows.Input;
     using Commands;
     using Extensions;
-    using NLog;
     using Services;
 
     public sealed class ChromeViewModel : BaseViewModel, IChromeViewModel
     {
-        private readonly IDisposable _disposable;
-
         private OverlayViewModel _overlay;
         
         public ChromeViewModel(IMainViewModel main, IOverlayService overlayService)
@@ -22,29 +17,14 @@ namespace Simple.Wpf.Template.ViewModels
                 .Subscribe(UpdateOverlay)
                 .DisposeWith(this);
 
-            CloseOverlayCommand = new RelayCommand(ClearOverlay);
-
-            _disposable = new CompositeDisposable(new []
-            {
-                Disposable.Create(() =>
-                {
-                    CloseOverlayCommand = null;
-                })
-            });
+            CloseOverlayCommand = ReactiveCommand<object>.Create();
+            CloseOverlayCommand.Subscribe(x => ClearOverlay())
+                .DisposeWith(this);
         }
         
-        public override void Dispose()
-        {
-            using (Duration.Measure(Logger, "Dispose"))
-            {
-                base.Dispose();
-                _disposable.Dispose();
-            }
-        }
+        public IMainViewModel Main { get; }
         
-        public IMainViewModel Main { get; private set; }
-        
-        public ICommand CloseOverlayCommand { get; private set; }
+        public ReactiveCommand<object> CloseOverlayCommand { get; }
 
         public bool HasOverlay => _overlay != null;
 

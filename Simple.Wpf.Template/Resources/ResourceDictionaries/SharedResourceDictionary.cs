@@ -4,8 +4,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Simple.Wpf.Template")]
-
 namespace Simple.Wpf.Template.Resources.ResourceDictionaries
 {
     // The shared resource dictionary is a specialized resource dictionary

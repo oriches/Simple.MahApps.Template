@@ -45,16 +45,18 @@
                         Orientation="Horizontal">
 
                 <Button Margin="10,0"
-                        Content="Save"
+                        Content="OK"
+                        Width="100"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        Command="{Binding Path=SaveCommand, Mode=OneWay}" />
+                        Command="{Binding Path=ConfirmCommand, Mode=OneWay}" />
 
                 <Button Margin="10,0"
-                        Content="Close"
+                        Content="Cancel"
+                        Width="100"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        Command="{Binding Path=CloseCommand, Mode=OneWay}" />
+                        Command="{Binding Path=CancelCommand, Mode=OneWay}" />
 
             </StackPanel>
 

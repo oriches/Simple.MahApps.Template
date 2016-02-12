@@ -7,8 +7,8 @@
                 xmlns:mh="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:viewModels="clr-namespace:Simple.Wpf.Template.ViewModels"
                 Title="MainWindow"
-                BorderBrush="{StaticResource AccentColorBrush}"
                 BorderThickness="1"
+                BorderBrush="{StaticResource AccentColorBrush}"
                 d:DataContext="{d:DesignInstance viewModels:ChromeViewModel}">
 
     <mh:MetroWindow.Flyouts>

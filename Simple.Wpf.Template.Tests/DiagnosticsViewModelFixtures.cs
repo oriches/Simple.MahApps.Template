@@ -14,7 +14,7 @@ namespace Simple.Wpf.Template.Tests
     using ViewModels;
 
     [TestFixture]
-    public sealed class DiagnosticsViewModelFixtures
+    public sealed class DiagnosticsViewModelFixtures : BaseViewModelFixtures
     {
         private TestScheduler _testScheduler;
         private MockSchedulerService _schedulerService;

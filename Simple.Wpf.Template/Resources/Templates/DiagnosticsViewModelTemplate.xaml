@@ -4,58 +4,30 @@
 
     <DataTemplate DataType="{x:Type vm:DiagnosticsViewModel}">
 
-        <Grid Margin="10">
+        <Grid>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="20" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="175" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="175" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="175" />
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0"
+            <TextBlock Grid.Column="1"
                        Grid.Row="0"
-                       TextWrapping="Wrap"
-                       VerticalAlignment="Top"
-                       HorizontalAlignment="Left">
-                <Run Text="{Binding Path=Id, Mode=OneWay}" />
-                <LineBreak />
-                <LineBreak />
-                <Run FontStyle="Italic"
-                     Text="A new instance of the view model is created everytime the 'Show Diagnostics' button is pressed, the instance is scoped with a IoC lifetime and is disposed off when no longer required..." />
-            </TextBlock>
-            
-            <DataGrid Grid.Column="0"
-                      Grid.Row="2"
-                      AutoGenerateColumns="False"
-                      ScrollViewer.CanContentScroll="True"
-                      ScrollViewer.VerticalScrollBarVisibility="Visible"
-                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                      ItemsSource="{Binding Path=Log, Mode=OneWay}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Log Entry"
-                                        MinWidth="800"
-                                        Binding="{Binding .}" />
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <TextBlock Grid.Column="0"
-                       Grid.Row="3"
-                       HorizontalAlignment="Left"
+                       HorizontalAlignment="Right"
                        Text="{Binding Path=Cpu, Mode=OneWay}" />
 
-            <TextBlock Grid.Column="0"
-                       Grid.Row="5"
-                       HorizontalAlignment="Left"
+            <TextBlock Grid.Column="3"
+                       Grid.Row="0"
+                       HorizontalAlignment="Right"
                        Text="{Binding Path=ManagedMemory, Mode=OneWay}" />
 
-            <TextBlock Grid.Column="0"
-                       Grid.Row="7"
-                       HorizontalAlignment="Left"
+            <TextBlock Grid.Column="5"
+                       Grid.Row="0"
+                       HorizontalAlignment="Right"
                        Text="{Binding Path=TotalMemory, Mode=OneWay}" />
 
         </Grid>

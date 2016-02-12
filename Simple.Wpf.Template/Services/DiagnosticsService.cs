@@ -7,13 +7,12 @@ namespace Simple.Wpf.Template.Services
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
+    using Extensions;
     using Models;
     using NLog;
 
-    public sealed class DiagnosticsService : IDiagnosticsService, IDisposable
+    public sealed class DiagnosticsService : BaseService, IDiagnosticsService
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly ISchedulerService _schedulerService;
         private readonly CompositeDisposable _disposable;
         private readonly IConnectableObservable<Counters> _countersObservable;
@@ -30,16 +29,17 @@ namespace Simple.Wpf.Template.Services
                 Cpu = cpuCounter;
             }
 
-            public PerformanceCounter WorkingSet { get; private set; }
+            public PerformanceCounter WorkingSet { get; }
 
-            public PerformanceCounter Cpu { get; private set; }
+            public PerformanceCounter Cpu { get; }
         }
 
         public DiagnosticsService(IIdleService idleService, ISchedulerService schedulerService)
         {
             _schedulerService = schedulerService;
 
-            _disposable = new CompositeDisposable();
+            _disposable = new CompositeDisposable()
+                .DisposeWith(this);
 
             _sync = new object();
 
@@ -101,14 +101,6 @@ namespace Simple.Wpf.Template.Services
                 .Replay(1);
 
             _loggingTarget = (LimitedMemoryTarget)LogManager.Configuration.FindTargetByName("memory");
-        }
-
-        public void Dispose()
-        {
-            using (Duration.Measure(Logger, "Dispose"))
-            {
-                _disposable.Dispose();
-            }
         }
 
         public IObservable<string> Log => StartLogObservable();

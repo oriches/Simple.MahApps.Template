@@ -10,7 +10,7 @@ namespace Simple.Wpf.Template.Tests
     using ViewModels;
 
     [TestFixture]
-    public sealed class ChromeViewModelFixtures
+    public sealed class ChromeViewModelFixtures : BaseViewModelFixtures
     {
         private Mock<IOverlayService> _overlayService;
         private Subject<OverlayViewModel> _show;
@@ -101,20 +101,6 @@ namespace Simple.Wpf.Template.Tests
             Assert.That(viewModel.HasOverlay, Is.True);
             Assert.That(viewModel.OverlayHeader, Is.EqualTo("header 2"));
             Assert.That(viewModel.Overlay, Is.EqualTo(contentViewModel2.Object));
-        }
-
-        [Test]
-        public void disposing_clears_commands()
-        {
-            // ARRANGE
-            var viewModel = new ChromeViewModel(_mainViewModel, _overlayService.Object);
-
-            // ACT
-            viewModel.Dispose();
-
-            // ASSERT
-            var commandProperties = TestHelper.PropertiesImplementingInterface<ICommand>(viewModel);
-            commandProperties.ForEach(x => Assert.That(x.GetValue(viewModel, null), Is.Null));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Simple.Wpf.Template.Resources.Views
                     Content = x.ViewModel,
                 };
 
-                _disposable.Disposable = x.ViewModel.CloseRequested
+                _disposable.Disposable = x.ViewModel.Closed
                     .Select(y => this.HideMetroDialogAsync(dialog).ToObservable())
                     .Subscribe(z =>
                     {

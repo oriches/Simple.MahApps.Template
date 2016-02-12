@@ -2,48 +2,60 @@ namespace Simple.Wpf.Template.ViewModels
 {
     using System;
     using System.Reactive;
-    using System.Reactive.Disposables;
     using System.Reactive.Subjects;
-    using System.Windows.Input;
     using Commands;
     using Extensions;
-    using Services;
 
     public abstract class CloseableViewModel : BaseViewModel, ICloseableViewModel
     {
-        private readonly Subject<Unit> _closeRequested;
-        private readonly IDisposable _disposable;
+        private readonly Subject<Unit> _closed;
+        private readonly Subject<Unit> _deny;
+        private readonly Subject<Unit> _confirm;
 
         protected CloseableViewModel()
         {
-            _closeRequested = new Subject<Unit>()
+            _closed = new Subject<Unit>()
                 .DisposeWith(this);
 
-            CloseCommand = new RelayCommand(() => _closeRequested.OnNext(Unit.Default));
+            _deny = new Subject<Unit>()
+               .DisposeWith(this);
 
-            _disposable = Disposable.Create(() =>
+            _confirm = new Subject<Unit>()
+               .DisposeWith(this);
+
+            CancelCommand = ReactiveCommand.Create()
+                .DisposeWith(this);
+
+            CancelCommand.ActivateGestures()
+                .Subscribe(x => _closed.OnNext(Unit.Default))
+                .DisposeWith(this);
+
+            InitialiseConfirmAndDeny();
+
+            ConfirmCommand.ActivateGestures()
+                .Subscribe(x =>
             {
-                CloseCommand = null;
-            });
-        }
+                _confirm.OnNext(Unit.Default);
+                _closed.OnNext(Unit.Default);
+            })
+            .DisposeWith(this);
 
-        public IObservable<Unit> CloseRequested => _closeRequested;
-
-        public ICommand CloseCommand { get; private set; }
-        
-        public override void Dispose()
-        {
-            using (Duration.Measure(Logger, "Dispose"))
+            DenyCommand.ActivateGestures()
+                .Subscribe(x =>
             {
-                base.Dispose();
-
-                _disposable.Dispose();
-            }
+                _deny.OnNext(Unit.Default);
+                _closed.OnNext(Unit.Default);
+            })
+            .DisposeWith(this);
         }
 
-        protected void Close()
-        {
-            CloseCommand.Execute(null);
-        }
+        public IObservable<Unit> Closed => _closed;
+        public IObservable<Unit> Deny => _deny;
+        public IObservable<Unit> Confirm => _confirm;
+        public ReactiveCommand<object> CancelCommand { get; }
+        public ReactiveCommand<object> ConfirmCommand { get; protected set; }
+        public ReactiveCommand<object> DenyCommand { get; protected set; }
+
+        protected abstract void InitialiseConfirmAndDeny();
     }
 }

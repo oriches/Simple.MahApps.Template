@@ -4,7 +4,6 @@ namespace Simple.Wpf.Template.ViewModels
 
     public interface IDiagnosticsViewModel : IViewModel
     {
-        string Id { get; }
         IEnumerable<string> Log { get; }
         string Cpu { get; }
         string ManagedMemory { get; }

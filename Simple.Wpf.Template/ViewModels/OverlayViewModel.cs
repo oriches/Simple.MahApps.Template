@@ -2,9 +2,9 @@ namespace Simple.Wpf.Template.ViewModels
 {
     using System;
 
-    public class OverlayViewModel<T>
+    public abstract class OverlayViewModel<T>
     {
-        public OverlayViewModel(string header, T viewModel, IDisposable lifetime)
+        protected OverlayViewModel(string header, T viewModel, IDisposable lifetime)
         {
             Header = header;
             ViewModel = viewModel;
@@ -15,7 +15,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         public T ViewModel { get; private set; }
 
-        public IDisposable Lifetime { get; private set; }
+        public IDisposable Lifetime { get; }
 
         public bool HasLifetime => Lifetime != null;
     }

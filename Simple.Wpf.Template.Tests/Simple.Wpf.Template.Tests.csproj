@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseViewModelFixtures.cs" />
     <Compile Include="ChromeViewModelFixtures.cs" />
     <Compile Include="DateOfBirthViewModelFixtures.cs" />
     <Compile Include="DiagnosticsServiceFixtures.cs" />
@@ -107,13 +108,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Simple.Wpf.Template\Simple.Wpf.Template.csproj">
-      <Project>{3C3ED4EA-DC15-4286-B023-4951DFDDCB35}</Project>
-      <Name>Simple.Wpf.Template</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\Simple.Wpf.Template\Simple.Wpf.Template.csproj">
+      <Project>{3c3ed4ea-dc15-4286-b023-4951dfddcb35}</Project>
+      <Name>Simple.Wpf.Template</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

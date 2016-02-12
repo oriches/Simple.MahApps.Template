@@ -1,7 +1,6 @@
 namespace Simple.Wpf.Template.Tests
 {
     using System;
-    using System.Data.Common;
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Windows.Input;
@@ -15,22 +14,17 @@ namespace Simple.Wpf.Template.Tests
     using ViewModels;
 
     [TestFixture]
-    public sealed class MainViewModelFixtures
+    public sealed class MainViewModelFixtures : BaseViewModelFixtures
     {
         private Mock<IOverlayService> _overlayService;
         private Mock<IMessageService> _messageService;
         private Mock<IDiagnosticsService> _diagnosticsService;
-        private TestScheduler _testScheduler;
-        private MockSchedulerService _schedulerService;
         private Mock<IGestureService> _gestureService;
         private Mock<IDiagnosticsViewModel> _diagnostics;
 
         [SetUp]
         public void Setup()
         {
-            _testScheduler = new TestScheduler();
-            _schedulerService = new MockSchedulerService(_testScheduler);
-
             _diagnosticsService = new Mock<IDiagnosticsService>();
             _diagnosticsService.Setup(x => x.Cpu).Returns(Observable.Never<int>);
             _diagnosticsService.Setup(x => x.Memory).Returns(Observable.Never<Memory>);
@@ -46,7 +40,7 @@ namespace Simple.Wpf.Template.Tests
         public void requests_date_of_birth_message()
         {
             // ARRANGE
-            var dateOfBirthViewModel = new Mock<IDateOfBirthViewModel>(_gestureService.Object);
+            var dateOfBirthViewModel = new Mock<IDateOfBirthViewModel>();
             var lifetime = Disposable.Create(() => { });
             var owned = new Owned<IDateOfBirthViewModel>(dateOfBirthViewModel.Object, lifetime);
 
@@ -62,20 +56,6 @@ namespace Simple.Wpf.Template.Tests
 
             // ASSERT
             _overlayService.Verify();
-        }
-
-        [Test]
-        public void disposing_clears_commands()
-        {
-            // ARRANGE
-            var viewModel = new MainViewModel(null, null, _overlayService.Object, _messageService.Object);
-
-            // ACT
-            viewModel.Dispose();
-
-            // ASSERT
-            var commandProperties = TestHelper.PropertiesImplementingInterface<ICommand>(viewModel);
-            commandProperties.ForEach(x => Assert.That(x.GetValue(viewModel, null), Is.Null));
         }
     }
 }

@@ -7,20 +7,18 @@ namespace Simple.Wpf.Template.ViewModels
     using Collections;
     using Extensions;
     using Models;
+    using PropertyChanged;
     using Services;
 
+    [ImplementPropertyChanged]
     public sealed class DiagnosticsViewModel : BaseViewModel, IDiagnosticsViewModel
     {
         private readonly RangeObservableCollection<string> _log;
 
-        private string _cpu;
-        private string _managedMemory;
-        private string _totalMemory;
-        
         internal struct FormattedMemory
         {
-            public string ManagedMemory { get; private set; }
-            public string TotalMemory { get; private set; }
+            public string ManagedMemory { get; }
+            public string TotalMemory { get; }
 
             public FormattedMemory(string managedMemory, string totalMemory)
             {
@@ -31,8 +29,6 @@ namespace Simple.Wpf.Template.ViewModels
 
         public DiagnosticsViewModel(IDiagnosticsService diagnosticsService, ISchedulerService schedulerService)
         {
-            Id = $"Identifier: {Guid.NewGuid()}";
-
             Cpu = Constants.DefaultCpuString;
             ManagedMemory = Constants.DefaultManagedMemoryString;
             TotalMemory = Constants.DefaultTotalMemoryString;
@@ -76,48 +72,13 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
         }
 
-        public string Id { get; private set; }
-
         public IEnumerable<string> Log => _log;
 
-        public string Cpu
-        {
-            get
-            {
-                return _cpu;
-            }
+        public string Cpu { get; set; }
+       
+        public string ManagedMemory { get; set; }
 
-            private set
-            {
-                SetPropertyAndNotify(ref _cpu, value, () => Cpu);
-            }
-        }
-
-        public string ManagedMemory
-        {
-            get
-            {
-                return _managedMemory;
-            }
-
-            private set
-            {
-                SetPropertyAndNotify(ref _managedMemory, value, () => ManagedMemory);
-            }
-        }
-
-        public string TotalMemory
-        {
-            get
-            {
-                return _totalMemory;
-            }
-
-            private set
-            {
-                SetPropertyAndNotify(ref _totalMemory, value, () => TotalMemory);
-            }
-        }
+        public string TotalMemory { get; set; }
 
         private static string FormatCpu(int cpu)
         {

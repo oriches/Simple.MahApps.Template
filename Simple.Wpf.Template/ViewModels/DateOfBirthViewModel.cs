@@ -3,25 +3,16 @@ namespace Simple.Wpf.Template.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reactive.Disposables;
-    using System.Windows.Input;
+    using System.Reactive.Linq;
     using Commands;
     using Extensions;
-    using Services;
+    using PropertyChanged;
 
+    [ImplementPropertyChanged]
     public sealed class DateOfBirthViewModel : CloseableViewModel, IDateOfBirthViewModel
     {
-        private readonly IGestureService _gestureService;
-
-        private readonly IDisposable _disposable;
-        private int? _day;
-        private int? _month;
-        private int? _year;
-
-        public DateOfBirthViewModel(IGestureService gestureService)
+        public DateOfBirthViewModel()
         {
-            _gestureService = gestureService;
-
             Days = Enumerable.Range(1, 31)
                 .ToObservableCollection();
 
@@ -31,85 +22,31 @@ namespace Simple.Wpf.Template.ViewModels
             Years = Enumerable.Range(DateTime.Now.Year - 120, 121)
                 .OrderByDescending(x => x)
                 .ToObservableCollection();
-
-            SaveCommand = new RelayCommand(Save, CanSave);
-            
-            _disposable = Disposable.Create(() =>
-            {
-                SaveCommand = null;
-            });
         }
 
-        public override void Dispose()
+        public IEnumerable<int> Days { get; }
+
+        public IEnumerable<int> Months { get; }
+
+        public IEnumerable<int> Years { get; }
+
+        public int? Day { get; set; }
+
+        public int? Month { get; set; }
+
+        public int? Year { get; set; }
+
+        protected override void InitialiseConfirmAndDeny()
         {
-            using (Duration.Measure(Logger, "Dispose"))
-            {
-                base.Dispose();
-                
-                _disposable.Dispose();
-            }
-        }
+            var whenSelected = this.ObservePropertyChanged(x => Day, x => Month, x => Year)
+                .Select(x => Day.HasValue && Month.HasValue && Year.HasValue)
+                .StartWith(false);
 
-        public ICommand SaveCommand { get; private set; }
+            ConfirmCommand = ReactiveCommand.Create(whenSelected)
+              .DisposeWith(this);
 
-        public IEnumerable<int> Days { get; private set; }
-
-        public IEnumerable<int> Months { get; private set; }
-
-        public IEnumerable<int> Years { get; private set; }
-
-        public int? Day
-        {
-            get
-            {
-                return _day;
-            }
-
-            set
-            {
-                SetPropertyAndNotify(ref _day, value, () => Day);
-            }
-        }
-
-        public int? Month
-        {
-            get
-            {
-                return _month;
-            }
-
-            set
-            {
-                SetPropertyAndNotify(ref _month, value, () => Month);
-            }
-        }
-
-        public int? Year
-        {
-            get
-            {
-                return _year;
-            }
-
-            set
-            {
-                SetPropertyAndNotify(ref _year, value, () => Year);
-            }
-        }
-
-        private bool CanSave()
-        {
-            return _day.HasValue && _month.HasValue && _year.HasValue;
-        }
-
-        private void Save()
-        {
-            _gestureService.SetBusy();
-
-            // Shouldn't really block the UI thread, just here to demo the gesture service...
-            System.Threading.Thread.Sleep(3123);
-
-            Close();
+            DenyCommand = ReactiveCommand.Create(Observable.Return(true))
+             .DisposeWith(this);
         }
     }
 }

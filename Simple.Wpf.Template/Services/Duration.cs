@@ -40,7 +40,10 @@ namespace Simple.Wpf.Template.Services
         {
             _stopWatch.Stop();
 
-            _logger.Debug(string.Format(CultureInfo.InvariantCulture, "{0}, duration = {1} ms", _context, _stopWatch.ElapsedMilliseconds));
+            var message = $"{_context}, duration = {_stopWatch.ElapsedMilliseconds} ms";
+
+            Debug.WriteLine(message);
+            _logger.Debug(message);
         }
     }
 }

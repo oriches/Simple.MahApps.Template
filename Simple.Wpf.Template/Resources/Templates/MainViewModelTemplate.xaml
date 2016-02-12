@@ -4,33 +4,52 @@
 
     <DataTemplate DataType="{x:Type vm:MainViewModel}">
 
-        <Grid Margin="10">
+        <Grid>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0"
-                       Grid.Row="0"
-                       Text="Demo of two types of overlays - flyouts &amp; message dialog" />
+            <Border Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="5"
+                    Padding="5"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource AccentColorBrush}">
 
-            <Button Grid.Column="0"
-                    Grid.Row="2"
-                    Content="Show Diagnostics"
-                    HorizontalAlignment="Left"
-                    Command="{Binding Path=DiagnosticsCommand, Mode=OneWay}" />
+                <Grid>
 
-            <Button Grid.Column="0"
-                    Grid.Row="4"
-                    Content="Show Message"
-                    HorizontalAlignment="Left"
-                    Command="{Binding Path=MessageCommand, Mode=OneWay}" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Grid.Row="0"
+                               Text="Demo of two types of overlays - flyouts &amp; message dialog" />
+
+                    <Button Grid.Column="0"
+                            Grid.Row="2"
+                            Content="Show Message"
+                            HorizontalAlignment="Left"
+                            Command="{Binding Path=MessageCommand, Mode=OneWay}" />
+
+                </Grid>
+
+            </Border>
+
+            <Border Grid.Column="0"
+                    Grid.Row="1"
+                    Margin="5,0,5,5"
+                    Padding="5,0"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource AccentColorBrush}">
+
+                <ContentPresenter Content="{Binding Path=Diagnostics}" />
+                
+            </Border>
 
         </Grid>
 

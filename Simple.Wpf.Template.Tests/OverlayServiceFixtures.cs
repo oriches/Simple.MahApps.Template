@@ -52,21 +52,5 @@ namespace Simple.Wpf.Template.Tests
             Assert.That(overlayViewModel.Header, Is.EqualTo("header 1"));
             Assert.That(overlayViewModel.ViewModel, Is.EqualTo(contentViewModel.Object));
         }
-
-        [Test]
-        public void disposing_completes_show_stream()
-        {
-            // ARRANGE
-            var completed = false;
-
-            var service = new OverlayService();
-            service.Show.Subscribe(x => { }, () => { completed = true; });
-
-            // ACT
-            service.Dispose();
-            
-            // ASSERT
-            Assert.That(completed, Is.True);
-        }
     }
 }
