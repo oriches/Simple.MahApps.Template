@@ -17,26 +17,18 @@
                     Padding="5"
                     BorderThickness="1"
                     BorderBrush="{StaticResource AccentColorBrush}">
+                
+                <StackPanel Orientation="Horizontal">
 
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="5" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Column="0"
-                               Grid.Row="0"
-                               Text="Demo of two types of overlays - flyouts &amp; message dialog" />
-
-                    <Button Grid.Column="0"
-                            Grid.Row="2"
-                            Content="Show Message"
+                    <Button Content="Enter your birthday"
                             HorizontalAlignment="Left"
-                            Command="{Binding Path=MessageCommand, Mode=OneWay}" />
+                            VerticalAlignment="Top"
+                            Command="{Binding Path=DobCommand, Mode=OneWay}" />
 
-                </Grid>
+                    <TextBlock Margin="20,5,0,0"
+                               Text="{Binding Birthday}" />
+
+                </StackPanel>
 
             </Border>
 
@@ -48,7 +40,7 @@
                     BorderBrush="{StaticResource AccentColorBrush}">
 
                 <ContentPresenter Content="{Binding Path=Diagnostics}" />
-                
+
             </Border>
 
         </Grid>

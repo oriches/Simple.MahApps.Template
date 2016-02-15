@@ -14,14 +14,14 @@ namespace Simple.Wpf.Template.ViewModels
         public DateOfBirthViewModel()
         {
             Days = Enumerable.Range(1, 31)
-                .ToObservableCollection();
+                .ToArray();
 
             Months = Enumerable.Range(1, 12)
-                .ToObservableCollection();
+                .ToArray();
 
             Years = Enumerable.Range(DateTime.Now.Year - 120, 121)
                 .OrderByDescending(x => x)
-                .ToObservableCollection();
+                .ToArray();
         }
 
         public IEnumerable<int> Days { get; }
@@ -45,7 +45,7 @@ namespace Simple.Wpf.Template.ViewModels
             ConfirmCommand = ReactiveCommand.Create(whenSelected)
               .DisposeWith(this);
 
-            DenyCommand = ReactiveCommand.Create(Observable.Return(true))
+            DenyCommand = ReactiveCommand.Create()
              .DisposeWith(this);
         }
     }

@@ -7,8 +7,7 @@ namespace Simple.Wpf.Template.ViewModels
     public interface ICloseableViewModel : IViewModel
     {
         IObservable<Unit> Closed { get; }
-        ReactiveCommand<object> ConfirmCommand { get; }
-        ReactiveCommand<object> DenyCommand { get; }
-        ReactiveCommand<object> CancelCommand { get; }
+        IObservable<Unit> Denied { get; }
+        IObservable<Unit> Confirmed { get; }
     }
 }

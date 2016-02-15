@@ -115,7 +115,7 @@
     <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="Resources\ResourceDictionaries\SharedResourceDictionary.cs" />
     <Compile Include="Services\BaseService.cs" />
-    <Compile Include="Services\Heartbeat.cs" />
+    <Compile Include="Services\HeartbeatService.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Services\LimitedMemoryTarget.cs" />
     <Compile Include="Models\MemoryUnits.cs" />

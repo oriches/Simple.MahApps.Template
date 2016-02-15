@@ -42,46 +42,6 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
-        public void exposes_log_messages()
-        {
-            // ARRANGE
-            LogHelper.ReconfigureLoggerToLevel(LogLevel.Error);
-            var logger = LogManager.GetCurrentClassLogger();
-            
-            var message1 = $"Message 1 - {Guid.NewGuid()}";
-            var message2 = $"Message 2 - {Guid.NewGuid()}";
-
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
-
-            _logSubject.OnNext(message1);
-            _logSubject.OnNext(message2);
-
-            _testScheduler.AdvanceBy(Constants.DiagnosticsLogInterval + Constants.DiagnosticsLogInterval);
-
-            //ACT
-            var log = viewModel.Log.ToArray();
-
-            //ASSERT
-            Assert.That(log.Count(x => x.Contains(message1)) == 1, Is.True);
-            Assert.That(log.Count(x => x.Contains(message2)) == 1, Is.True);
-        }
-        
-        [Test]
-        public void log_is_empty_when_diagnostics_service_log_errors()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
-
-            // ACT
-            _logSubject.OnError(new Exception("blah!"));
-
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
-
-            // ASSERT
-            Assert.That(viewModel.Log, Is.Empty);
-        }
-        
-        [Test]
         public void when_created_cpu_is_default_value()
         {
             // ARRANGE

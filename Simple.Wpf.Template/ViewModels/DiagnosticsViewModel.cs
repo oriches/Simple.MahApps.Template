@@ -1,10 +1,8 @@
 namespace Simple.Wpf.Template.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Reactive.Linq;
-    using Collections;
     using Extensions;
     using Models;
     using PropertyChanged;
@@ -13,8 +11,6 @@ namespace Simple.Wpf.Template.ViewModels
     [ImplementPropertyChanged]
     public sealed class DiagnosticsViewModel : BaseViewModel, IDiagnosticsViewModel
     {
-        private readonly RangeObservableCollection<string> _log;
-
         internal struct FormattedMemory
         {
             public string ManagedMemory { get; }
@@ -32,18 +28,6 @@ namespace Simple.Wpf.Template.ViewModels
             Cpu = Constants.DefaultCpuString;
             ManagedMemory = Constants.DefaultManagedMemoryString;
             TotalMemory = Constants.DefaultTotalMemoryString;
-
-            _log = new RangeObservableCollection<string>();
-
-            diagnosticsService.Log
-                .ObserveOn(schedulerService.Dispatcher)
-                .Subscribe(x => _log.Add(x),
-                    e =>
-                    {
-                        Logger.Error(e);
-                        _log.Clear();
-                    })
-                .DisposeWith(this);
 
             diagnosticsService.Cpu
                 .Select(FormatCpu)
@@ -71,8 +55,6 @@ namespace Simple.Wpf.Template.ViewModels
                 })
                 .DisposeWith(this);
         }
-
-        public IEnumerable<string> Log => _log;
 
         public string Cpu { get; set; }
        

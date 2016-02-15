@@ -5,36 +5,27 @@ namespace Simple.Wpf.Template.Services
     using System.Reactive.Concurrency;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
+    using Extensions;
     using NLog;
 
-    public sealed class Heartbeat : IDisposable
+    public sealed class HeartbeatService : BaseService
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly IConnectableObservable<Unit> _listen;
-        private readonly IDisposable _disposable;
 
-        public Heartbeat() : this(Constants.Heartbeat)
+        public HeartbeatService() : this(Constants.Heartbeat)
         {
         }
 
-        public Heartbeat(TimeSpan interval)
+        public HeartbeatService(TimeSpan interval)
         {
             _listen = Observable.Interval(interval, TaskPoolScheduler.Default)
                 .Select(x => Unit.Default)
                 .Publish();
 
-            _disposable = _listen.Connect();
+            _listen.Connect()
+                .DisposeWith(this);
         }
         
         public IObservable<Unit> Listen => _listen;
-
-        public void Dispose()
-        {
-            using (Duration.Measure(Logger, "Dispose"))
-            {
-                _disposable.Dispose();
-            }
-        }
     }
 }

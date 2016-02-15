@@ -11,8 +11,11 @@ namespace Simple.Wpf.Template.Services
 
         public MessageService()
         {
-            _show = new Subject<MessageViewModel>()
-                .DisposeWith(this);
+            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            {
+                _show = new Subject<MessageViewModel>()
+                    .DisposeWith(this);
+            }
         }
 
         public void Post(string header, ICloseableViewModel viewModel, IDisposable lifetime)

@@ -11,8 +11,11 @@ namespace Simple.Wpf.Template.Services
         
         public OverlayService()
         {
-            _show = new Subject<OverlayViewModel>()
-                .DisposeWith(this);
+            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            {
+                _show = new Subject<OverlayViewModel>()
+                    .DisposeWith(this);
+            }
         }
         
         public void Post(string header, BaseViewModel viewModel, IDisposable lifetime)

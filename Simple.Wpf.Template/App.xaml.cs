@@ -66,7 +66,7 @@ namespace Simple.Wpf.Template
             if (Logger.IsInfoEnabled)
             {
                 var dianosticsService = BootStrapper.Resolve<IDiagnosticsService>();
-                var heartbeat = new Heartbeat();
+                var heartbeat = new HeartbeatService();
 
                 var listenDisposable = heartbeat.Listen
                     .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)

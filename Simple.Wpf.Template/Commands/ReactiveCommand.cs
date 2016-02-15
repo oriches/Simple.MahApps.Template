@@ -56,7 +56,7 @@ namespace Simple.Wpf.Template.Commands
 
         public void Dispose()
         {
-            using (Duration.Measure(Logger, "Dispose"))
+            using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
             {
                 _canDisposable.Dispose();
 

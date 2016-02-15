@@ -14,7 +14,7 @@
         public void beats_regularly()
         {
             // ARRANGE
-            var hearbeat = new Heartbeat(TimeSpan.FromMilliseconds(200));
+            var hearbeat = new HeartbeatService(TimeSpan.FromMilliseconds(200));
 
             // ACT
             var beats = new List<Unit>();
@@ -31,7 +31,7 @@
         public void disposing_stops_the_heart_beating()
         {
             // ARRANGE
-            var hearbeat = new Heartbeat(TimeSpan.FromMilliseconds(200));
+            var hearbeat = new HeartbeatService(TimeSpan.FromMilliseconds(200));
 
             // ACT
             var beats = new List<Unit>();

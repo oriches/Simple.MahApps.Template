@@ -5,7 +5,7 @@ namespace Simple.Wpf.Template.ViewModels
 
     public interface IMainViewModel : IViewModel
     {
-        ReactiveCommand<object> MessageCommand { get; }
+        ReactiveCommand<object> DobCommand { get; }
         IDiagnosticsViewModel Diagnostics { get; }
     }
 }

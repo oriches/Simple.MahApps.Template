@@ -17,7 +17,7 @@ namespace Simple.Wpf.Template.Services
 
         public void Dispose()
         {
-            using (Duration.Measure(Logger, "Dispose"))
+            using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
             {
                 _disposable.Dispose();
             }

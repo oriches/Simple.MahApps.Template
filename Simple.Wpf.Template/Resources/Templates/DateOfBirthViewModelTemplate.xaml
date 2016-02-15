@@ -8,8 +8,8 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="100" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Column="0"
@@ -18,23 +18,20 @@
                         VerticalAlignment="Bottom"
                         Orientation="Horizontal">
 
-                <ComboBox Margin="10,0"
+                <ComboBox Margin="5,0"
                           Width="100"
                           ItemsSource="{Binding Path=Days, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Day, Mode=TwoWay}">
-                </ComboBox>
+                          SelectedValue="{Binding Path=Day, Mode=TwoWay}" />
 
-                <ComboBox Margin="10,0"
+                <ComboBox Margin="5,0"
                           Width="100"
                           ItemsSource="{Binding Path=Months, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Month, Mode=TwoWay}">
-                </ComboBox>
+                          SelectedValue="{Binding Path=Month, Mode=TwoWay}" />
 
-                <ComboBox Margin="10,0"
+                <ComboBox Margin="5,0"
                           Width="100"
                           ItemsSource="{Binding Path=Years, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Year, Mode=TwoWay}">
-                </ComboBox>
+                          SelectedValue="{Binding Path=Year, Mode=TwoWay}" />
                 
             </StackPanel>
 
@@ -44,14 +41,14 @@
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
 
-                <Button Margin="10,0"
-                        Content="OK"
+                <Button Margin="5,0"
+                        Content="Enter"
                         Width="100"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         Command="{Binding Path=ConfirmCommand, Mode=OneWay}" />
 
-                <Button Margin="10,0"
+                <Button Margin="5,0"
                         Content="Cancel"
                         Width="100"
                         VerticalAlignment="Center"

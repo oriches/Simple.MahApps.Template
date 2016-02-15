@@ -52,7 +52,7 @@ namespace Simple.Wpf.Template.Tests
                                               .Verifiable();
 
             // ACT
-            viewModel.MessageCommand.Execute(null);
+            viewModel.DobCommand.Execute(null);
 
             // ASSERT
             _overlayService.Verify();

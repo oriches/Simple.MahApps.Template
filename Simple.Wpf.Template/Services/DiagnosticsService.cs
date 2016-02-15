@@ -36,71 +36,86 @@ namespace Simple.Wpf.Template.Services
 
         public DiagnosticsService(IIdleService idleService, ISchedulerService schedulerService)
         {
-            _schedulerService = schedulerService;
-
-            _disposable = new CompositeDisposable()
-                .DisposeWith(this);
-
-            _sync = new object();
-
-            _countersObservable = Observable.Create<Counters>(x =>
+            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
             {
-                var disposable = new CompositeDisposable();
+                _schedulerService = schedulerService;
 
-                try
-                {
-                    var processName = GetProcessInstanceName();
+                _disposable = new CompositeDisposable()
+                    .DisposeWith(this);
 
-                    Logger.Info("Creating performance counter 'Working Set'");
+                _sync = new object();
 
-                    var workingSetCounter = new PerformanceCounter("Process", "Working Set", processName);
-                    disposable.Add(workingSetCounter);
+                _countersObservable = Observable.Create<Counters>(x =>
+                                                                  {
+                                                                      var disposable = new CompositeDisposable();
 
-                    Logger.Info("Creating performance counter '% Processor Time'");
+                                                                      try
+                                                                      {
+                                                                          var processName = GetProcessInstanceName();
 
-                    var cpuCounter = new PerformanceCounter("Process", "% Processor Time", processName);
-                    disposable.Add(cpuCounter);
+                                                                          Logger.Info(
+                                                                              "Creating performance counter 'Working Set'");
 
-                    using (Duration.Measure(Logger, "Initialising created performance counters"))
-                    {
-                        workingSetCounter.NextValue();
-                        cpuCounter.NextValue();
-                    }
+                                                                          var workingSetCounter =
+                                                                              new PerformanceCounter("Process",
+                                                                                  "Working Set", processName);
+                                                                          disposable.Add(workingSetCounter);
 
-                    x.OnNext(new Counters(workingSetCounter, cpuCounter));
+                                                                          Logger.Info(
+                                                                              "Creating performance counter '% Processor Time'");
 
-                    Logger.Info("Ready");
-                }
-                catch (ArgumentException exn)
-                {
-                    LogFailToCreatePerformanceCounter(x, exn);
-                }
-                catch (InvalidOperationException exn)
-                {
-                    LogFailToCreatePerformanceCounter(x, exn);
-                }
-                catch (Win32Exception exn)
-                {
-                    LogFailToCreatePerformanceCounter(x, exn);
-                }
-                catch (PlatformNotSupportedException exn)
-                {
-                    LogFailToCreatePerformanceCounter(x, exn);
-                }
-                catch (UnauthorizedAccessException exn)
-                {
-                    LogFailToCreatePerformanceCounter(x, exn);
-                }
+                                                                          var cpuCounter =
+                                                                              new PerformanceCounter("Process",
+                                                                                  "% Processor Time", processName);
+                                                                          disposable.Add(cpuCounter);
 
-                return disposable;
-            })
-                .DelaySubscription(Constants.DiagnosticsSubscriptionDelay, schedulerService.TaskPool)
-                .SubscribeOn(schedulerService.TaskPool)
-                .ObserveOn(schedulerService.TaskPool)
-                .CombineLatest(idleService.Idling.Buffer(Constants.DiagnosticsIdleBuffer, schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
-                .Replay(1);
+                                                                          using (
+                                                                              Duration.Measure(Logger,
+                                                                                  "Initialising created performance counters")
+                                                                              )
+                                                                          {
+                                                                              workingSetCounter.NextValue();
+                                                                              cpuCounter.NextValue();
+                                                                          }
 
-            _loggingTarget = (LimitedMemoryTarget)LogManager.Configuration.FindTargetByName("memory");
+                                                                          x.OnNext(new Counters(workingSetCounter,
+                                                                              cpuCounter));
+
+                                                                          Logger.Info("Ready");
+                                                                      }
+                                                                      catch (ArgumentException exn)
+                                                                      {
+                                                                          LogFailToCreatePerformanceCounter(x, exn);
+                                                                      }
+                                                                      catch (InvalidOperationException exn)
+                                                                      {
+                                                                          LogFailToCreatePerformanceCounter(x, exn);
+                                                                      }
+                                                                      catch (Win32Exception exn)
+                                                                      {
+                                                                          LogFailToCreatePerformanceCounter(x, exn);
+                                                                      }
+                                                                      catch (PlatformNotSupportedException exn)
+                                                                      {
+                                                                          LogFailToCreatePerformanceCounter(x, exn);
+                                                                      }
+                                                                      catch (UnauthorizedAccessException exn)
+                                                                      {
+                                                                          LogFailToCreatePerformanceCounter(x, exn);
+                                                                      }
+
+                                                                      return disposable;
+                                                                  })
+                    .DelaySubscription(Constants.DiagnosticsSubscriptionDelay, schedulerService.TaskPool)
+                    .SubscribeOn(schedulerService.TaskPool)
+                    .ObserveOn(schedulerService.TaskPool)
+                    .CombineLatest(
+                        idleService.Idling.Buffer(Constants.DiagnosticsIdleBuffer, schedulerService.TaskPool)
+                            .Where(x => x.Any()), (x, y) => x)
+                    .Replay(1);
+
+                _loggingTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
+            }
         }
 
         public IObservable<string> Log => StartLogObservable();

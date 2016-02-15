@@ -22,7 +22,7 @@ namespace Simple.Wpf.Template.Resources.Views
                 var dialog = new MessageDialog
                 {
                     Title = x.Header,
-                    Content = x.ViewModel,
+                    Content = x.ViewModel
                 };
 
                 _disposable.Disposable = x.ViewModel.Closed
