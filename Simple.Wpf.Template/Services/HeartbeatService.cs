@@ -2,28 +2,29 @@ namespace Simple.Wpf.Template.Services
 {
     using System;
     using System.Reactive;
-    using System.Reactive.Concurrency;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using Extensions;
-    using NLog;
 
     public sealed class HeartbeatService : BaseService, IHeartbeatService
     {
         private readonly IConnectableObservable<Unit> _listen;
 
-        public HeartbeatService() : this(Constants.Heartbeat)
+        public HeartbeatService(ISchedulerService schedulerService) : this(Constants.Heartbeat, schedulerService)
         {
         }
 
-        public HeartbeatService(TimeSpan interval)
+        public HeartbeatService(TimeSpan interval, ISchedulerService schedulerService)
         {
-            _listen = Observable.Interval(interval, TaskPoolScheduler.Default)
-                .Select(x => Unit.Default)
-                .Publish();
+            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            {
+                _listen = Observable.Interval(interval, schedulerService.TaskPool)
+                    .Select(x => Unit.Default)
+                    .Publish();
 
-            _listen.Connect()
-                .DisposeWith(this);
+                _listen.Connect()
+                    .DisposeWith(this);
+            }
         }
         
         public IObservable<Unit> Listen => _listen;

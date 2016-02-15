@@ -2,8 +2,6 @@ namespace Simple.Wpf.Template.Tests
 {
     using System.Reactive.Disposables;
     using System.Reactive.Subjects;
-    using System.Windows.Input;
-    using Extensions;
     using Moq;
     using NUnit.Framework;
     using Services;

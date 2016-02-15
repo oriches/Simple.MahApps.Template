@@ -1,13 +1,10 @@
 namespace Simple.Wpf.Template.Tests
 {
     using System;
-    using System.Linq;
     using System.Reactive.Subjects;
-    using Helpers;
     using Microsoft.Reactive.Testing;
     using Models;
     using Moq;
-    using NLog;
     using NUnit.Framework;
     using Services;
     using Template;

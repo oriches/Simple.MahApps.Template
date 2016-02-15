@@ -36,17 +36,11 @@ namespace Simple.Wpf.Template.ViewModels
 
         public int? Year { get; set; }
 
-        protected override void InitialiseConfirmAndDeny()
+        protected override IObservable<bool> InitialiseCanConfirm()
         {
-            var whenSelected = this.ObservePropertyChanged(x => Day, x => Month, x => Year)
-                .Select(x => Day.HasValue && Month.HasValue && Year.HasValue)
-                .StartWith(false);
-
-            ConfirmCommand = ReactiveCommand.Create(whenSelected)
-              .DisposeWith(this);
-
-            DenyCommand = ReactiveCommand.Create()
-             .DisposeWith(this);
+            return this.ObservePropertyChanged(x => Day, x => Month, x => Year)
+               .Select(x => Day.HasValue && Month.HasValue && Year.HasValue)
+               .StartWith(false);
         }
     }
 }

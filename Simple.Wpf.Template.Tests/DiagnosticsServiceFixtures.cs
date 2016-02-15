@@ -12,7 +12,6 @@ namespace Simple.Wpf.Template.Tests
     using NLog;
     using NUnit.Framework;
     using Services;
-    using ViewModels;
 
     [TestFixture, Ignore("Inconsistent when running through NCrunch")]
     public sealed class DiagnosticsServiceFixtures

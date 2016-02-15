@@ -8,7 +8,6 @@ namespace Simple.Wpf.Template.Resources.Views
     {
         public MessageDialog()
         {
-            
         }
     }
 }

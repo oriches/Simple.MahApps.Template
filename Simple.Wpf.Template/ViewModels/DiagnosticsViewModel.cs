@@ -31,6 +31,7 @@ namespace Simple.Wpf.Template.ViewModels
 
             diagnosticsService.Cpu
                 .Select(FormatCpu)
+                .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x => Cpu = x,
                     e =>
@@ -42,6 +43,7 @@ namespace Simple.Wpf.Template.ViewModels
 
             diagnosticsService.Memory
                 .Select(FormatMemory)
+                .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x =>
                 {

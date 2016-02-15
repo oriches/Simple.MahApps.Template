@@ -17,7 +17,6 @@ namespace Simple.Wpf.Template.Tests
         private Mock<IOverlayService> _overlayService;
         private Mock<IMessageService> _messageService;
         private Mock<IDiagnosticsService> _diagnosticsService;
-        private Mock<IGestureService> _gestureService;
         private Mock<IDiagnosticsViewModel> _diagnostics;
 
         [SetUp]
@@ -29,7 +28,6 @@ namespace Simple.Wpf.Template.Tests
             _diagnosticsService.Setup(x => x.Log).Returns(Observable.Never<string>);
             _overlayService = new Mock<IOverlayService>();
             _messageService = new Mock<IMessageService>();
-            _gestureService = new Mock<IGestureService>();
 
             _diagnostics = new Mock<IDiagnosticsViewModel>();
         }
