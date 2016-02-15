@@ -17,7 +17,7 @@ namespace Simple.Wpf.Template.Extensions
 
         public static ReactiveCommand<object> ToCommand(this IObservable<bool> canExecute)
         {
-            return ReactiveCommand<object>.Create(canExecute);
+            return ReactiveCommand.Create(canExecute);
         }
 
         public static IObservable<T> ActivateGestures<T>(this IObservable<T> observable)

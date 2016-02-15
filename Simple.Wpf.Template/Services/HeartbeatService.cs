@@ -8,7 +8,7 @@ namespace Simple.Wpf.Template.Services
     using Extensions;
     using NLog;
 
-    public sealed class HeartbeatService : BaseService
+    public sealed class HeartbeatService : BaseService, IHeartbeatService
     {
         private readonly IConnectableObservable<Unit> _listen;
 

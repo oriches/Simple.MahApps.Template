@@ -19,17 +19,17 @@
                         Orientation="Horizontal">
 
                 <ComboBox Margin="5,0"
-                          Width="100"
+                          Width="50"
                           ItemsSource="{Binding Path=Days, Mode=OneWay}"
                           SelectedValue="{Binding Path=Day, Mode=TwoWay}" />
 
                 <ComboBox Margin="5,0"
-                          Width="100"
+                          Width="50"
                           ItemsSource="{Binding Path=Months, Mode=OneWay}"
                           SelectedValue="{Binding Path=Month, Mode=TwoWay}" />
 
                 <ComboBox Margin="5,0"
-                          Width="100"
+                          Width="75"
                           ItemsSource="{Binding Path=Years, Mode=OneWay}"
                           SelectedValue="{Binding Path=Year, Mode=TwoWay}" />
                 
