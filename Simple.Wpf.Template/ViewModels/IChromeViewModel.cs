@@ -1,6 +1,5 @@
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System.Windows.Input;
     using Commands;
 
     public interface IChromeViewModel : IViewModel

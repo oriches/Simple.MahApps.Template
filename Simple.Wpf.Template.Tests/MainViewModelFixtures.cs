@@ -1,12 +1,10 @@
 namespace Simple.Wpf.Template.Tests
 {
     using System;
+    using System.Reactive;
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
-    using System.Windows.Input;
     using Autofac.Features.OwnedInstances;
-    using Extensions;
-    using Microsoft.Reactive.Testing;
     using Models;
     using Moq;
     using NUnit.Framework;
@@ -41,14 +39,20 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var dateOfBirthViewModel = new Mock<IDateOfBirthViewModel>();
-            var lifetime = Disposable.Create(() => { });
-            var owned = new Owned<IDateOfBirthViewModel>(dateOfBirthViewModel.Object, lifetime);
+            dateOfBirthViewModel.Setup(x => x.Confirmed).Returns(Observable.Return(Unit.Default));
+            dateOfBirthViewModel.Setup(x => x.Day).Returns(10);
+            dateOfBirthViewModel.Setup(x => x.Month).Returns(10);
+            dateOfBirthViewModel.Setup(x => x.Year).Returns(10);
 
+            var lifetime = Disposable.Create(() => { });
+
+            var owned = new Owned<IDateOfBirthViewModel>(dateOfBirthViewModel.Object, lifetime);
+            
             var viewModel = new MainViewModel(() => owned, _diagnostics.Object,  _overlayService.Object, _messageService.Object);
 
-            _messageService.Setup(x => x.Post(It.Is<string>(y => y == "Diagnostics"),
+            _messageService.Setup(x => x.Post(It.Is<string>(y => y == "Date of Birth"),
                                               It.Is<CloseableViewModel>(y => y == dateOfBirthViewModel.Object),
-                                              It.Is<IDisposable>(y => y == owned)))
+                                              It.Is<IDisposable>(y => Equals(y, owned))))
                                               .Verifiable();
 
             // ACT
