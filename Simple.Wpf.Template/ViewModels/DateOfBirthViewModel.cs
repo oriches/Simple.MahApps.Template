@@ -4,7 +4,6 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Reactive.Linq;
-    using Commands;
     using Extensions;
     using PropertyChanged;
 

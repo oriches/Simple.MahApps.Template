@@ -63,14 +63,12 @@ namespace Simple.Wpf.Template.ViewModels
 
         protected virtual IObservable<bool> InitialiseCanConfirm()
         {
-            return Observable.Return(true)
-                .StartWith(true);
+            return Observable.Return(true);
         }
 
         protected virtual IObservable<bool> InitialiseCanDeny()
         {
-            return Observable.Return(true)
-                .StartWith(true);
+            return Observable.Return(true);
         }
     }
 }
