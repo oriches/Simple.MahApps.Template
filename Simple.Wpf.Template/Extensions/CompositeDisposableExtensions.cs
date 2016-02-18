@@ -10,7 +10,6 @@ namespace Simple.Wpf.Template.Extensions
             disposable.Add(instance);
 
             return instance;
-           
         }
     }
 }

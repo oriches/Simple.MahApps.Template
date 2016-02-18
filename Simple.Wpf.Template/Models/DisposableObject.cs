@@ -19,9 +19,7 @@ namespace Simple.Wpf.Template.Models
         public virtual void Dispose()
         {
             using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
-            {
                 _disposable.Dispose();
-            }
         }
 
         public static implicit operator CompositeDisposable(DisposableObject disposable)

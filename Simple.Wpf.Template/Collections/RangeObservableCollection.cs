@@ -5,6 +5,7 @@ namespace Simple.Wpf.Template.Collections
     using System.Collections.Specialized;
     using System.Linq;
     using System.Windows.Data;
+    using Extensions;
 
     public sealed class RangeObservableCollection<T> : ObservableCollection<T>
     {
@@ -38,15 +39,11 @@ namespace Simple.Wpf.Template.Collections
         {
             _suppressNotification = true;
 
-            var itemArray = items.ToArray();
-            var itemCount = items.Count();
-            foreach (var item in itemArray)
-            {
-                Add(item);
-            }
+            var array = items.ToArray();
+            array.ForEach(Add);
 
             _suppressNotification = false;
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, itemArray, itemCount));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, array, array.Length));
         }
     }
 }

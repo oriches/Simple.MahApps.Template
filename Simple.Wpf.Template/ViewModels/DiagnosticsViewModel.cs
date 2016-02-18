@@ -5,7 +5,6 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Reactive.Linq;
     using Extensions;
     using Models;
-    using PropertyChanged;
     using Services;
 
     public sealed class DiagnosticsViewModel : BaseViewModel, IDiagnosticsViewModel

@@ -65,7 +65,7 @@ namespace Simple.Wpf.Template.Extensions
             }
             catch (Exception exn)
             {
-                Scheduler.Schedule(scheduler, TimeSpan.FromMilliseconds(20), () => { throw exn; });
+                scheduler.Schedule(() => { throw exn; });
             }
         }
     }

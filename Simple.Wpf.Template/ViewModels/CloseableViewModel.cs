@@ -32,7 +32,7 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
 
             ConfirmCommand = ReactiveCommand.Create(InitialiseCanConfirm())
-              .DisposeWith(this);
+                .DisposeWith(this);
 
             ConfirmCommand.ActivateGestures()
                 .Subscribe(x =>

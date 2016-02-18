@@ -30,9 +30,7 @@ namespace Simple.Wpf.Template.Resources.Views
                     .Subscribe(z =>
                     {
                         using (x.Lifetime)
-                        {
                             dialog.Content = null;
-                        }
                     });
 
                 this.ShowMetroDialogAsync(dialog);

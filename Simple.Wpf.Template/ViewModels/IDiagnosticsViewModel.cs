@@ -1,7 +1,5 @@
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System.Collections.Generic;
-
     public interface IDiagnosticsViewModel : IViewModel
     {
         string Cpu { get; }

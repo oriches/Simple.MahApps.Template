@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Windows;
-
-namespace Simple.Wpf.Template.Resources.ResourceDictionaries
+﻿namespace Simple.Wpf.Template.Resources.ResourceDictionaries
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Windows;
+
     // The shared resource dictionary is a specialized resource dictionary
     // that loads it content only once. If a second instance with the same source
     // is created, it only merges the resources from the cache.
