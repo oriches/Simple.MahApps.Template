@@ -3,7 +3,7 @@ namespace Simple.Wpf.Template.ViewModels
     using System;
     using System.ComponentModel;
 
-    public interface IViewModel : IDisposable, INotifyPropertyChanged
+    public interface IViewModel : INotifyPropertyChanged, IDisposable
     {
         IDisposable SuspendNotifications();
     }

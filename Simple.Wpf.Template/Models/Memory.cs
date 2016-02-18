@@ -2,6 +2,7 @@ namespace Simple.Wpf.Template.Models
 {
     using System;
 
+
     public struct Memory : IEquatable<Memory>
     {
         public bool Equals(Memory other)

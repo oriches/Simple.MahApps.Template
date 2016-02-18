@@ -8,7 +8,6 @@ namespace Simple.Wpf.Template.ViewModels
     using PropertyChanged;
     using Services;
 
-    [ImplementPropertyChanged]
     public sealed class DiagnosticsViewModel : BaseViewModel, IDiagnosticsViewModel
     {
         internal struct FormattedMemory

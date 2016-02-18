@@ -5,10 +5,8 @@ namespace Simple.Wpf.Template.ViewModels
     using Autofac.Features.OwnedInstances;
     using Commands;
     using Extensions;
-    using PropertyChanged;
     using Services;
 
-    [ImplementPropertyChanged]
     public sealed class MainViewModel : BaseViewModel, IMainViewModel
     {
         public MainViewModel(Func<Owned<IDateOfBirthViewModel>> dateOfBirthFactory,

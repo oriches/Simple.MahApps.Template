@@ -6,8 +6,9 @@ namespace Simple.Wpf.Template.Services
     using System.Reactive.Subjects;
     using System.Windows;
     using Extensions;
+    using Models;
 
-    public sealed class IdleService : BaseService, IIdleService
+    public sealed class IdleService : DisposableObject, IIdleService
     {
         private readonly IConnectableObservable<EventPattern<object>> _idleObservable;
 

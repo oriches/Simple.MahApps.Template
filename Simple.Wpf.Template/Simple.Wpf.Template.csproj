@@ -43,6 +43,9 @@
   <PropertyGroup>
     <StartupObject>Simple.Wpf.Template.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,16 +112,16 @@
     </ApplicationDefinition>
     <Compile Include="Collections\RangeObservableCollection.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Extensions\BaseServiceExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
-    <Compile Include="Extensions\BaseViewModelExtensions.cs" />
+    <Compile Include="Extensions\CompositeDisposableExtensions.cs" />
     <Compile Include="Extensions\MemoryExtensions.cs" />
     <Compile Include="Extensions\NotifyCollectionChangedExtensions.cs" />
     <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\ObservableExtensions.cs" />
+    <Compile Include="Extensions\SchedulerExtensions.cs" />
+    <Compile Include="Models\DisposableObject.cs" />
     <Compile Include="Resources\ResourceDictionaries\SharedResourceDictionary.cs" />
-    <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\HeartbeatService.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Services\IHeartbeatService.cs" />

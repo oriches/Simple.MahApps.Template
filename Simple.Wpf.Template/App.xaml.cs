@@ -66,12 +66,19 @@ namespace Simple.Wpf.Template
             if (Logger.IsInfoEnabled)
             {
                 var dianosticsService = BootStrapper.Resolve<IDiagnosticsService>();
-                var listenDisposable = BootStrapper.Resolve<IHeartbeatService>().Listen
+                var schedulerService = BootStrapper.Resolve<ISchedulerService>();
+
+                BootStrapper.Resolve<IHeartbeatService>().Listen
                     .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
                     .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
-                    .Subscribe(x => Logger.Info("Heartbeat (Memory={0}, CPU={1}%)", x.Item1.WorkingSetPrivateAsString(), x.Item2));
+                    .SafeSubscribe(x =>
+                    {
+                        var message = $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
 
-                _disposable.Add(listenDisposable);
+                        Debug.WriteLine(message);
+                        Logger.Info(message);
+                    }, schedulerService.Dispatcher)
+                    .DisposeWith(_disposable);
             }
 
 #if DEBUG

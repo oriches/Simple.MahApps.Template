@@ -3,9 +3,10 @@ namespace Simple.Wpf.Template.Services
     using System;
     using System.Reactive.Subjects;
     using Extensions;
+    using Models;
     using ViewModels;
 
-    public sealed class OverlayService : BaseService, IOverlayService
+    public sealed class OverlayService : DisposableObject, IOverlayService
     {
         private readonly Subject<OverlayViewModel> _show;
         

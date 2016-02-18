@@ -11,7 +11,7 @@ namespace Simple.Wpf.Template.Services
     using Models;
     using NLog;
 
-    public sealed class DiagnosticsService : BaseService, IDiagnosticsService
+    public sealed class DiagnosticsService : DisposableObject, IDiagnosticsService
     {
         private readonly ISchedulerService _schedulerService;
         private readonly CompositeDisposable _disposable;

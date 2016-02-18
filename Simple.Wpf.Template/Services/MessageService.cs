@@ -3,9 +3,10 @@ namespace Simple.Wpf.Template.Services
     using System;
     using System.Reactive.Subjects;
     using Extensions;
+    using Models;
     using ViewModels;
 
-    public sealed class MessageService : BaseService, IMessageService
+    public sealed class MessageService : DisposableObject, IMessageService
     {
         private readonly Subject<MessageViewModel> _show;
 

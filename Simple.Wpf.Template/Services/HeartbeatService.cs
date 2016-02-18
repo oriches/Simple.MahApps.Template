@@ -5,8 +5,9 @@ namespace Simple.Wpf.Template.Services
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using Extensions;
+    using Models;
 
-    public sealed class HeartbeatService : BaseService, IHeartbeatService
+    public sealed class HeartbeatService : DisposableObject, IHeartbeatService
     {
         private readonly IConnectableObservable<Unit> _listen;
 

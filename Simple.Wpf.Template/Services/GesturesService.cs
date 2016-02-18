@@ -5,8 +5,10 @@ namespace Simple.Wpf.Template.Services
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Threading;
+    using Extensions;
+    using Models;
 
-    public sealed class GesturesService : BaseService, IGestureService
+    public sealed class GesturesService : DisposableObject, IGestureService
     {
         private readonly DispatcherTimer _timer;
 
@@ -20,7 +22,8 @@ namespace Simple.Wpf.Template.Services
                 _timer.Stop();
             }
 
-            Add(Disposable.Create(() => _timer.Stop()));
+            Disposable.Create(() => _timer.Stop())
+                .DisposeWith(this);
         }
 
         public void SetBusy()

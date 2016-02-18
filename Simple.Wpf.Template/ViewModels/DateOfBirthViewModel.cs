@@ -5,9 +5,7 @@ namespace Simple.Wpf.Template.ViewModels
     using System.Linq;
     using System.Reactive.Linq;
     using Extensions;
-    using PropertyChanged;
 
-    [ImplementPropertyChanged]
     public sealed class DateOfBirthViewModel : CloseableViewModel, IDateOfBirthViewModel
     {
         public DateOfBirthViewModel()
