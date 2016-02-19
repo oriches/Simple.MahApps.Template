@@ -9,6 +9,8 @@ namespace Simple.Wpf.Template.ViewModels
 
     public sealed class MainViewModel : BaseViewModel, IMainViewModel
     {
+        private string _birthday;
+
         public MainViewModel(Func<Owned<IDateOfBirthViewModel>> dateOfBirthFactory,
             IDiagnosticsViewModel diagnosticsViewModel,
             IOverlayService overlayService,
@@ -42,7 +44,11 @@ namespace Simple.Wpf.Template.ViewModels
                 .ToLongDateString();
         }
 
-        public string Birthday { get; set; }
+        public string Birthday
+        {
+            get { return _birthday; }
+            set { SetPropertyAndNotify(ref _birthday, value, () => Birthday); }
+        }
 
         public ReactiveCommand<object> DobCommand { get; }
 

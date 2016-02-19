@@ -9,6 +9,10 @@ namespace Simple.Wpf.Template.ViewModels
 
     public sealed class DiagnosticsViewModel : BaseViewModel, IDiagnosticsViewModel
     {
+        private string _cpu;
+        private string _managedMemory;
+        private string _totalMemory;
+
         internal struct FormattedMemory
         {
             public string ManagedMemory { get; }
@@ -56,11 +60,23 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
         }
 
-        public string Cpu { get; set; }
-       
-        public string ManagedMemory { get; set; }
+        public string Cpu
+        {
+            get { return _cpu; }
+            set { SetPropertyAndNotify(ref _cpu, value, () => Cpu); }
+        }
 
-        public string TotalMemory { get; set; }
+        public string ManagedMemory
+        {
+            get { return _managedMemory; }
+            set { SetPropertyAndNotify(ref _managedMemory, value, () => ManagedMemory); }
+        }
+
+        public string TotalMemory
+        {
+            get { return _totalMemory; }
+            set { SetPropertyAndNotify(ref _totalMemory, value, () => TotalMemory); }
+        }
 
         private static string FormatCpu(int cpu)
         {
