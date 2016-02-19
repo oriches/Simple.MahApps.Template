@@ -2,7 +2,6 @@ namespace Simple.Wpf.Template.Tests
 {
     using System;
     using System.Reactive.Subjects;
-    using Microsoft.Reactive.Testing;
     using Models;
     using Moq;
     using NUnit.Framework;
@@ -13,8 +12,6 @@ namespace Simple.Wpf.Template.Tests
     [TestFixture]
     public sealed class DiagnosticsViewModelFixtures : BaseViewModelFixtures
     {
-        private TestScheduler _testScheduler;
-        private MockSchedulerService _schedulerService;
         private Mock<IDiagnosticsService> _diagnosticService;
         private Subject<int> _cpuSubject;
         private Subject<Memory> _memorySubject;
@@ -23,9 +20,6 @@ namespace Simple.Wpf.Template.Tests
         [SetUp]
         public void SetUp()
         {
-            _testScheduler = new TestScheduler();
-            _schedulerService = new MockSchedulerService(_testScheduler);
-
             _diagnosticService = new Mock<IDiagnosticsService>();
 
             _cpuSubject = new Subject<int>();
@@ -42,7 +36,7 @@ namespace Simple.Wpf.Template.Tests
         public void when_created_cpu_is_default_value()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             // ASSERT
@@ -53,7 +47,7 @@ namespace Simple.Wpf.Template.Tests
         public void when_created_total_memory_is_default_value()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             // ASSERT
@@ -64,7 +58,7 @@ namespace Simple.Wpf.Template.Tests
         public void when_created_managed_memory_is_default_value()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             // ASSERT
@@ -75,12 +69,12 @@ namespace Simple.Wpf.Template.Tests
         public void cpu_value_is_formatted_when_diagnostics_service_pumps_cpu()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             _cpuSubject.OnNext(42);
 
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
             
             // ASSERT
             Assert.That(viewModel.Cpu, Is.EqualTo("CPU: 42 %"));
@@ -90,12 +84,12 @@ namespace Simple.Wpf.Template.Tests
         public void cpu_value_is_default_value_when_diagnostics_service_cpu_errors()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             _cpuSubject.OnError(new Exception("blah!"));
 
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
             Assert.That(viewModel.Cpu, Is.EqualTo(Constants.DefaultCpuString));
@@ -108,12 +102,12 @@ namespace Simple.Wpf.Template.Tests
             const decimal managedMemory = 1024*1000*4;
             const decimal totalMemory = 1024*1000*42;
 
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
 
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
             Assert.That(viewModel.TotalMemory, Is.EqualTo("Total Memory: 42.00 Mb"));
@@ -123,12 +117,12 @@ namespace Simple.Wpf.Template.Tests
         public void total_memory_value_is_default_value_when_diagnostics_service_memory_errors()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             _memorySubject.OnError(new Exception("blah!"));
 
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
             Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.DefaultTotalMemoryString));
@@ -141,12 +135,12 @@ namespace Simple.Wpf.Template.Tests
             const decimal managedMemory = 1024 * 1000 * 4;
             const decimal totalMemory = 1024 * 1000 * 42;
 
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
 
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
             Assert.That(viewModel.ManagedMemory, Is.EqualTo("Managed Memory: 4.00 Mb"));
@@ -156,12 +150,12 @@ namespace Simple.Wpf.Template.Tests
         public void managed_memory_value_is_default_value_when_diagnostics_service_memory_errors()
         {
             // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             _memorySubject.OnError(new Exception("blah!"));
 
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
             Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));
@@ -174,7 +168,7 @@ namespace Simple.Wpf.Template.Tests
             const decimal managedMemory = 1024 * 1000 * 4;
             const decimal totalMemory = 1024 * 1000 * 42;
 
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, _schedulerService);
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
             viewModel.Dispose();

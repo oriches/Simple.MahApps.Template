@@ -8,7 +8,6 @@ namespace Simple.Wpf.Template.Tests
     [TestFixture]
     public sealed class DateOfBirthViewModelFixtures : BaseViewModelFixtures
     {
-        [SetUp]
         [Test]
         public void can_not_save_when_dob_is_not_specified()
         {
@@ -30,7 +29,7 @@ namespace Simple.Wpf.Template.Tests
             viewModel.Day = viewModel.Days.First();
             viewModel.Month = viewModel.Months.First();
             viewModel.Year = viewModel.Years.First();
-            
+
             // ASSERT
             Assert.That(viewModel.ConfirmCommand.CanExecute(null), Is.True);
         }
