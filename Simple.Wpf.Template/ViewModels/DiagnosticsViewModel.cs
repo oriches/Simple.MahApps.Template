@@ -48,15 +48,15 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x =>
-                {
-                    ManagedMemory = x.ManagedMemory;
-                    TotalMemory = x.TotalMemory;
-                }, e =>
-                {
-                    Logger.Error(e);
-                    ManagedMemory = Constants.DefaultManagedMemoryString;
-                    TotalMemory = Constants.DefaultTotalMemoryString;
-                })
+                           {
+                               ManagedMemory = x.ManagedMemory;
+                               TotalMemory = x.TotalMemory;
+                           }, e =>
+                              {
+                                  Logger.Error(e);
+                                  ManagedMemory = Constants.DefaultManagedMemoryString;
+                                  TotalMemory = Constants.DefaultTotalMemoryString;
+                              })
                 .DisposeWith(this);
         }
 
