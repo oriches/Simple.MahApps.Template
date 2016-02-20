@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A0251141-F844-4E19-B145-107B32233153}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Wpf.Template", "Simple.Wpf.Template\Simple.Wpf.Template.csproj", "{3C3ED4EA-DC15-4286-B023-4951DFDDCB35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Wpf.Template.Tests", "Simple.Wpf.Template.Tests\Simple.Wpf.Template.Tests.csproj", "{7F37C3C0-31CF-45A4-AD11-0B2B661240D3}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Simple.Wpf.Template.Web", "Simple.Wpf.Template.Web\Simple.Wpf.Template.Web.njsproj", "{F298685F-571D-4340-AA2E-4AA4A558C47E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +30,10 @@ Global
 		{7F37C3C0-31CF-45A4-AD11-0B2B661240D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F37C3C0-31CF-45A4-AD11-0B2B661240D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F37C3C0-31CF-45A4-AD11-0B2B661240D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F298685F-571D-4340-AA2E-4AA4A558C47E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F298685F-571D-4340-AA2E-4AA4A558C47E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F298685F-571D-4340-AA2E-4AA4A558C47E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F298685F-571D-4340-AA2E-4AA4A558C47E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
