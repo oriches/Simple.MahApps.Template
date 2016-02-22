@@ -102,7 +102,7 @@ namespace Simple.Wpf.Template.Tests
             logger.Error(message1);
             logger.Error(message2);
 
-            _testScheduler.AdvanceBy(Constants.DiagnosticsLogInterval + Constants.DiagnosticsLogInterval);
+            _testScheduler.AdvanceBy(Constants.UI.Diagnostics.DiagnosticsLogInterval + Constants.UI.Diagnostics.DiagnosticsLogInterval);
 
             //ASSERT
             Assert.That(logValues.Count(x => x.Contains(message1)) == 1, Is.True);

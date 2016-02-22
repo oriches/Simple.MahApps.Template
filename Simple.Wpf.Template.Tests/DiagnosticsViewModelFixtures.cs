@@ -40,7 +40,7 @@ namespace Simple.Wpf.Template.Tests
 
             // ACT
             // ASSERT
-            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.DefaultCpuString));
+            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace Simple.Wpf.Template.Tests
 
             // ACT
             // ASSERT
-            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.DefaultTotalMemoryString));
+            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Simple.Wpf.Template.Tests
 
             // ACT
             // ASSERT
-            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));
+            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Simple.Wpf.Template.Tests
             TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
-            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.DefaultCpuString));
+            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace Simple.Wpf.Template.Tests
             TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
-            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.DefaultTotalMemoryString));
+            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace Simple.Wpf.Template.Tests
             TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
 
             // ASSERT
-            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));
+            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
         }
         
         [Test]
@@ -177,9 +177,9 @@ namespace Simple.Wpf.Template.Tests
             _cpuSubject.OnNext(42);
 
             // ASSERT
-            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.DefaultCpuString));
-            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.DefaultTotalMemoryString));
-            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.DefaultManagedMemoryString));
+            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
+            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
+            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
         }
     }
 }

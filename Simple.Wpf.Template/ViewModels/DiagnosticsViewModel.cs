@@ -27,9 +27,9 @@ namespace Simple.Wpf.Template.ViewModels
 
         public DiagnosticsViewModel(IDiagnosticsService diagnosticsService, ISchedulerService schedulerService)
         {
-            Cpu = Constants.DefaultCpuString;
-            ManagedMemory = Constants.DefaultManagedMemoryString;
-            TotalMemory = Constants.DefaultTotalMemoryString;
+            Cpu = Constants.UI.Diagnostics.DefaultCpuString;
+            ManagedMemory = Constants.UI.Diagnostics.DefaultManagedMemoryString;
+            TotalMemory = Constants.UI.Diagnostics.DefaultTotalMemoryString;
 
             diagnosticsService.Cpu
                 .Select(FormatCpu)
@@ -39,7 +39,7 @@ namespace Simple.Wpf.Template.ViewModels
                     e =>
                     {
                         Logger.Error(e);
-                        Cpu = Constants.DefaultCpuString;
+                        Cpu = Constants.UI.Diagnostics.DefaultCpuString;
                     })
                 .DisposeWith(this);
 
@@ -54,8 +54,8 @@ namespace Simple.Wpf.Template.ViewModels
                            }, e =>
                               {
                                   Logger.Error(e);
-                                  ManagedMemory = Constants.DefaultManagedMemoryString;
-                                  TotalMemory = Constants.DefaultTotalMemoryString;
+                                  ManagedMemory = Constants.UI.Diagnostics.DefaultManagedMemoryString;
+                                  TotalMemory = Constants.UI.Diagnostics.DefaultTotalMemoryString;
                               })
                 .DisposeWith(this);
         }

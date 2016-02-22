@@ -1,6 +1,20 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Simple.Wpf.Template.Converters"
+                    xmlns:resourceDictionaries="clr-namespace:Simple.Wpf.Template.Resources.ResourceDictionaries">
+
+    <ResourceDictionary.MergedDictionaries>
+
+        <resourceDictionaries:SharedResourceDictionary Source="../Brushes/Brushes.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    
+
+    <c:BooleanInvertConverter x:Key="BooleanInvertConverter" />
+
+    <c:ServerOnlineToColorConverter x:Key="ServerOnlineToColorConverter"
+                                    Online="{StaticResource StatusOnlineBrush}"
+                                    Offline="{StaticResource StatusOfflineBrush}" />
+
 </ResourceDictionary>

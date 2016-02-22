@@ -91,7 +91,7 @@ namespace Simple.Wpf.Template
         {
             var timer = new DispatcherTimer(DispatcherPriority.Normal)
             {
-                Interval = Constants.UiFreezeTimer
+                Interval = Constants.UI.Diagnostics.UiFreezeTimer
             };
 
             var previous = DateTime.Now;
@@ -101,7 +101,7 @@ namespace Simple.Wpf.Template
                 var delta = current - previous;
                 previous = current;
 
-                if (delta > Constants.UiFreeze)
+                if (delta > Constants.UI.Diagnostics.UiFreeze)
                 {
                     Debug.WriteLine("UI Freeze = {0} ms", delta.TotalMilliseconds);
                 }

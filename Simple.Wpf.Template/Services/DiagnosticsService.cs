@@ -46,10 +46,10 @@ namespace Simple.Wpf.Template.Services
                 _sync = new object();
 
                 _countersObservable = CreatePerformanceCounters()
-                    .DelaySubscription(Constants.DiagnosticsSubscriptionDelay, schedulerService.TaskPool)
+                    .DelaySubscription(Constants.UI.Diagnostics.DiagnosticsSubscriptionDelay, schedulerService.TaskPool)
                     .SubscribeOn(schedulerService.TaskPool)
                     .ObserveOn(schedulerService.TaskPool)
-                    .CombineLatest(idleService.Idling.Buffer(Constants.DiagnosticsIdleBuffer, schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
+                    .CombineLatest(idleService.Idling.Buffer(Constants.UI.Diagnostics.DiagnosticsIdleBuffer, schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
                     .Replay(1);
 
                 _loggingTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
@@ -245,7 +245,7 @@ namespace Simple.Wpf.Template.Services
         private IObservable<string> StartLogObservable()
         {
             var existingLog = Enumerable.Empty<string>();
-            return Observable.Interval(Constants.DiagnosticsLogInterval, _schedulerService.TaskPool)
+            return Observable.Interval(Constants.UI.Diagnostics.DiagnosticsLogInterval, _schedulerService.TaskPool)
                 .Synchronize()
                 .Select(x =>
                 {

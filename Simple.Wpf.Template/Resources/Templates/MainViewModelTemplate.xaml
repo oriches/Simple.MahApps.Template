@@ -1,6 +1,13 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels">
+                    xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels"
+                    xmlns:rd="clr-namespace:Simple.Wpf.Template.Resources.ResourceDictionaries">
+
+    <ResourceDictionary.MergedDictionaries>
+
+        <rd:SharedResourceDictionary Source="../Converters/Converters.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate DataType="{x:Type vm:MainViewModel}">
 
@@ -17,18 +24,74 @@
                     Padding="5"
                     BorderThickness="1"
                     BorderBrush="{StaticResource AccentColorBrush}">
-                
-                <StackPanel Orientation="Horizontal">
 
-                    <Button Content="Enter your birthday"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Command="{Binding Path=DobCommand, Mode=OneWay}" />
+                <Grid>
 
-                    <TextBlock Margin="20,5,0,0"
-                               Text="{Binding Birthday}" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                </StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Server Heartbeat:" />
+
+                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             IsReadOnly="True"
+                             Text="{Binding ServerHeartbeatUrl, Mode=OneTime}" />
+
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="0"
+                               Text="Server Status:" />
+
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="1"
+                               Foreground="{Binding IsServerOnline, Converter={StaticResource ServerOnlineToColorConverter}}"
+                               FontWeight="Bold"
+                               Text="{Binding ServerStatus}" />
+                    
+                    <Grid Grid.Row="4"
+                          Grid.Column="0"
+                          Grid.ColumnSpan="2">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="2" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
+                        <Button Grid.Row="0"
+                                Grid.Column="0"
+                                Content="Refresh"
+                                HorizontalAlignment="Left"
+                                Command="{Binding RefreshCommand}" />
+
+                        <DataGrid Grid.Row="2"
+                                  AutoGenerateColumns="False"
+                                  ItemsSource="{Binding Resources}">
+                            <DataGrid.Columns>
+                                <DataGridHyperlinkColumn Header="Resource Url"
+                                                         Width="*"
+                                                         ContentBinding="{Binding Url}" />
+                                <DataGridCheckBoxColumn Header="Can it modified?"
+                                                        IsThreeState="False"
+                                                        IsReadOnly="True"
+                                                        Width="Auto"
+                                                        Binding="{Binding Immutable, Mode=OneTime, Converter={StaticResource BooleanInvertConverter}}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                    </Grid>
+                </Grid>
 
             </Border>
 

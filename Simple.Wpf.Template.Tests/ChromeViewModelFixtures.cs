@@ -4,6 +4,7 @@ namespace Simple.Wpf.Template.Tests
     using System.Reactive.Subjects;
     using Moq;
     using NUnit.Framework;
+    using Rest;
     using Services;
     using ViewModels;
 
@@ -15,6 +16,7 @@ namespace Simple.Wpf.Template.Tests
 
         private MainViewModel _mainViewModel;
         private Mock<IDiagnosticsViewModel> _diagnostics;
+        private Mock<IRestClient> _restClient;
 
         [SetUp]
         public void Setup()
@@ -24,10 +26,12 @@ namespace Simple.Wpf.Template.Tests
             _show = new Subject<OverlayViewModel>();
             _overlayService.Setup(x => x.Show).Returns(_show);
 
+            _restClient = new Mock<IRestClient>();
+
             _diagnostics = new Mock<IDiagnosticsViewModel>();
             
             var messageService = new Mock<IMessageService>();
-            _mainViewModel = new MainViewModel(() => null, _diagnostics.Object, _overlayService.Object, messageService.Object);
+            _mainViewModel = new MainViewModel(_diagnostics.Object, messageService.Object, _restClient.Object, SchedulerService);
         }
 
         [Test]

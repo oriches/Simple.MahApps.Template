@@ -1,23 +1,24 @@
 namespace Simple.Wpf.Template.Tests
 {
     using System;
-    using System.Reactive;
-    using System.Reactive.Disposables;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reactive.Linq;
-    using Autofac.Features.OwnedInstances;
+    using System.Threading.Tasks;
     using Models;
     using Moq;
     using NUnit.Framework;
+    using Rest;
     using Services;
     using ViewModels;
 
     [TestFixture]
     public sealed class MainViewModelFixtures : BaseViewModelFixtures
     {
-        private Mock<IOverlayService> _overlayService;
         private Mock<IMessageService> _messageService;
         private Mock<IDiagnosticsService> _diagnosticsService;
         private Mock<IDiagnosticsViewModel> _diagnostics;
+        private Mock<IRestClient> _restClient;
 
         [SetUp]
         public void Setup()
@@ -27,7 +28,7 @@ namespace Simple.Wpf.Template.Tests
             _diagnosticsService.Setup(x => x.Memory).Returns(Observable.Never<Memory>);
             _diagnosticsService.Setup(x => x.Log).Returns(Observable.Never<string>);
 
-            _overlayService = new Mock<IOverlayService>();
+            _restClient = new Mock<IRestClient>();
 
             _messageService = new Mock<IMessageService>();
 
@@ -35,31 +36,100 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
-        public void requests_date_of_birth_message()
+        public void is_online()
         {
             // ARRANGE
-            var dateOfBirthViewModel = new Mock<IDateOfBirthViewModel>();
-            dateOfBirthViewModel.Setup(x => x.Confirmed).Returns(Observable.Return(Unit.Default));
-            dateOfBirthViewModel.Setup(x => x.Day).Returns(10);
-            dateOfBirthViewModel.Setup(x => x.Month).Returns(10);
-            dateOfBirthViewModel.Setup(x => x.Year).Returns(10);
+            var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
+            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
 
-            var lifetime = Disposable.Create(() => { });
+            _restClient.Setup(x => x.GetAsync<Heartbeat>(It.IsAny<Uri>())).Returns(Task.FromResult(heartbeatResponse.Object));
 
-            var owned = new Owned<IDateOfBirthViewModel>(dateOfBirthViewModel.Object, lifetime);
-            
-            var viewModel = new MainViewModel(() => owned, _diagnostics.Object,  _overlayService.Object, _messageService.Object);
+            var resourceResponse = new Mock<IRestResponse<IEnumerable<Resource>>>();
+            resourceResponse.Setup(x => x.Resource).Returns(new Resource[0]);
 
-            _messageService.Setup(x => x.Post(It.Is<string>(y => y == "Date of Birth"),
-                                              It.Is<CloseableViewModel>(y => y == dateOfBirthViewModel.Object),
-                                              It.Is<IDisposable>(y => Equals(y, owned))))
-                                              .Verifiable();
+            _restClient.Setup(x => x.GetAsync<IEnumerable<Resource>>(It.Is<Uri>(y => y == Constants.Server.ResourcesUrl)))
+                .Returns(Task.FromResult(resourceResponse.Object));
 
             // ACT
-            viewModel.DobCommand.Execute(null);
+            var viewModel = new MainViewModel(_diagnostics.Object,  _messageService.Object, _restClient.Object, SchedulerService);
+
+            TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
 
             // ASSERT
-            _overlayService.Verify();
+            Assert.That(viewModel.IsServerOnline, Is.True);
+        }
+
+        [Test]
+        public void is_offline_when_server_throws_an_error()
+        {
+            // ARRANGE
+            var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
+            heartbeatResponse.Setup(x => x.Resource).Throws(new Exception("Foo"));
+
+            _restClient.Setup(x => x.GetAsync<Heartbeat>(It.Is<Uri>(y => y == Constants.Server.Hearbeat.Url)))
+                .Returns(Task.FromResult(heartbeatResponse.Object));
+
+            // ACT
+            var viewModel = new MainViewModel(_diagnostics.Object, _messageService.Object, _restClient.Object, SchedulerService);
+
+            // ASSERT
+            Assert.That(viewModel.IsServerOnline, Is.False);
+        }
+
+        [Test]
+        public void is_offline_when_request_times_out()
+        {
+            // ARRANGE
+            var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
+            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+
+            var task = Task.Delay(Constants.Server.Hearbeat.Timeout.Add(TimeSpan.FromMilliseconds(100)))
+                .ContinueWith(x => heartbeatResponse.Object);
+
+            _restClient.Setup(x => x.GetAsync<Heartbeat>(It.Is<Uri>(y => y == Constants.Server.Hearbeat.Url)))
+                .Returns(task);
+
+            // ACT
+            var viewModel = new MainViewModel(_diagnostics.Object, _messageService.Object, _restClient.Object, SchedulerService);
+
+            TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
+
+            // ASSERT
+            Assert.That(viewModel.IsServerOnline, Is.False);
+        }
+
+        [Test]
+        public void populates_resources()
+        {
+            // ARRANGE
+            var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
+            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+
+            _restClient.Setup(x => x.GetAsync<Heartbeat>(It.Is<Uri>(y => y == Constants.Server.Hearbeat.Url)))
+                .Returns(Task.FromResult(heartbeatResponse.Object));
+
+            var resources = new []
+                            {
+                                new Resource(new Uri("http://localhost/foo"), true)
+                            };
+
+            var resourceResponse = new Mock<IRestResponse<IEnumerable<Resource>>>();
+            resourceResponse.Setup(x => x.Resource).Returns(resources);
+
+            _restClient.Setup(x => x.GetAsync<IEnumerable<Resource>>(It.Is<Uri>(y => y == Constants.Server.ResourcesUrl)))
+                .Returns(Task.FromResult(resourceResponse.Object));
+
+            // ACT
+            var viewModel = new MainViewModel(_diagnostics.Object, _messageService.Object, _restClient.Object, SchedulerService);
+
+            TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
+
+            // ASSERT
+            var result = viewModel.Resources.Cast<Resource>();
+
+            Assert.That(result, Is.Not.Empty);
+            Assert.That(result.First().Url, Is.EqualTo(resources.First().Url));
+            Assert.That(result.First().Immutable, Is.EqualTo(resources.First().Immutable));
         }
     }
 }

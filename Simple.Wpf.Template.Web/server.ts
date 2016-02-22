@@ -33,8 +33,12 @@ var server = app.listen(port, "localhost", () => {
 
 function audit(req: Request, res: Response, next: Function) {
 
+    var date = new Date();
+    var dateTimeString = date.toDateString() + " " + date.toTimeString();
+
     console.log();
-    console.log(req.method + " -> " + req.originalUrl.green);
+
+    console.log(dateTimeString + " - " + req.method + " -> " + req.url.green);
 
     next();
 }
@@ -66,8 +70,8 @@ function getResources(req: http.ServerRequest, res: http.ServerResponse) {
 
     var resources: dto.Dto.Resource[] = [];
 
-    resources.push(new dto.Dto.Resource(rootUrl + req.url));
-    resources.push(new dto.Dto.Resource(rootUrl + "/heartbeat"));
+    resources.push(new dto.Dto.Resource(rootUrl + req.url, true));
+    resources.push(new dto.Dto.Resource(rootUrl + "/heartbeat", true));
 
     writeSuccessfulHeader(res)
         .end(JSON.stringify(resources));
