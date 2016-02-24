@@ -37,7 +37,7 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var contentViewModel = new Mock<BaseViewModel>();
-            
+
             var service = new OverlayService();
 
             OverlayViewModel overlayViewModel = null;

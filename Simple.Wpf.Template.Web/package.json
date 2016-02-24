@@ -10,6 +10,7 @@
   "devDependencies": {
     "express": "~4.13.4",
     "serve-static": "~1.10.2",
-    "colors": "~1.1.2"
+    "colors": "~1.1.2",
+    "mkdirp": "~0.5.1"
   }
 }

@@ -9,7 +9,7 @@ namespace Simple.Wpf.Template.Services
     public sealed class OverlayService : DisposableObject, IOverlayService
     {
         private readonly Subject<OverlayViewModel> _show;
-        
+
         public OverlayService()
         {
             using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
@@ -18,7 +18,7 @@ namespace Simple.Wpf.Template.Services
                     .DisposeWith(this);
             }
         }
-        
+
         public void Post(string header, BaseViewModel viewModel, IDisposable lifetime)
         {
             _show.OnNext(new OverlayViewModel(header, viewModel, lifetime));

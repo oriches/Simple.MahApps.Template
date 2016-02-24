@@ -1,6 +1,10 @@
 namespace Simple.Wpf.Template.Services
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reactive.Disposables;
+    using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using Extensions;
     using Models;
@@ -8,22 +12,58 @@ namespace Simple.Wpf.Template.Services
 
     public sealed class MessageService : DisposableObject, IMessageService
     {
-        private readonly Subject<MessageViewModel> _show;
+        private readonly Subject<Message> _show;
+
+        private readonly object _sync = new object();
+        private readonly Queue<Message> _waitingMessages = new Queue<Message>();
 
         public MessageService()
         {
-            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            _show = new Subject<Message>()
+                .DisposeWith(this);
+
+            Disposable.Create(() => _waitingMessages.Clear())
+                .DisposeWith(this);
+        }
+
+        public void Post(string header, ICloseableViewModel viewModel)
+        {
+            var newMessage = new Message(header, viewModel);
+
+            newMessage.ViewModel.Closed
+                .Take(1)
+                .Subscribe(x =>
+                           {
+                               Message nextMessage = null;
+                               lock (_sync)
+                               {
+                                   _waitingMessages.Dequeue();
+
+                                   if (_waitingMessages.Any())
+                                   {
+                                       nextMessage = _waitingMessages.Peek();
+                                   }
+                               }
+
+                               if (nextMessage != null)
+                               {
+                                   _show.OnNext(nextMessage);
+                               }
+                           });
+
+            bool show;
+            lock (_sync)
             {
-                _show = new Subject<MessageViewModel>()
-                    .DisposeWith(this);
+                _waitingMessages.Enqueue(newMessage);
+                show = _waitingMessages.Count == 1;
+            }
+
+            if (show)
+            {
+                _show.OnNext(newMessage);
             }
         }
 
-        public void Post(string header, ICloseableViewModel viewModel, IDisposable lifetime)
-        {
-            _show.OnNext(new MessageViewModel(header, viewModel, lifetime));
-        }
-
-        public IObservable<MessageViewModel> Show => _show;
+        public IObservable<Message> Show => _show;
     }
 }

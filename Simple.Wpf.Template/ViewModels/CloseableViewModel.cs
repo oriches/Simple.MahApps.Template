@@ -10,8 +10,8 @@ namespace Simple.Wpf.Template.ViewModels
     public abstract class CloseableViewModel : BaseViewModel, ICloseableViewModel
     {
         private readonly Subject<Unit> _closed;
-        private readonly Subject<Unit> _denied;
         private readonly Subject<Unit> _confirmed;
+        private readonly Subject<Unit> _denied;
 
         protected CloseableViewModel()
         {
@@ -19,10 +19,10 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
 
             _denied = new Subject<Unit>()
-               .DisposeWith(this);
+                .DisposeWith(this);
 
             _confirmed = new Subject<Unit>()
-               .DisposeWith(this);
+                .DisposeWith(this);
 
             CancelCommand = ReactiveCommand.Create()
                 .DisposeWith(this);
@@ -36,10 +36,10 @@ namespace Simple.Wpf.Template.ViewModels
 
             ConfirmCommand.ActivateGestures()
                 .Subscribe(x =>
-                {
-                    _confirmed.OnNext(Unit.Default);
-                    _closed.OnNext(Unit.Default);
-                })
+                           {
+                               _confirmed.OnNext(Unit.Default);
+                               _closed.OnNext(Unit.Default);
+                           })
                 .DisposeWith(this);
 
             DenyCommand = ReactiveCommand.Create(InitialiseCanDeny())
@@ -47,19 +47,20 @@ namespace Simple.Wpf.Template.ViewModels
 
             DenyCommand.ActivateGestures()
                 .Subscribe(x =>
-                {
-                    _denied.OnNext(Unit.Default);
-                    _closed.OnNext(Unit.Default);
-                })
+                           {
+                               _denied.OnNext(Unit.Default);
+                               _closed.OnNext(Unit.Default);
+                           })
                 .DisposeWith(this);
         }
+
+        public ReactiveCommand<object> CancelCommand { get; }
+        public ReactiveCommand<object> ConfirmCommand { get; protected set; }
+        public ReactiveCommand<object> DenyCommand { get; protected set; }
 
         public IObservable<Unit> Closed => _closed;
         public IObservable<Unit> Denied => _denied;
         public IObservable<Unit> Confirmed => _confirmed;
-        public ReactiveCommand<object> CancelCommand { get; }
-        public ReactiveCommand<object> ConfirmCommand { get; protected set; }
-        public ReactiveCommand<object> DenyCommand { get; protected set; }
 
         protected virtual IObservable<bool> InitialiseCanConfirm()
         {

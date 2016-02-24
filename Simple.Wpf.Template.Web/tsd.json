@@ -16,6 +16,9 @@
     },
     "colors/colors.d.ts": {
       "commit": "0d8d3828cea98349056b36f34a43748794e1eef2"
+    },
+    "mkdirp/mkdirp.d.ts": {
+      "commit": "dade4414712ce84e3c63393f1aae407e9e7e6af7"
     }
   }
 }

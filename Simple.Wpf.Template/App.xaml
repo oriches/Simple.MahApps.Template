@@ -7,24 +7,30 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
-                <rd:SharedResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <rd:SharedResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <rd:SharedResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <rd:SharedResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <rd:SharedResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <rd:SharedResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <rd:SharedResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <rd:SharedResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
 
                 <rd:SharedResourceDictionary Source="Resources/Brushes/Brushes.xaml" />
-                
+
                 <rd:SharedResourceDictionary Source="Resources/Converters/Converters.xaml" />
+
+                <rd:SharedResourceDictionary Source="Resources/Styles/ButtonStyles.xaml" />
 
                 <rd:SharedResourceDictionary Source="Resources/Icons/Icons.xaml" />
 
-                <rd:SharedResourceDictionary Source="Resources/Templates/DateOfBirthViewModelTemplate.xaml" />
+                <rd:SharedResourceDictionary Source="Resources/Templates/AddResourceViewModelTemplate.xaml" />
+                <rd:SharedResourceDictionary Source="Resources/Templates/ExceptionViewModelTemplate.xaml" />
                 <rd:SharedResourceDictionary Source="Resources/Templates/DiagnosticsViewModelTemplate.xaml" />
                 <rd:SharedResourceDictionary Source="Resources/Templates/MainViewModelTemplate.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        
+
     </Application.Resources>
 </Application>

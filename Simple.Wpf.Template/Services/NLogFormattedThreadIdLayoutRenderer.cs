@@ -3,6 +3,7 @@ namespace Simple.Wpf.Template.Services
     using System;
     using System.Globalization;
     using System.Text;
+    using System.Threading;
     using NLog;
     using NLog.LayoutRenderers;
 
@@ -13,7 +14,7 @@ namespace Simple.Wpf.Template.Services
 
         public NLogFormattedThreadIdLayoutRenderer()
         {
-            _threadIdFunc = () => System.Threading.Thread.CurrentThread.ManagedThreadId;
+            _threadIdFunc = () => Thread.CurrentThread.ManagedThreadId;
         }
 
         public NLogFormattedThreadIdLayoutRenderer(Func<int> threadIdFunc)

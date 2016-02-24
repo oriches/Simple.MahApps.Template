@@ -6,17 +6,11 @@ namespace Simple.Wpf.Template.Tests
     using Moq;
     using NUnit.Framework;
     using Services;
-    using Template;
     using ViewModels;
 
     [TestFixture]
     public sealed class DiagnosticsViewModelFixtures : BaseViewModelFixtures
     {
-        private Mock<IDiagnosticsService> _diagnosticService;
-        private Subject<int> _cpuSubject;
-        private Subject<Memory> _memorySubject;
-        private Subject<string> _logSubject;
-
         [SetUp]
         public void SetUp()
         {
@@ -32,53 +26,10 @@ namespace Simple.Wpf.Template.Tests
             _diagnosticService.Setup(x => x.Log).Returns(_logSubject);
         }
 
-        [Test]
-        public void when_created_cpu_is_default_value()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            // ASSERT
-            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
-        }
-
-        [Test]
-        public void when_created_total_memory_is_default_value()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            // ASSERT
-            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
-        }
-
-        [Test]
-        public void when_created_managed_memory_is_default_value()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            // ASSERT
-            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
-        }
-
-        [Test]
-        public void cpu_value_is_formatted_when_diagnostics_service_pumps_cpu()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            _cpuSubject.OnNext(42);
-
-            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
-            
-            // ASSERT
-            Assert.That(viewModel.Cpu, Is.EqualTo("CPU: 42 %"));
-        }
+        private Mock<IDiagnosticsService> _diagnosticService;
+        private Subject<int> _cpuSubject;
+        private Subject<Memory> _memorySubject;
+        private Subject<string> _logSubject;
 
         [Test]
         public void cpu_value_is_default_value_when_diagnostics_service_cpu_errors()
@@ -93,6 +44,90 @@ namespace Simple.Wpf.Template.Tests
 
             // ASSERT
             Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
+        }
+
+        [Test]
+        public void cpu_value_is_formatted_when_diagnostics_service_pumps_cpu()
+        {
+            // ARRANGE
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            _cpuSubject.OnNext(42);
+
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+
+            // ASSERT
+            Assert.That(viewModel.Cpu, Is.EqualTo("CPU: 42 %"));
+        }
+
+        [Test]
+        public void disposing_unsubscribes_diagnostics_service_stream()
+        {
+            // ARRANGE
+            const decimal managedMemory = 1024*1000*4;
+            const decimal totalMemory = 1024*1000*42;
+
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            viewModel.Dispose();
+
+            _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
+            _cpuSubject.OnNext(42);
+
+            // ASSERT
+            Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
+            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
+            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
+        }
+
+        [Test]
+        public void managed_memory_value_is_default_value_when_diagnostics_service_memory_errors()
+        {
+            // ARRANGE
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            _memorySubject.OnError(new Exception("blah!"));
+
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+
+            // ASSERT
+            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
+        }
+
+        [Test]
+        public void managed_memory_value_is_formatted_when_diagnostics_service_pumps_memory()
+        {
+            // ARRANGE
+            const decimal managedMemory = 1024*1000*4;
+            const decimal totalMemory = 1024*1000*42;
+
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
+
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+
+            // ASSERT
+            Assert.That(viewModel.ManagedMemory, Is.EqualTo("Managed Memory: 4.00 Mb"));
+        }
+
+        [Test]
+        public void total_memory_value_is_default_value_when_diagnostics_service_memory_errors()
+        {
+            // ARRANGE
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            _memorySubject.OnError(new Exception("blah!"));
+
+            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
+
+            // ASSERT
+            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
         }
 
         [Test]
@@ -114,72 +149,36 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
-        public void total_memory_value_is_default_value_when_diagnostics_service_memory_errors()
+        public void when_created_cpu_is_default_value()
         {
             // ARRANGE
             var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
             // ACT
-            _memorySubject.OnError(new Exception("blah!"));
-
-            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
-
-            // ASSERT
-            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
-        }
-
-        [Test]
-        public void managed_memory_value_is_formatted_when_diagnostics_service_pumps_memory()
-        {
-            // ARRANGE
-            const decimal managedMemory = 1024 * 1000 * 4;
-            const decimal totalMemory = 1024 * 1000 * 42;
-
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
-
-            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
-
-            // ASSERT
-            Assert.That(viewModel.ManagedMemory, Is.EqualTo("Managed Memory: 4.00 Mb"));
-        }
-
-        [Test]
-        public void managed_memory_value_is_default_value_when_diagnostics_service_memory_errors()
-        {
-            // ARRANGE
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            _memorySubject.OnError(new Exception("blah!"));
-
-            TestScheduler.AdvanceBy(TimeSpan.FromSeconds(1));
-
-            // ASSERT
-            Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
-        }
-        
-        [Test]
-        public void disposing_unsubscribes_diagnostics_service_stream()
-        {
-            // ARRANGE
-            const decimal managedMemory = 1024 * 1000 * 4;
-            const decimal totalMemory = 1024 * 1000 * 42;
-
-            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
-
-            // ACT
-            viewModel.Dispose();
-
-            _memorySubject.OnNext(new Memory(totalMemory, managedMemory));
-            _cpuSubject.OnNext(42);
-
             // ASSERT
             Assert.That(viewModel.Cpu, Is.EqualTo(Constants.UI.Diagnostics.DefaultCpuString));
-            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
+        }
+
+        [Test]
+        public void when_created_managed_memory_is_default_value()
+        {
+            // ARRANGE
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            // ASSERT
             Assert.That(viewModel.ManagedMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultManagedMemoryString));
+        }
+
+        [Test]
+        public void when_created_total_memory_is_default_value()
+        {
+            // ARRANGE
+            var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
+
+            // ACT
+            // ASSERT
+            Assert.That(viewModel.TotalMemory, Is.EqualTo(Constants.UI.Diagnostics.DefaultTotalMemoryString));
         }
     }
 }

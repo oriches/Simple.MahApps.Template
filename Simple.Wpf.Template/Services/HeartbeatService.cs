@@ -11,7 +11,8 @@ namespace Simple.Wpf.Template.Services
     {
         private readonly IConnectableObservable<Unit> _listen;
 
-        public HeartbeatService(ISchedulerService schedulerService) : this(Constants.UI.Diagnostics.Heartbeat, schedulerService)
+        public HeartbeatService(ISchedulerService schedulerService)
+            : this(Constants.UI.Diagnostics.Heartbeat, schedulerService)
         {
         }
 
@@ -27,7 +28,7 @@ namespace Simple.Wpf.Template.Services
                     .DisposeWith(this);
             }
         }
-        
+
         public IObservable<Unit> Listen => _listen;
     }
 }

@@ -13,26 +13,13 @@ namespace Simple.Wpf.Template.Services
 
     public sealed class DiagnosticsService : DisposableObject, IDiagnosticsService
     {
-        private readonly ISchedulerService _schedulerService;
-        private readonly CompositeDisposable _disposable;
         private readonly IConnectableObservable<Counters> _countersObservable;
-        private readonly object _sync;
+        private readonly CompositeDisposable _disposable;
         private readonly LimitedMemoryTarget _loggingTarget;
+        private readonly ISchedulerService _schedulerService;
+        private readonly object _sync;
 
         private bool _countersConnected;
-        
-        internal sealed class Counters
-        {
-            public Counters(PerformanceCounter workingSetCounter, PerformanceCounter cpuCounter)
-            {
-                WorkingSet = workingSetCounter;
-                Cpu = cpuCounter;
-            }
-
-            public PerformanceCounter WorkingSet { get; }
-
-            public PerformanceCounter Cpu { get; }
-        }
 
         public DiagnosticsService(IIdleService idleService, ISchedulerService schedulerService)
         {
@@ -49,7 +36,9 @@ namespace Simple.Wpf.Template.Services
                     .DelaySubscription(Constants.UI.Diagnostics.DiagnosticsSubscriptionDelay, schedulerService.TaskPool)
                     .SubscribeOn(schedulerService.TaskPool)
                     .ObserveOn(schedulerService.TaskPool)
-                    .CombineLatest(idleService.Idling.Buffer(Constants.UI.Diagnostics.DiagnosticsIdleBuffer, schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
+                    .CombineLatest(
+                        idleService.Idling.Buffer(Constants.UI.Diagnostics.DiagnosticsIdleBuffer,
+                            schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
                     .Replay(1);
 
                 _loggingTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
@@ -80,7 +69,7 @@ namespace Simple.Wpf.Template.Services
                     .DistinctUntilChanged();
             }
         }
-        
+
         private static void LogFailToCreatePerformanceCounter(IObserver<Counters> counters, Exception exception)
         {
             Logger.Error("Failed to create performance counters!");
@@ -106,7 +95,7 @@ namespace Simple.Wpf.Template.Services
             {
                 var rawValue = counters.WorkingSet.NextValue();
                 var privateWorkingSet = Convert.ToDecimal(rawValue);
-                
+
                 var managed = GC.GetTotalMemory(false);
 
                 return new Memory(privateWorkingSet, managed);
@@ -176,7 +165,7 @@ namespace Simple.Wpf.Template.Services
         {
             try
             {
-                return value == 0 ? 0 : value / Environment.ProcessorCount;
+                return value == 0 ? 0 : value/Environment.ProcessorCount;
             }
             catch (OverflowException)
             {
@@ -194,7 +183,7 @@ namespace Simple.Wpf.Template.Services
                 {
                     using (var counter = new PerformanceCounter("Process", "ID Process", instance, true))
                     {
-                        var val = (int)counter.RawValue;
+                        var val = (int) counter.RawValue;
                         if (val == currentProcess.Id)
                         {
                             return instance;
@@ -218,7 +207,9 @@ namespace Simple.Wpf.Template.Services
                 }
             }
 
-            throw new ArgumentException($@"Could not find performance counter instance name for current process, name '{"ARG0"}'", currentProcess.ProcessName);
+            throw new ArgumentException(
+                $@"Could not find performance counter instance name for current process, name '{"ARG0"}'",
+                currentProcess.ProcessName);
         }
 
         private void ConnectCountersObservable()
@@ -248,13 +239,13 @@ namespace Simple.Wpf.Template.Services
             return Observable.Interval(Constants.UI.Diagnostics.DiagnosticsLogInterval, _schedulerService.TaskPool)
                 .Synchronize()
                 .Select(x =>
-                {
-                    var currentLog = _loggingTarget.Logs.ToArray();
-                    var delta = currentLog.Except(existingLog).ToArray();
-                    existingLog = currentLog;
+                        {
+                            var currentLog = _loggingTarget.Logs.ToArray();
+                            var delta = currentLog.Except(existingLog).ToArray();
+                            existingLog = currentLog;
 
-                    return delta;
-                })
+                            return delta;
+                        })
                 .Where(x => x.Any())
                 .SelectMany(x => x);
         }
@@ -322,6 +313,19 @@ namespace Simple.Wpf.Template.Services
 
                                                    return disposable;
                                                });
+        }
+
+        internal sealed class Counters
+        {
+            public Counters(PerformanceCounter workingSetCounter, PerformanceCounter cpuCounter)
+            {
+                WorkingSet = workingSetCounter;
+                Cpu = cpuCounter;
+            }
+
+            public PerformanceCounter WorkingSet { get; }
+
+            public PerformanceCounter Cpu { get; }
         }
     }
 }

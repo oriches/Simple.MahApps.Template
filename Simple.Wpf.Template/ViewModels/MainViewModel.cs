@@ -17,51 +17,71 @@ namespace Simple.Wpf.Template.ViewModels
 
     public sealed class MainViewModel : BaseViewModel, IMainViewModel
     {
-        private static readonly Resource[] EmptyResources = new Resource[0];
+        private static readonly Metadata[] EmptyMetadatas = new Metadata[0];
 
+        private readonly Func<IEnumerable<Metadata>, IAddResourceViewModel> _addResourceFactory;
+        private readonly ListCollectionView _collectionView;
+        private readonly IMessageService _messageService;
+        private readonly RangeObservableCollection<Metadata> _metadata;
         private readonly IRestClient _restClient;
         private readonly ISchedulerService _schedulerService;
-        private readonly RangeObservableCollection<Resource> _resources;
-        private readonly ListCollectionView _collectionView;
-
-        private string _serverStatus;
         private bool _isServerOnline;
 
-        public MainViewModel(IDiagnosticsViewModel diagnosticsViewModel, IMessageService messageService, IRestClient restClient, ISchedulerService schedulerService)
+        private string _serverStatus;
+
+        public MainViewModel(Func<IEnumerable<Metadata>, IAddResourceViewModel> addResourceFactory,
+            IDiagnosticsViewModel diagnosticsViewModel,
+            IMessageService messageService,
+            IRestClient restClient,
+            ISchedulerService schedulerService)
         {
+            _addResourceFactory = addResourceFactory;
+            _messageService = messageService;
             _restClient = restClient;
             _schedulerService = schedulerService;
+
             Diagnostics = diagnosticsViewModel;
 
-            _resources = new RangeObservableCollection<Resource>();
-            _collectionView = new ListCollectionView(_resources);
+            _metadata = new RangeObservableCollection<Metadata>();
+            _collectionView = new ListCollectionView(_metadata);
 
-            RefreshCommand = ReactiveCommand.Create()
+            RefreshCommand = ReactiveCommand.Create(
+                this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
+                .DisposeWith(this);
+
+            AddCommand = ReactiveCommand.Create(
+                this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
+                .DisposeWith(this);
+
+            AddCommand.ActivateGestures()
+                .SelectMany(x => ObserveResourceAdded(), (x, y) => y)
+                .Subscribe(x => RefreshCommand.Execute(null))
                 .DisposeWith(this);
 
             ObserveServerHeartbeat()
                 .ObserveOn(_schedulerService.Dispatcher)
                 .Do(x =>
-                {
-                    ServerStatus = x.IsOnline
-                        ? $"Online ({x.Timestamp})"
-                        : (x.HasTimedOut ? "Offline (Timed out)" : "Offline (Error)");
+                    {
+                        ServerStatus = x.IsOnline
+                            ? $"Online ({x.Timestamp})"
+                            : (x.HasTimedOut ? "Offline (Timed out)" : "Offline (Error)");
 
-                    IsServerOnline = x.IsOnline;
-                })
+                        IsServerOnline = x.IsOnline;
+                    })
                 .DistinctUntilChanged(x => x.IsOnline)
+                .Where(x => x.IsOnline)
                 .SelectMany(x => ObserveRefresh(), (x, y) => x)
-                .SelectMany(ObserveResources, (x, y) => new { Status = x, Resources = y })
+                .SelectMany(x => ObserveMetadata(), (x, y) => new {Status = x, Metadata = y})
                 .ObserveOn(_schedulerService.Dispatcher)
                 .Subscribe(x =>
-                {
-                    _resources.Clear();
-                    _resources.AddRange(x.Resources);
-                })
+                           {
+                               _metadata.Clear();
+                               _metadata.AddRange(x.Metadata);
+                           })
                 .DisposeWith(this);
         }
 
-        public IEnumerable Resources => _collectionView;
+        public IEnumerable Metadata => _collectionView;
 
         public string ServerHeartbeatUrl => Constants.Server.Hearbeat.Url.ToString();
 
@@ -81,6 +101,8 @@ namespace Simple.Wpf.Template.ViewModels
             set { SetPropertyAndNotify(ref _serverStatus, value, () => ServerStatus); }
         }
 
+        public ReactiveCommand<object> AddCommand { get; }
+
         public ReactiveCommand<object> RefreshCommand { get; }
 
         public IDiagnosticsViewModel Diagnostics { get; }
@@ -94,12 +116,13 @@ namespace Simple.Wpf.Template.ViewModels
                 .Catch<Status, Exception>(x => ObserveServerHeartbeat().StartWith(new Status(x)));
         }
 
-        private IObservable<Resource[]> ObserveResources(Status status)
+        private IObservable<Metadata[]> ObserveMetadata()
         {
-            return status.IsOnline
-                ? _restClient.GetAsync<IEnumerable<Resource>>(Constants.Server.ResourcesUrl).ToObservable()
-                    .Select(x => x.Resource.ToArray())
-                : Observable.Return(EmptyResources);
+            return _restClient.GetAsync<IEnumerable<Metadata>>(Constants.Server.MetadataUrl)
+                .ToObservable()
+                .Select(x => x.Resource.ToArray())
+                .Catch<Metadata[], Exception>(x => Observable.Return(EmptyMetadatas))
+                .Take(1);
         }
 
         private IObservable<Unit> ObserveRefresh()
@@ -107,6 +130,14 @@ namespace Simple.Wpf.Template.ViewModels
             return RefreshCommand.ActivateGestures()
                 .AsUnit()
                 .StartWith(Unit.Default);
-        } 
+        }
+
+        private IObservable<Unit> ObserveResourceAdded()
+        {
+            var viewModel = _addResourceFactory(_metadata);
+            _messageService.Post("Add Resource", viewModel);
+
+            return viewModel.Confirmed;
+        }
     }
 }

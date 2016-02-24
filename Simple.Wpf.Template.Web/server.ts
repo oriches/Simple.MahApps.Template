@@ -4,25 +4,27 @@ import express = require("express");
 import http = require("http");
 import path = require("path");
 import fs = require("fs");
+import mkdirp = require("mkdirp");
 
 var colors = require("colors");
 import dto = require("./dto");
 
-import Request = express.Request;
-import Response = express.Response;
-
 var port = process.env.port || 1337;
 var app = express();
 
-var rootPath = path.resolve(".").toLowerCase();
+var rootPath = path.resolve(".").toLowerCase() + "\\" + "resources";
 var rootUrl = "";
+var filename = "data.json";
 
 app.all("*", audit);
 app.get("/heartbeat", getHeartbeat);
-app.get("/resources", getResources);
+app.get("/metadata", getMetadata);
+app.post("*", postResource);
+app.put("*", putResource);
 app.use(failed);
 
 var server = app.listen(port, "localhost", () => {
+
     var host = server.address().address;
     var port = server.address().port;
     rootUrl = `http://${host}:${port}`;
@@ -31,7 +33,7 @@ var server = app.listen(port, "localhost", () => {
     console.log(`Root path = ${rootPath}`);
 });
 
-function audit(req: Request, res: Response, next: Function) {
+function audit(req: http.ServerRequest, res: http.ServerResponse, next: Function) {
 
     var date = new Date();
     var dateTimeString = date.toDateString() + " " + date.toTimeString();
@@ -43,9 +45,9 @@ function audit(req: Request, res: Response, next: Function) {
     next();
 }
 
-function failed(err: any, req: any, res: any, next: any) {
+function failed(err: any, req: any, res: any, next: Function) {
 
-    console.error(err.stack);
+    console.log(err.stack);
     res.status(500).send("Oops, something went wrong!");
 
     next();
@@ -66,13 +68,114 @@ function getHeartbeat(req: http.ServerRequest, res: http.ServerResponse) {
         .end(json);
 }
 
-function getResources(req: http.ServerRequest, res: http.ServerResponse) {
+function getMetadata(req: http.ServerRequest, res: http.ServerResponse) {
 
-    var resources: dto.Dto.Resource[] = [];
+    var metadata: dto.Dto.Metadata[] = [];
 
-    resources.push(new dto.Dto.Resource(rootUrl + req.url, true));
-    resources.push(new dto.Dto.Resource(rootUrl + "/heartbeat", true));
+    metadata.push(new dto.Dto.Metadata(rootUrl + req.url, true));
+    metadata.push(new dto.Dto.Metadata(rootUrl + "/heartbeat", true));
+
+    var files: dto.Dto.File[] = [];
+    getFiles(rootPath, files);
+
+    for (var file in files) {
+        console.log(`file: ${files[file].fullPath}`);
+
+        var relativePath = files[file].relativePathithoutFilename
+            .split("\\")
+            .join("/");
+
+        metadata.push(new dto.Dto.Metadata(rootUrl + relativePath, false));
+    }
 
     writeSuccessfulHeader(res)
-        .end(JSON.stringify(resources));
+        .end(JSON.stringify(metadata));
+}
+
+function postResource(req: http.ServerRequest, res: http.ServerResponse) {
+
+    var folder = (rootPath + req.url)
+        .split("/")
+        .join("\\");
+
+    var fullPath = folder + "\\" + filename;
+
+    req.on("readable", () => {
+        var data = read(req);
+        var json = extractJsonFromResource(data);
+
+        mkdirp(folder, err => processAnyError(err, res));
+
+        fs.writeFile(fullPath, json, () => {
+            writeSuccessfulHeader(res)
+                .end();
+        });
+    });
+} 
+
+function putResource(req: http.ServerRequest, res: http.ServerResponse) {
+
+    var folder = (rootPath + req.url)
+        .split("/")
+        .join("\\");
+
+    var fullPath = folder + "\\data.json";
+
+    req.on("readable", () => {
+        var data = read(req);
+        var json = extractJsonFromResource(data);
+
+        mkdirp(folder, err => processAnyError(err, res));
+
+        fs.writeFile(fullPath, json, () => {
+            writeSuccessfulHeader(res)
+                .end(data);
+        });
+    });
+}
+
+function read(req: http.ServerRequest): string {
+    var data = "";
+    var chunk: void | Object;
+    while (null !== (chunk = req.read())) {
+        data += chunk;
+    }
+
+    return data;
+}
+
+function extractJsonFromResource(json: string): string
+{
+    var resource: dto.Dto.Resource = JSON.parse(json);
+    return resource.json;
+}
+
+function processAnyError(err: any, res: http.ServerResponse) {
+    if (err) {
+        console.log(`Failed - ${err}`);
+        res.writeHead(500, "Something has borked!");
+        res.end();
+    }
+}
+
+function getFiles(dir, files: dto.Dto.File[]) {
+
+    files = files || [];
+
+    var localFiles = fs.readdirSync(dir);
+
+    for (var i in localFiles) {
+        var name = dir + "\\" + localFiles[i];
+        if (fs.statSync(name).isDirectory()) {
+            getFiles(name, files);
+        } else {
+
+            var fullPath = name;
+            var relativePath = name.split(rootPath)[1];
+            var relativePathWithNoFilename = relativePath.split(`\\${filename}`)[0];
+
+            files.push(new dto.Dto.File(fullPath, relativePath, relativePathWithNoFilename));
+        }
+    }
+    return files;
 }

@@ -1,56 +1,61 @@
 namespace Simple.Wpf.Template.Tests
 {
     using System;
-    using System.Reactive.Disposables;
+    using System.Linq;
+    using Models;
+    using Moq;
     using NUnit.Framework;
+    using Rest;
     using Services;
     using ViewModels;
 
     [TestFixture]
-    public sealed class MessageServiceFixtures: BaseServiceFixtures
+    public sealed class MessageServiceFixtures : BaseServiceFixtures
     {
+        [SetUp]
+        public void Setup()
+        {
+            _restClient = new Mock<IRestClient>();
+        }
+
+        private Mock<IRestClient> _restClient;
+
         [Test]
         public void posts_message_with_lifetime()
         {
             // ARRANGE
-            var contentViewModel = new DateOfBirthViewModel();
-
-            var lifetime = Disposable.Empty;
+            var contentViewModel = new AddResourceViewModel(Enumerable.Empty<Metadata>(), _restClient.Object);
 
             var service = new MessageService();
 
-            MessageViewModel messageViewModel = null;
-            service.Show.Subscribe(x => messageViewModel = x);
+            Message message = null;
+            service.Show.Subscribe(x => message = x);
 
             // ACT
-            service.Post("header 1", contentViewModel, lifetime);
+            service.Post("header 1", contentViewModel);
 
             // ASSERT
-            Assert.That(messageViewModel.HasLifetime, Is.True);
-            Assert.That(messageViewModel.Lifetime, Is.EqualTo(lifetime));
-            Assert.That(messageViewModel.Header, Is.EqualTo("header 1"));
-            Assert.That(messageViewModel.ViewModel, Is.EqualTo(contentViewModel));
+            Assert.That(message.Header, Is.EqualTo("header 1"));
+            Assert.That(message.ViewModel, Is.EqualTo(contentViewModel));
         }
 
         [Test]
         public void posts_overlay_without_lifetime()
         {
             // ARRANGE
-            var contentViewModel = new DateOfBirthViewModel();
+            var contentViewModel = new AddResourceViewModel(Enumerable.Empty<Metadata>(), _restClient.Object);
 
             var service = new MessageService();
 
-            MessageViewModel messageViewModel = null;
-            service.Show.Subscribe(x => messageViewModel = x);
+            Message message = null;
+            service.Show.Subscribe(x => message = x);
 
             // ACT
-            service.Post("header 1", contentViewModel, null);
+            service.Post("header 1", contentViewModel);
 
             // ASSERT
-            Assert.That(messageViewModel.HasLifetime, Is.False);
-            Assert.That(messageViewModel.Lifetime, Is.Null);
-            Assert.That(messageViewModel.Header, Is.EqualTo("header 1"));
-            Assert.That(messageViewModel.ViewModel, Is.EqualTo(contentViewModel));
+            Assert.That(message.Header, Is.EqualTo("header 1"));
+            Assert.That(message.ViewModel, Is.EqualTo(contentViewModel));
         }
     }
 }

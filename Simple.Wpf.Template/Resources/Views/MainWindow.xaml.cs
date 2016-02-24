@@ -1,40 +1,49 @@
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using MahApps.Metro.Controls.Dialogs;
-using Simple.Wpf.Template.Services;
-
 namespace Simple.Wpf.Template.Resources.Views
 {
+    using System;
+    using System.Reactive;
+    using System.Reactive.Linq;
+    using System.Reactive.Threading.Tasks;
+    using MahApps.Metro.Controls.Dialogs;
+    using Services;
+
     public partial class MainWindow
     {
-        private readonly SerialDisposable _disposable;
+        private readonly IDisposable _disposable;
 
-        public MainWindow(IMessageService messageService)
+        public MainWindow(IMessageService messageService, ISchedulerService schedulerService)
         {
             InitializeComponent();
 
-            _disposable = new SerialDisposable();
+            _disposable = messageService.Show
+                // Delay to make sure there is time for the animations
+                .Delay(TimeSpan.FromMilliseconds(250), schedulerService.TaskPool)
+                .ObserveOn(schedulerService.Dispatcher)
+                .Select(x => new MessageDialog(x))
+                .SelectMany(ShowDialogAsync, (x, y) => x)
+                .Subscribe();
 
-            messageService.Show.Subscribe(x =>
-            {
-                var dialog = new MessageDialog
-                {
-                    Title = x.Header,
-                    Content = x.ViewModel
-                };
+            Closed += HandleClosed;
+        }
 
-                _disposable.Disposable = x.ViewModel.Closed
-                    .Select(y => this.HideMetroDialogAsync(dialog).ToObservable())
-                    .Subscribe(z =>
-                    {
-                        using (x.Lifetime)
-                            dialog.Content = null;
-                    });
+        private void HandleClosed(object sender, EventArgs e)
+        {
+            _disposable.Dispose();
+        }
 
-                this.ShowMetroDialogAsync(dialog);
-            });
+        private IObservable<Unit> ShowDialogAsync(MessageDialog dialog)
+        {
+            var settings = new MetroDialogSettings
+                           {
+                               AnimateShow = true,
+                               AnimateHide = true,
+                               ColorScheme = MetroDialogColorScheme.Accented
+                           };
+
+            return this.ShowMetroDialogAsync(dialog, settings)
+                .ToObservable()
+                .SelectMany(x => dialog.CloseableContent.Closed, (x, y) => x)
+                .SelectMany(x => this.HideMetroDialogAsync(dialog).ToObservable(), (x, y) => x);
         }
     }
 }

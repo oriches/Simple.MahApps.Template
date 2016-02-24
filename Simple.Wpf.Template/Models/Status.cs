@@ -2,7 +2,6 @@ namespace Simple.Wpf.Template.Models
 {
     using System;
 
-
     public sealed class Status : IEquatable<Status>
     {
         public Status(Exception exception)
@@ -14,6 +13,11 @@ namespace Simple.Wpf.Template.Models
         {
             Timestamp = timestamp;
         }
+
+        public Exception Exception { get; }
+        public string Timestamp { get; }
+        public bool IsOnline => !string.IsNullOrEmpty(Timestamp);
+        public bool HasTimedOut => Exception != null && Exception.GetType() == typeof (TimeoutException);
 
         public bool Equals(Status other)
         {
@@ -46,10 +50,5 @@ namespace Simple.Wpf.Template.Models
         {
             return !Equals(left, right);
         }
-
-        public Exception Exception { get; }
-        public string Timestamp { get; }
-        public bool IsOnline => !string.IsNullOrEmpty(Timestamp);
-        public bool HasTimedOut => Exception != null && Exception.GetType() == typeof(TimeoutException);
     }
 }

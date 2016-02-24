@@ -18,7 +18,8 @@ namespace Simple.Wpf.Template.Services
         {
             using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
             {
-                _timer = new DispatcherTimer(TimeSpan.Zero, DispatcherPriority.ApplicationIdle, TimerCallback, Application.Current.Dispatcher);
+                _timer = new DispatcherTimer(TimeSpan.Zero, DispatcherPriority.ApplicationIdle, TimerCallback,
+                    Application.Current.Dispatcher);
                 _timer.Stop();
             }
 

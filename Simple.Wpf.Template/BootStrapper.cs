@@ -3,7 +3,6 @@ namespace Simple.Wpf.Template
     using System;
     using System.Reflection;
     using Autofac;
-    using Autofac.Builder;
     using Autofac.Core;
     using Rest;
     using ViewModels;
@@ -45,11 +44,11 @@ namespace Simple.Wpf.Template
             builder.RegisterType<RestClient>()
                 .SingleInstance()
                 .AsImplementedInterfaces();
-            
+
             builder.RegisterAssemblyTypes(assembly)
                 .Where(t => t.Name.EndsWith("ViewModel"))
                 .AsImplementedInterfaces();
-            
+
             _rootScope = builder.Build();
         }
 

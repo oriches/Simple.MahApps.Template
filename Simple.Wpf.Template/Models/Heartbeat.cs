@@ -9,6 +9,8 @@ namespace Simple.Wpf.Template.Models
             Timestamp = timestamp;
         }
 
+        public string Timestamp { get; }
+
         public bool Equals(Heartbeat other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -37,7 +39,5 @@ namespace Simple.Wpf.Template.Models
         {
             return !Equals(left, right);
         }
-
-        public string Timestamp { get; }
     }
 }

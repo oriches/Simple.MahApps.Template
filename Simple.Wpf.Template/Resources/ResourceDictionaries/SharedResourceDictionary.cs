@@ -11,17 +11,18 @@
     public sealed class SharedResourceDictionary : ResourceDictionary
     {
         /// <summary>
-        /// Internal cache of loaded dictionaries
+        ///     Internal cache of loaded dictionaries
         /// </summary>
-        public static ThreadLocal<IDictionary<Uri, ResourceDictionary>> SharedDictionaries = new ThreadLocal<IDictionary<Uri, ResourceDictionary>>();
+        public static ThreadLocal<IDictionary<Uri, ResourceDictionary>> SharedDictionaries =
+            new ThreadLocal<IDictionary<Uri, ResourceDictionary>>();
 
         /// <summary>
-        /// Local member of the source uri
+        ///     Local member of the source uri
         /// </summary>
         private Uri _sourceUri;
 
         /// <summary>
-        /// Gets or sets the uniform resource identifier (URI) to load resources from.
+        ///     Gets or sets the uniform resource identifier (URI) to load resources from.
         /// </summary>
         public new Uri Source
         {

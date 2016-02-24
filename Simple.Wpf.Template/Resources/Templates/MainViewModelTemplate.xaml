@@ -6,6 +6,7 @@
     <ResourceDictionary.MergedDictionaries>
 
         <rd:SharedResourceDictionary Source="../Converters/Converters.xaml" />
+        <rd:SharedResourceDictionary Source="../Styles/ButtonStyles.xaml" />
 
     </ResourceDictionary.MergedDictionaries>
 
@@ -58,7 +59,7 @@
                                Foreground="{Binding IsServerOnline, Converter={StaticResource ServerOnlineToColorConverter}}"
                                FontWeight="Bold"
                                Text="{Binding ServerStatus}" />
-                    
+
                     <Grid Grid.Row="4"
                           Grid.Column="0"
                           Grid.ColumnSpan="2">
@@ -68,21 +69,30 @@
                             <RowDefinition Height="2" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        
-                        <Button Grid.Row="0"
-                                Grid.Column="0"
-                                Content="Refresh"
-                                HorizontalAlignment="Left"
-                                Command="{Binding RefreshCommand}" />
+
+                        <StackPanel Grid.Row="0"
+                                    Grid.Column="0"
+                                    Orientation="Horizontal">
+
+                            <Button Content="Refresh"
+                                    Margin="0,0,10,0"
+                                    Command="{Binding RefreshCommand}"
+                                    Style="{StaticResource ResourceButtonStyle}" />
+
+                            <Button Content="Add"
+                                    Command="{Binding AddCommand}"
+                                    Style="{StaticResource ResourceButtonStyle}" />
+
+                        </StackPanel>
 
                         <DataGrid Grid.Row="2"
                                   AutoGenerateColumns="False"
-                                  ItemsSource="{Binding Resources}">
+                                  ItemsSource="{Binding Metadata}">
                             <DataGrid.Columns>
                                 <DataGridHyperlinkColumn Header="Resource Url"
                                                          Width="*"
                                                          ContentBinding="{Binding Url}" />
-                                <DataGridCheckBoxColumn Header="Can it modified?"
+                                <DataGridCheckBoxColumn Header="Editable"
                                                         IsThreeState="False"
                                                         IsReadOnly="True"
                                                         Width="Auto"

@@ -24,7 +24,7 @@ namespace Simple.Wpf.Template.Collections
                     {
                         if (handler.Target is CollectionView)
                         {
-                            ((CollectionView)handler.Target).Refresh();
+                            ((CollectionView) handler.Target).Refresh();
                         }
                         else
                         {
@@ -43,7 +43,8 @@ namespace Simple.Wpf.Template.Collections
             array.ForEach(Add);
 
             _suppressNotification = false;
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, array, array.Length));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, array,
+                array.Length));
         }
     }
 }

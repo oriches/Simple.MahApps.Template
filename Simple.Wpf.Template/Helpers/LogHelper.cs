@@ -8,15 +8,15 @@ namespace Simple.Wpf.Template.Helpers
     public static class LogHelper
     {
         private static readonly IEnumerable<LogLevel> AllLevels = new[]
-            {
-                LogLevel.Trace,
-                LogLevel.Debug,
-                LogLevel.Info,
-                LogLevel.Warn,
-                LogLevel.Error,
-                LogLevel.Fatal,
-            };
-        
+                                                                  {
+                                                                      LogLevel.Trace,
+                                                                      LogLevel.Debug,
+                                                                      LogLevel.Info,
+                                                                      LogLevel.Warn,
+                                                                      LogLevel.Error,
+                                                                      LogLevel.Fatal
+                                                                  };
+
         public static void ReconfigureLoggerToLevel(LogLevel level)
         {
             var disableLevels = AllLevels.Where(x => x < level)

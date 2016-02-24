@@ -15,7 +15,7 @@
                     return false;
                 }
 
-                var boolValue = (bool)value;
+                var boolValue = (bool) value;
                 return !boolValue;
             }
             catch (Exception)

@@ -10,15 +10,15 @@
     [TestFixture]
     public class HeartbeatFixtures
     {
-        private TestScheduler _testScheduler;
-        private MockSchedulerService _schedulerService;
-
         [SetUp]
         public void SetUp()
         {
             _testScheduler = new TestScheduler();
             _schedulerService = new MockSchedulerService(_testScheduler);
         }
+
+        private TestScheduler _testScheduler;
+        private MockSchedulerService _schedulerService;
 
         [Test]
         public void beats_regularly()

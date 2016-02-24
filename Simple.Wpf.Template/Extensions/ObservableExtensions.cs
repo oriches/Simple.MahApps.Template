@@ -32,27 +32,32 @@ namespace Simple.Wpf.Template.Extensions
             return observable.Do(x => GestureService.SetBusy());
         }
 
-        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onError, IScheduler scheduler)
+        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext,
+            Action<Exception> onError, IScheduler scheduler)
         {
             return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onError);
         }
 
-        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted, IScheduler scheduler)
+        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted,
+            IScheduler scheduler)
         {
             return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onCompleted);
         }
 
-        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, IScheduler scheduler)
+        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext,
+            IScheduler scheduler)
         {
             return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler));
         }
 
-        public static void SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted, CancellationToken token, IScheduler scheduler)
+        public static void SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted,
+            CancellationToken token, IScheduler scheduler)
         {
             observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onCompleted, token);
         }
 
-        public static void SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onError, Action onCompleted, CancellationToken token, IScheduler scheduler)
+        public static void SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onError,
+            Action onCompleted, CancellationToken token, IScheduler scheduler)
         {
             observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onError, onCompleted, token);
         }

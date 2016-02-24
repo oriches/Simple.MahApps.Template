@@ -28,46 +28,25 @@ namespace Simple.Wpf.Template.Commands
     public class ReactiveCommand<T> : IObservable<T>, ICommand, IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly IDisposable _canDisposable;
 
         private readonly Subject<T> _execute;
-        private readonly IDisposable _canDisposable;
         private bool _currentCanExecute;
 
         protected ReactiveCommand(IObservable<bool> canExecute)
         {
             _canDisposable = canExecute.Subscribe(x =>
-            {
-                _currentCanExecute = x;
-                CommandManager.InvalidateRequerySuggested();
-            });
+                                                  {
+                                                      _currentCanExecute = x;
+                                                      CommandManager.InvalidateRequerySuggested();
+                                                  });
 
             _execute = new Subject<T>();
         }
 
-        public static ReactiveCommand<T> Create()
-        {
-            return new ReactiveCommand<T>(Observable.Return(true));
-        }
-
-        public static ReactiveCommand<T> Create(IObservable<bool> canExecute)
-        {
-            return new ReactiveCommand<T>(canExecute);
-        }
-
-        public void Dispose()
-        {
-            using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
-            {
-                _canDisposable.Dispose();
-
-                _execute.OnCompleted();
-                _execute.Dispose();
-            }
-        }
-
         public virtual void Execute(object parameter)
         {
-            var typedParameter = parameter is T ? (T)parameter : default(T);
+            var typedParameter = parameter is T ? (T) parameter : default(T);
 
             if (CanExecute(typedParameter))
             {
@@ -86,9 +65,30 @@ namespace Simple.Wpf.Template.Commands
             remove { CommandManager.RequerySuggested -= value; }
         }
 
+        public void Dispose()
+        {
+            using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
+            {
+                _canDisposable.Dispose();
+
+                _execute.OnCompleted();
+                _execute.Dispose();
+            }
+        }
+
         public IDisposable Subscribe(IObserver<T> observer)
         {
             return _execute.Subscribe(observer.OnNext, observer.OnError, observer.OnCompleted);
+        }
+
+        public static ReactiveCommand<T> Create()
+        {
+            return new ReactiveCommand<T>(Observable.Return(true));
+        }
+
+        public static ReactiveCommand<T> Create(IObservable<bool> canExecute)
+        {
+            return new ReactiveCommand<T>(canExecute);
         }
     }
 }

@@ -4,15 +4,21 @@ namespace Simple.Wpf.Template
     using System.Diagnostics;
     using System.Reactive.Disposables;
     using System.Reactive.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Threading;
+    using Autofac;
+    using Autofac.Core;
     using Extensions;
     using Helpers;
     using Models;
     using NLog;
     using Resources.Views;
     using Services;
+    using ViewModels;
+    using ObservableExtensions = Extensions.ObservableExtensions;
 
     public partial class App
     {
@@ -25,59 +31,65 @@ namespace Simple.Wpf.Template
 #if DEBUG
             LogHelper.ReconfigureLoggerToLevel(LogLevel.Debug);
 #endif
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            Current.DispatcherUnhandledException += DispatcherOnUnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+
             _disposable = new CompositeDisposable();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             Logger.Info("Starting");
-            Logger.Info("Dispatcher managed thread identifier = {0}", System.Threading.Thread.CurrentThread.ManagedThreadId);
+            Logger.Info("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
 
-            Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
-            RenderCapability.TierChanged += (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
+            Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
+            RenderCapability.TierChanged +=
+                (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
 
             base.OnStartup(e);
 
             BootStrapper.Start();
 
             var messageService = BootStrapper.Resolve<IMessageService>();
+            var schedulerService = BootStrapper.Resolve<ISchedulerService>();
 
-            Extensions.ObservableExtensions.GestureService = BootStrapper.Resolve<IGestureService>();
+            ObservableExtensions.GestureService = BootStrapper.Resolve<IGestureService>();
 
-            var window = new MainWindow(messageService);
+            var window = new MainWindow(messageService, schedulerService);
 
             // The window has to be created before the root visual - all to do with the idling service initialising correctly...
             window.DataContext = BootStrapper.RootVisual;
 
             window.Closed += (s, a) =>
-            {
-                _disposable.Dispose();
-                BootStrapper.Stop();
-            };
+                             {
+                                 _disposable.Dispose();
+                                 BootStrapper.Stop();
+                             };
 
             Current.Exit += (s, a) =>
-            {
-                Logger.Info("Bye Bye!");
-                LogManager.Flush();
-            };
+                            {
+                                Logger.Info("Bye Bye!");
+                                LogManager.Flush();
+                            };
 
             window.Show();
-            
+
             if (Logger.IsInfoEnabled)
             {
                 var dianosticsService = BootStrapper.Resolve<IDiagnosticsService>();
-                var schedulerService = BootStrapper.Resolve<ISchedulerService>();
 
                 BootStrapper.Resolve<IHeartbeatService>().Listen
                     .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
                     .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
                     .SafeSubscribe(x =>
-                    {
-                        var message = $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
+                                   {
+                                       var message =
+                                           $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
 
-                        Debug.WriteLine(message);
-                        Logger.Info(message);
-                    }, schedulerService.Dispatcher)
+                                       Debug.WriteLine(message);
+                                       Logger.Info(message);
+                                   }, schedulerService.Dispatcher)
                     .DisposeWith(_disposable);
             }
 
@@ -86,28 +98,73 @@ namespace Simple.Wpf.Template
 #endif
             Logger.Info("Started");
         }
-       
+
         private static IDisposable ObserveUiFreeze()
         {
             var timer = new DispatcherTimer(DispatcherPriority.Normal)
-            {
-                Interval = Constants.UI.Diagnostics.UiFreezeTimer
-            };
+                        {
+                            Interval = Constants.UI.Diagnostics.UiFreezeTimer
+                        };
 
             var previous = DateTime.Now;
             timer.Tick += (sender, args) =>
-            {
-                var current = DateTime.Now;
-                var delta = current - previous;
-                previous = current;
+                          {
+                              var current = DateTime.Now;
+                              var delta = current - previous;
+                              previous = current;
 
-                if (delta > Constants.UI.Diagnostics.UiFreeze)
-                {
-                    Debug.WriteLine("UI Freeze = {0} ms", delta.TotalMilliseconds);
-                }
-            };
+                              if (delta > Constants.UI.Diagnostics.UiFreeze)
+                              {
+                                  Debug.WriteLine("UI Freeze = {0} ms", delta.TotalMilliseconds);
+                              }
+                          };
 
             timer.Start();
-            return Disposable.Create(timer.Stop);}
+            return Disposable.Create(timer.Stop);
+        }
+
+        private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs args)
+        {
+            Logger.Info("Unhandled app domain exception");
+            HandleException(args.ExceptionObject as Exception);
+        }
+
+        private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            Logger.Info("Unhandled dispatcher thread exception");
+            args.Handled = true;
+
+            HandleException(args.Exception);
+        }
+
+        private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
+        {
+            Logger.Info("Unhandled task exception");
+            args.SetObserved();
+
+            HandleException(args.Exception.GetBaseException());
+        }
+
+        private static void HandleException(Exception exception)
+        {
+            Logger.Error(exception);
+
+            var schedulerService = BootStrapper.Resolve<ISchedulerService>();
+            var messageService = BootStrapper.Resolve<IMessageService>();
+
+            schedulerService.Dispatcher.Schedule(() =>
+                                                 {
+                                                     var parameters = new Parameter[]
+                                                                      {new NamedParameter("exception", exception)};
+                                                     var viewModel =
+                                                         BootStrapper.Resolve<IExceptionViewModel>(parameters);
+
+                                                     viewModel.Closed
+                                                         .Take(1)
+                                                         .Subscribe(x => viewModel.Dispose());
+
+                                                     messageService.Post("whoops - something's gone wrong!", viewModel);
+                                                 });
+        }
     }
 }

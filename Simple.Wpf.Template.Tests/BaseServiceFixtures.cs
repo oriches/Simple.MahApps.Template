@@ -1,5 +1,6 @@
 namespace Simple.Wpf.Template.Tests
 {
+    using Extensions;
     using Moq;
     using Services;
 
@@ -10,7 +11,7 @@ namespace Simple.Wpf.Template.Tests
             GestureService = new Mock<IGestureService>();
             GestureService.Setup(x => x.SetBusy()).Verifiable();
 
-            Extensions.ObservableExtensions.GestureService = GestureService.Object;
+            ObservableExtensions.GestureService = GestureService.Object;
         }
 
         public Mock<IGestureService> GestureService { get; }

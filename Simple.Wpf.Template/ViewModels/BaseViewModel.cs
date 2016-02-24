@@ -11,51 +11,14 @@ namespace Simple.Wpf.Template.ViewModels
 
     public abstract class BaseViewModel : DisposableObject, IViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private sealed class SuspendedNotifications : IDisposable
-        {
-            private readonly BaseViewModel _target;
-            private readonly HashSet<string> _properties = new HashSet<string>();
-            private int _refCount;
-
-            public SuspendedNotifications(BaseViewModel target)
-            {
-                _target = target;
-            }
-
-            public void Add(string propertyName)
-            {
-                _properties.Add(propertyName);
-            }
-
-            public IDisposable AddRef()
-            {
-                ++_refCount;
-                return Disposable.Create(() =>
-                {
-                    if (--_refCount == 0)
-                    {
-                        Dispose();
-                    }
-                });
-            }
-
-            public void Dispose()
-            {
-                _target._suspendedNotifications = null;
-                _properties.ForEach(x => _target.OnPropertyChanged(x));
-            }
-        }
-
         private static readonly PropertyChangedEventArgs EmptyChangeArgs = new PropertyChangedEventArgs(string.Empty);
-        private static readonly IDictionary<string, PropertyChangedEventArgs> ChangedProperties = new Dictionary<string, PropertyChangedEventArgs>();
+
+        private static readonly IDictionary<string, PropertyChangedEventArgs> ChangedProperties =
+            new Dictionary<string, PropertyChangedEventArgs>();
 
         private SuspendedNotifications _suspendedNotifications;
 
-        protected BaseViewModel()
-        {
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public IDisposable SuspendNotifications()
         {
@@ -118,6 +81,41 @@ namespace Simple.Wpf.Template.ViewModels
             OnPropertyChanged(expression);
 
             return true;
+        }
+
+        private sealed class SuspendedNotifications : IDisposable
+        {
+            private readonly HashSet<string> _properties = new HashSet<string>();
+            private readonly BaseViewModel _target;
+            private int _refCount;
+
+            public SuspendedNotifications(BaseViewModel target)
+            {
+                _target = target;
+            }
+
+            public void Dispose()
+            {
+                _target._suspendedNotifications = null;
+                _properties.ForEach(x => _target.OnPropertyChanged(x));
+            }
+
+            public void Add(string propertyName)
+            {
+                _properties.Add(propertyName);
+            }
+
+            public IDisposable AddRef()
+            {
+                ++_refCount;
+                return Disposable.Create(() =>
+                                         {
+                                             if (--_refCount == 0)
+                                             {
+                                                 Dispose();
+                                             }
+                                         });
+            }
         }
     }
 }

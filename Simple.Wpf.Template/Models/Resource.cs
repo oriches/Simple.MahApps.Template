@@ -1,18 +1,21 @@
 namespace Simple.Wpf.Template.Models
 {
     using System;
+    using Newtonsoft.Json;
 
     public sealed class Resource : IEquatable<Resource>
     {
-        public Resource(Uri url, bool immutable)
+        public Resource(string json)
         {
-            Url = url;
-            Immutable = immutable;
+            Json = json;
         }
+
+        [JsonProperty(PropertyName = "json")]
+        public string Json { get; }
 
         public bool Equals(Resource other)
         {
-            return Url == other.Url;
+            return Json == other.Json;
         }
 
         public override bool Equals(object obj)
@@ -23,7 +26,7 @@ namespace Simple.Wpf.Template.Models
 
         public override int GetHashCode()
         {
-            return Url?.GetHashCode() ?? 0;
+            return Json?.GetHashCode() ?? 0;
         }
 
         public static bool operator ==(Resource left, Resource right)
@@ -35,9 +38,5 @@ namespace Simple.Wpf.Template.Models
         {
             return left != null && !left.Equals(right);
         }
-
-        public Uri Url { get; }
-
-        public bool Immutable { get; }
     }
 }

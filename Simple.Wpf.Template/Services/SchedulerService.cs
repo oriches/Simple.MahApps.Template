@@ -28,12 +28,12 @@ namespace Simple.Wpf.Template.Services
             get
             {
                 Func<ThreadStart, Thread> func = x =>
-                {
-                    var thread = new Thread(x) { IsBackground = true };
-                    thread.SetApartmentState(ApartmentState.STA);
+                                                 {
+                                                     var thread = new Thread(x) {IsBackground = true};
+                                                     thread.SetApartmentState(ApartmentState.STA);
 
-                    return thread;
-                };
+                                                     return thread;
+                                                 };
 
                 return new EventLoopScheduler(func);
             }

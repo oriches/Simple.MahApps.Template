@@ -8,9 +8,11 @@ namespace Simple.Wpf.Template.Extensions
     public static class MemoryExtensions
     {
         private static readonly IDictionary<MemoryUnits, string> UnitsAsString = new Dictionary<MemoryUnits, string>();
-        private static readonly IDictionary<MemoryUnits, decimal> UnitsMulitpler = new Dictionary<MemoryUnits, decimal>();
 
-        private static readonly Type MemoryUnitsType = typeof(MemoryUnits);
+        private static readonly IDictionary<MemoryUnits, decimal> UnitsMulitpler =
+            new Dictionary<MemoryUnits, decimal>();
+
+        private static readonly Type MemoryUnitsType = typeof (MemoryUnits);
 
         public static string WorkingSetPrivateAsString(this Memory memory)
         {
@@ -24,7 +26,7 @@ namespace Simple.Wpf.Template.Extensions
 
         private static string ValueAsString(Func<decimal> valueFunc, MemoryUnits units, int decimalPlaces)
         {
-            return $"{decimal.Round(valueFunc() * GetMultipler(units), decimalPlaces):0.00} { GetUnitString(units) }";
+            return $"{decimal.Round(valueFunc()*GetMultipler(units), decimalPlaces):0.00} {GetUnitString(units)}";
         }
 
         private static decimal GetMultipler(MemoryUnits units)
@@ -35,7 +37,7 @@ namespace Simple.Wpf.Template.Extensions
                 return unitsMulitpler;
             }
 
-            unitsMulitpler = 1 / Convert.ToDecimal(units);
+            unitsMulitpler = 1/Convert.ToDecimal(units);
 
             UnitsMulitpler.Add(units, unitsMulitpler);
             return unitsMulitpler;
@@ -50,8 +52,8 @@ namespace Simple.Wpf.Template.Extensions
             }
 
             var memInfo = MemoryUnitsType.GetMember(units.ToString());
-            var attributes = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-            unitsString = ((DescriptionAttribute)attributes[0]).Description;
+            var attributes = memInfo[0].GetCustomAttributes(typeof (DescriptionAttribute), false);
+            unitsString = ((DescriptionAttribute) attributes[0]).Description;
 
             UnitsAsString.Add(units, unitsString);
             return unitsString;

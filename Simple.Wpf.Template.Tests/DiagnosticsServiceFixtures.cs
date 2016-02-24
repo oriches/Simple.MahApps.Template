@@ -16,23 +16,23 @@ namespace Simple.Wpf.Template.Tests
     [TestFixture, Ignore("Inconsistent when running through NCrunch")]
     public sealed class DiagnosticsServiceFixtures
     {
-        private TestScheduler _testScheduler;
-        private ISchedulerService _schedulerService;
-        private Mock<IIdleService> _idleService;
-        private Subject<Unit> _idling;
-
         [SetUp]
         public void Setup()
         {
             _testScheduler = new TestScheduler();
             _schedulerService = new MockSchedulerService(_testScheduler);
-            
+
             _idleService = new Mock<IIdleService>();
-            
+
             _idling = new Subject<Unit>();
             _idleService.Setup(x => x.Idling).Returns(_idling);
         }
-        
+
+        private TestScheduler _testScheduler;
+        private ISchedulerService _schedulerService;
+        private Mock<IIdleService> _idleService;
+        private Subject<Unit> _idling;
+
         [Test]
         public void cpu_pumps_when_idling()
         {
@@ -59,6 +59,54 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
+        public void disposing_stops_streams_pumping()
+        {
+            // ARRANGE
+            var called = false;
+            var service = new DiagnosticsService(_idleService.Object, _schedulerService);
+
+            service.Cpu.Subscribe(x => { called = true; });
+            service.Memory.Subscribe(x => { called = true; });
+
+            // ACT
+            service.Dispose();
+
+            _idling.OnNext(Unit.Default);
+
+            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(10));
+
+            // ASSERT
+            Assert.That(called, Is.False);
+        }
+
+        [Test]
+        public void log_pumps_when_nlog_is_used()
+        {
+            // ARRANGE
+            LogHelper.ReconfigureLoggerToLevel(LogLevel.Error);
+            var logger = LogManager.GetCurrentClassLogger();
+
+            var message1 = string.Format("Message 1 - {0}", Guid.NewGuid());
+            var message2 = string.Format("Message 2 - {0}", Guid.NewGuid());
+
+            var logValues = new List<string>();
+
+            var service = new DiagnosticsService(_idleService.Object, _schedulerService);
+            service.Log.Subscribe(logValues.Add);
+
+            //ACT
+            logger.Error(message1);
+            logger.Error(message2);
+
+            _testScheduler.AdvanceBy(Constants.UI.Diagnostics.DiagnosticsLogInterval +
+                                     Constants.UI.Diagnostics.DiagnosticsLogInterval);
+
+            //ASSERT
+            Assert.That(logValues.Count(x => x.Contains(message1)) == 1, Is.True);
+            Assert.That(logValues.Count(x => x.Contains(message2)) == 1, Is.True);
+        }
+
+        [Test]
         public void memory_pumps_when_idling()
         {
             // ARRANGE
@@ -81,53 +129,6 @@ namespace Simple.Wpf.Template.Tests
             // ASSERT
             Assert.That(values, Is.Not.Empty);
             Assert.That(values.Count, Is.EqualTo(2));
-        }
-
-        [Test]
-        public void log_pumps_when_nlog_is_used()
-        {
-            // ARRANGE
-            LogHelper.ReconfigureLoggerToLevel(LogLevel.Error);
-            var logger = LogManager.GetCurrentClassLogger();
-
-            var message1 = string.Format("Message 1 - {0}", Guid.NewGuid());
-            var message2 = string.Format("Message 2 - {0}", Guid.NewGuid());
-
-            var logValues = new List<string>();
-
-            var service = new DiagnosticsService(_idleService.Object, _schedulerService);
-            service.Log.Subscribe(logValues.Add);
-
-            //ACT
-            logger.Error(message1);
-            logger.Error(message2);
-
-            _testScheduler.AdvanceBy(Constants.UI.Diagnostics.DiagnosticsLogInterval + Constants.UI.Diagnostics.DiagnosticsLogInterval);
-
-            //ASSERT
-            Assert.That(logValues.Count(x => x.Contains(message1)) == 1, Is.True);
-            Assert.That(logValues.Count(x => x.Contains(message2)) == 1, Is.True);
-        }
-        
-        [Test]
-        public void disposing_stops_streams_pumping()
-        {
-            // ARRANGE
-            var called = false;
-            var service = new DiagnosticsService(_idleService.Object, _schedulerService);
-            
-            service.Cpu.Subscribe(x => { called = true; });
-            service.Memory.Subscribe(x => { called = true; });
-
-            // ACT
-            service.Dispose();
-
-            _idling.OnNext(Unit.Default);
-
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(10));
-
-            // ASSERT
-            Assert.That(called, Is.False);
         }
     }
 }

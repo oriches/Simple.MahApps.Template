@@ -14,5 +14,14 @@ namespace Simple.Wpf.Template.Extensions
                                                                   return Disposable.Empty;
                                                               });
         }
+
+        public static IDisposable Schedule(this IScheduler scheduler, Action action)
+        {
+            return scheduler.Schedule<object>(null, (s1, s2) =>
+                                                    {
+                                                        action();
+                                                        return Disposable.Empty;
+                                                    });
+        }
     }
 }

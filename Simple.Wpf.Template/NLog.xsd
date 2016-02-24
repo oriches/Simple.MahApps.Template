@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NLog" targetNamespace="http://www.nlog-project.org/schemas/NLog.xsd" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.nlog-project.org/schemas/NLog.xsd">
+
+<xs:schema id="NLog" targetNamespace="http://www.nlog-project.org/schemas/NLog.xsd" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.nlog-project.org/schemas/NLog.xsd">
   <xs:element name="nlog" type="NLogConfiguration" />
   <xs:complexType name="NLogConfiguration">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -310,7 +312,8 @@
           <xs:element name="queueLimit" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="timeToSleepBetweenBatches" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="batchSize" minOccurs="0" maxOccurs="1" type="xs:integer" />
-          <xs:element name="overflowAction" minOccurs="0" maxOccurs="1" type="NLog.Targets.Wrappers.AsyncTargetWrapperOverflowAction" />
+          <xs:element name="overflowAction" minOccurs="0" maxOccurs="1"
+                      type="NLog.Targets.Wrappers.AsyncTargetWrapperOverflowAction" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -535,8 +538,10 @@
           <xs:element name="footer" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="header" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="layout" minOccurs="0" maxOccurs="1" type="Layout" />
-          <xs:element name="highlight-row" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.ConsoleRowHighlightingRule" />
-          <xs:element name="highlight-word" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.ConsoleWordHighlightingRule" />
+          <xs:element name="highlight-row" minOccurs="0" maxOccurs="unbounded"
+                      type="NLog.Targets.ConsoleRowHighlightingRule" />
+          <xs:element name="highlight-word" minOccurs="0" maxOccurs="unbounded"
+                      type="NLog.Targets.ConsoleWordHighlightingRule" />
           <xs:element name="useDefaultRowHighlightingRules" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="errorStream" minOccurs="0" maxOccurs="1" type="xs:boolean" />
         </xs:choice>
@@ -708,8 +713,10 @@
           <xs:element name="connectionString" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="dbHost" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="dbDatabase" minOccurs="0" maxOccurs="1" type="Layout" />
-          <xs:element name="uninstall-command" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseCommandInfo" />
-          <xs:element name="install-command" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseCommandInfo" />
+          <xs:element name="uninstall-command" minOccurs="0" maxOccurs="unbounded"
+                      type="NLog.Targets.DatabaseCommandInfo" />
+          <xs:element name="install-command" minOccurs="0" maxOccurs="unbounded"
+                      type="NLog.Targets.DatabaseCommandInfo" />
           <xs:element name="installConnectionString" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseParameterInfo" />
           <xs:element name="commandText" minOccurs="0" maxOccurs="1" type="Layout" />
@@ -1258,7 +1265,8 @@
           <xs:element name="userName" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="logOnType" minOccurs="0" maxOccurs="1" type="NLog.Targets.Wrappers.SecurityLogOnType" />
           <xs:element name="domain" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="impersonationLevel" minOccurs="0" maxOccurs="1" type="NLog.Targets.Wrappers.SecurityImpersonationLevel" />
+          <xs:element name="impersonationLevel" minOccurs="0" maxOccurs="1"
+                      type="NLog.Targets.Wrappers.SecurityImpersonationLevel" />
           <xs:element name="logOnProvider" minOccurs="0" maxOccurs="1" type="NLog.Targets.Wrappers.LogOnProviderType" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
@@ -2094,9 +2102,11 @@
           <xs:element name="autoScroll" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="height" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="formName" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="word-coloring" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.RichTextBoxWordColoringRule" />
+          <xs:element name="word-coloring" minOccurs="0" maxOccurs="unbounded"
+                      type="NLog.Targets.RichTextBoxWordColoringRule" />
           <xs:element name="useDefaultRowColoringRules" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="row-coloring" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.RichTextBoxRowColoringRule" />
+          <xs:element name="row-coloring" minOccurs="0" maxOccurs="unbounded"
+                      type="NLog.Targets.RichTextBoxRowColoringRule" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>

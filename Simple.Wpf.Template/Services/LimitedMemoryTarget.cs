@@ -14,7 +14,7 @@ namespace Simple.Wpf.Template.Services
         {
             Limit = 1000;
         }
-        
+
         public IEnumerable<string> Logs => _logs;
 
         [DefaultValue(1000)]

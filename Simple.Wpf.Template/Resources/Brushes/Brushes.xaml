@@ -9,5 +9,5 @@
     <SolidColorBrush x:Key="StatusOfflineBrush"
                      Color="Red"
                      po:Freeze="True" />
-    
+
 </ResourceDictionary>

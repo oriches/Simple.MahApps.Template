@@ -8,7 +8,7 @@ namespace Simple.Wpf.Template.ViewModels
     public sealed class ChromeViewModel : BaseViewModel, IChromeViewModel
     {
         private OverlayViewModel _overlay;
-        
+
         public ChromeViewModel(IMainViewModel main, IOverlayService overlayService)
         {
             Main = main;
@@ -23,9 +23,9 @@ namespace Simple.Wpf.Template.ViewModels
             CloseOverlayCommand.Subscribe(x => ClearOverlay())
                 .DisposeWith(this);
         }
-        
+
         public IMainViewModel Main { get; }
-        
+
         public ReactiveCommand<object> CloseOverlayCommand { get; }
 
         public bool HasOverlay => _overlay != null;
@@ -36,7 +36,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         private void ClearOverlay()
         {
-            using(_overlay.Lifetime)
+            using (_overlay.Lifetime)
             {
                 UpdateOverlayImpl(null);
             }

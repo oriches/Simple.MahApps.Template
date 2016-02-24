@@ -13,18 +13,6 @@ namespace Simple.Wpf.Template.ViewModels
         private string _managedMemory;
         private string _totalMemory;
 
-        internal struct FormattedMemory
-        {
-            public string ManagedMemory { get; }
-            public string TotalMemory { get; }
-
-            public FormattedMemory(string managedMemory, string totalMemory)
-            {
-                ManagedMemory = managedMemory;
-                TotalMemory = totalMemory;
-            }
-        }
-
         public DiagnosticsViewModel(IDiagnosticsService diagnosticsService, ISchedulerService schedulerService)
         {
             Cpu = Constants.UI.Diagnostics.DefaultCpuString;
@@ -91,6 +79,18 @@ namespace Simple.Wpf.Template.ViewModels
             var totalMemory = $"Total Memory: {memory.WorkingSetPrivateAsString()}";
 
             return new FormattedMemory(managedMemory, totalMemory);
+        }
+
+        internal struct FormattedMemory
+        {
+            public string ManagedMemory { get; }
+            public string TotalMemory { get; }
+
+            public FormattedMemory(string managedMemory, string totalMemory)
+            {
+                ManagedMemory = managedMemory;
+                TotalMemory = totalMemory;
+            }
         }
     }
 }

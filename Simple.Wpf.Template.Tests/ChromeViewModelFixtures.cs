@@ -1,7 +1,10 @@
 namespace Simple.Wpf.Template.Tests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Reactive.Disposables;
     using System.Reactive.Subjects;
+    using Models;
     using Moq;
     using NUnit.Framework;
     using Rest;
@@ -11,13 +14,6 @@ namespace Simple.Wpf.Template.Tests
     [TestFixture]
     public sealed class ChromeViewModelFixtures : BaseViewModelFixtures
     {
-        private Mock<IOverlayService> _overlayService;
-        private Subject<OverlayViewModel> _show;
-
-        private MainViewModel _mainViewModel;
-        private Mock<IDiagnosticsViewModel> _diagnostics;
-        private Mock<IRestClient> _restClient;
-
         [SetUp]
         public void Setup()
         {
@@ -29,40 +25,23 @@ namespace Simple.Wpf.Template.Tests
             _restClient = new Mock<IRestClient>();
 
             _diagnostics = new Mock<IDiagnosticsViewModel>();
-            
+
             var messageService = new Mock<IMessageService>();
-            _mainViewModel = new MainViewModel(_diagnostics.Object, messageService.Object, _restClient.Object, SchedulerService);
+
+            var addResourceViewModel = new Mock<IAddResourceViewModel>();
+
+            Func<IEnumerable<Metadata>, IAddResourceViewModel> addResourceFactory = x => addResourceViewModel.Object;
+
+            _mainViewModel = new MainViewModel(addResourceFactory, _diagnostics.Object, messageService.Object,
+                _restClient.Object, SchedulerService);
         }
 
-        [Test]
-        public void no_overlay_when_created()
-        {
-            // ARRANGE
-            // ACT
-            var viewModel = new ChromeViewModel(_mainViewModel, _overlayService.Object);
-            
-            // ASSERT
-            Assert.That(viewModel.HasOverlay, Is.False);
-            Assert.That(viewModel.OverlayHeader, Is.Empty);
-            Assert.That(viewModel.Overlay, Is.Null);
-        }
+        private Mock<IOverlayService> _overlayService;
+        private Subject<OverlayViewModel> _show;
 
-        [Test]
-        public void shows_overlay()
-        {
-            // ARRANGE
-            var viewModel = new ChromeViewModel(_mainViewModel, _overlayService.Object);
-            var contentViewModel = new Mock<BaseViewModel>();
-            var overlayViewModel = new OverlayViewModel("header 1", contentViewModel.Object, Disposable.Empty);
-            
-            // ACT
-            _show.OnNext(overlayViewModel);
-
-            // ASSERT
-            Assert.That(viewModel.HasOverlay, Is.True);
-            Assert.That(viewModel.OverlayHeader, Is.EqualTo("header 1"));
-            Assert.That(viewModel.Overlay, Is.EqualTo(contentViewModel.Object));
-        }
+        private MainViewModel _mainViewModel;
+        private Mock<IDiagnosticsViewModel> _diagnostics;
+        private Mock<IRestClient> _restClient;
 
         [Test]
         public void clears_overlay()
@@ -76,6 +55,19 @@ namespace Simple.Wpf.Template.Tests
 
             // ACT
             viewModel.CloseOverlayCommand.Execute(null);
+
+            // ASSERT
+            Assert.That(viewModel.HasOverlay, Is.False);
+            Assert.That(viewModel.OverlayHeader, Is.Empty);
+            Assert.That(viewModel.Overlay, Is.Null);
+        }
+
+        [Test]
+        public void no_overlay_when_created()
+        {
+            // ARRANGE
+            // ACT
+            var viewModel = new ChromeViewModel(_mainViewModel, _overlayService.Object);
 
             // ASSERT
             Assert.That(viewModel.HasOverlay, Is.False);
@@ -103,6 +95,23 @@ namespace Simple.Wpf.Template.Tests
             Assert.That(viewModel.HasOverlay, Is.True);
             Assert.That(viewModel.OverlayHeader, Is.EqualTo("header 2"));
             Assert.That(viewModel.Overlay, Is.EqualTo(contentViewModel2.Object));
+        }
+
+        [Test]
+        public void shows_overlay()
+        {
+            // ARRANGE
+            var viewModel = new ChromeViewModel(_mainViewModel, _overlayService.Object);
+            var contentViewModel = new Mock<BaseViewModel>();
+            var overlayViewModel = new OverlayViewModel("header 1", contentViewModel.Object, Disposable.Empty);
+
+            // ACT
+            _show.OnNext(overlayViewModel);
+
+            // ASSERT
+            Assert.That(viewModel.HasOverlay, Is.True);
+            Assert.That(viewModel.OverlayHeader, Is.EqualTo("header 1"));
+            Assert.That(viewModel.Overlay, Is.EqualTo(contentViewModel.Object));
         }
     }
 }

@@ -2,47 +2,48 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels">
 
-    <DataTemplate DataType="{x:Type vm:DateOfBirthViewModel}">
+    <DataTemplate DataType="{x:Type vm:AddResourceViewModel}">
 
         <Grid>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="20" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0"
-                        Grid.Row="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Orientation="Horizontal">
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="Path:" />
 
-                <ComboBox Margin="5,0"
-                          Width="50"
-                          ItemsSource="{Binding Path=Days, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Day, Mode=TwoWay}" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="0"
+                     Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <ComboBox Margin="5,0"
-                          Width="50"
-                          ItemsSource="{Binding Path=Months, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Month, Mode=TwoWay}" />
+            <TextBlock Grid.Row="3"
+                       Grid.Column="0"
+                       Text="JSON:" />
 
-                <ComboBox Margin="5,0"
-                          Width="75"
-                          ItemsSource="{Binding Path=Years, Mode=OneWay}"
-                          SelectedValue="{Binding Path=Year, Mode=TwoWay}" />
-                
-            </StackPanel>
+            <TextBox Grid.Row="4"
+                     Grid.Column="0"
+                     Height="200"
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     Text="{Binding Json, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <StackPanel Grid.Column="0"
-                        Grid.Row="2"
+                        Grid.Row="6"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
 
                 <Button Margin="5,0"
-                        Content="Enter"
+                        Content="Add"
                         Width="100"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
