@@ -94,26 +94,15 @@ function getMetadata(req: http.ServerRequest, res: http.ServerResponse) {
 
 function postResource(req: http.ServerRequest, res: http.ServerResponse) {
 
-    var folder = (rootPath + req.url)
-        .split("/")
-        .join("\\");
-
-    var fullPath = folder + "\\" + filename;
-
-    req.on("readable", () => {
-        var data = read(req);
-        var json = extractJsonFromResource(data);
-
-        mkdirp(folder, err => processAnyError(err, res));
-
-        fs.writeFile(fullPath, json, () => {
-            writeSuccessfulHeader(res)
-                .end(data);
-        });
-    });
-} 
+    saveResource(req, res);
+}
 
 function putResource(req: http.ServerRequest, res: http.ServerResponse) {
+
+    saveResource(req, res);
+}
+
+function saveResource(req: http.ServerRequest, res: http.ServerResponse) {
 
     var folder = (rootPath + req.url)
         .split("/")
@@ -125,11 +114,15 @@ function putResource(req: http.ServerRequest, res: http.ServerResponse) {
         var data = read(req);
         var json = extractJsonFromResource(data);
 
-        mkdirp(folder, err => processAnyError(err, res));
+        mkdirp(folder, err => {
+            if (processAnyError(err, res)) {
+                return;
+            }
 
-        fs.writeFile(fullPath, json, () => {
-            writeSuccessfulHeader(res)
-                .end(data);
+            fs.writeFile(fullPath, json, () => {
+                writeSuccessfulHeader(res)
+                    .end(data);
+            });
         });
     });
 }
@@ -144,18 +137,21 @@ function read(req: http.ServerRequest): string {
     return data;
 }
 
-function extractJsonFromResource(json: string): string
-{
+function extractJsonFromResource(json: string): string {
     var resource: dto.Dto.Resource = JSON.parse(json);
     return resource.json;
 }
 
-function processAnyError(err: any, res: http.ServerResponse) {
+function processAnyError(err: any, res: http.ServerResponse): Boolean {
     if (err) {
         console.log(`Failed - ${err}`);
         res.writeHead(500, "Something has borked!");
         res.end();
+
+        return true;
     }
+
+    return false;
 }
 
 function getFiles(dir, files: dto.Dto.File[]) {
