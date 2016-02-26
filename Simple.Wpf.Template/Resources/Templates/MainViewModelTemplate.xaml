@@ -1,7 +1,10 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels"
-                    xmlns:rd="clr-namespace:Simple.Wpf.Template.Resources.ResourceDictionaries">
+                    xmlns:rd="clr-namespace:Simple.Wpf.Template.Resources.ResourceDictionaries"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:b="clr-namespace:Simple.Wpf.Template.Resources.Behaviors"
+                    xmlns:m="clr-namespace:Simple.Wpf.Template.Models">
 
     <ResourceDictionary.MergedDictionaries>
 
@@ -89,10 +92,22 @@
                                   AutoGenerateColumns="False"
                                   ItemsSource="{Binding Metadata}">
                             <DataGrid.Columns>
-                                <DataGridHyperlinkColumn Header="Resource Url"
-                                                         Width="*"
-                                                         ContentBinding="{Binding Url}" />
-                                <DataGridCheckBoxColumn Header="Editable"
+                                <DataGridTemplateColumn Header="Resource Url"
+                                                        Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type m:Metadata}">
+                                            <TextBlock>
+                                                <Hyperlink NavigateUri="{Binding Url, Mode=OneTime}">
+                                                    <i:Interaction.Behaviors>
+                                                        <b:HyperlinkBehavior />
+                                                    </i:Interaction.Behaviors>  
+                                                    <TextBlock Text="{Binding Url, Mode=OneTime}" />
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridCheckBoxColumn Header="Editaqble"
                                                         IsThreeState="False"
                                                         IsReadOnly="True"
                                                         Width="Auto"

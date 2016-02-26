@@ -71,12 +71,12 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged(x => x.IsOnline)
                 .Where(x => x.IsOnline)
                 .SelectMany(x => ObserveRefresh(), (x, y) => x)
-                .SelectMany(x => ObserveMetadata(), (x, y) => new {Status = x, Metadata = y})
+                .SelectMany(x => ObserveMetadata(), (x, y) => y)
                 .ObserveOn(_schedulerService.Dispatcher)
                 .Subscribe(x =>
                            {
                                _metadata.Clear();
-                               _metadata.AddRange(x.Metadata);
+                               _metadata.AddRange(x);
                            })
                 .DisposeWith(this);
         }
