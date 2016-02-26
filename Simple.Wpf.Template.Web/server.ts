@@ -108,7 +108,7 @@ function postResource(req: http.ServerRequest, res: http.ServerResponse) {
 
         fs.writeFile(fullPath, json, () => {
             writeSuccessfulHeader(res)
-                .end();
+                .end(data);
         });
     });
 } 

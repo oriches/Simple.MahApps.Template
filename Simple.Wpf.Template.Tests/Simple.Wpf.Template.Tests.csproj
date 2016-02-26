@@ -119,6 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddResourceViewModelFixtures.cs" />
     <Compile Include="BaseServiceFixtures.cs" />
     <Compile Include="BaseViewModelFixtures.cs" />
     <Compile Include="ChromeViewModelFixtures.cs" />

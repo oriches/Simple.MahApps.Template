@@ -7,18 +7,14 @@ namespace Simple.Wpf.Template.Tests
     using ViewModels;
     using ObservableExtensions = Extensions.ObservableExtensions;
 
+
     [TestFixture]
-    public sealed class ExceptionViewModelFixtures
+    public sealed class ExceptionViewModelFixtures: BaseServiceFixtures
     {
         [SetUp]
         public void Setup()
         {
             _applicationService = new Mock<IApplicationService>();
-
-            var gestureService = new Mock<IGestureService>();
-            gestureService.Setup(x => x.SetBusy());
-
-            ObservableExtensions.GestureService = gestureService.Object;
         }
 
         private Mock<IApplicationService> _applicationService;

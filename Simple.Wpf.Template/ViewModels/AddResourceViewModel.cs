@@ -23,7 +23,7 @@ namespace Simple.Wpf.Template.ViewModels
             _urls = metadata.Select(x => x.Url.ToString());
 
             Confirmed
-                .SelectMany(x => restClient.PutAsync(BuildUrl(), new Resource(_json)).ToObservable(), (x, y) => y)
+                .SelectMany(x => restClient.PostAsync(BuildUrl(), new Resource(_json)).ToObservable(), (x, y) => y)
                 .Take(1)
                 .Subscribe()
                 .DisposeWith(this);
@@ -44,7 +44,7 @@ namespace Simple.Wpf.Template.ViewModels
         protected override IObservable<bool> InitialiseCanConfirm()
         {
             return this.ObservePropertyChanged(x => Path, x => Json)
-                .Select(x => IsValidJson(Json) && IsPathAvailable(Path))
+                .Select(x => !string.IsNullOrEmpty(Path) && IsPathAvailable(Path) && IsValidJson(Json))
                 .StartWith(false);
         }
 
