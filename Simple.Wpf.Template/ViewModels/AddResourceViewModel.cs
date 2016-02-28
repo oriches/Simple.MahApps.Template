@@ -3,12 +3,12 @@ namespace Simple.Wpf.Template.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reactive;
     using System.Reactive.Linq;
     using System.Reactive.Threading.Tasks;
     using Extensions;
+    using Helpers;
     using Models;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using Rest;
 
     public sealed class AddResourceViewModel : CloseableViewModel, IAddResourceViewModel
@@ -22,11 +22,10 @@ namespace Simple.Wpf.Template.ViewModels
         {
             _urls = metadata.Select(x => x.Url.ToString());
 
-            Confirmed
+            Added = Confirmed
                 .SelectMany(x => restClient.PostAsync(BuildUrl(), new Resource(_json)).ToObservable(), (x, y) => y)
                 .Take(1)
-                .Subscribe()
-                .DisposeWith(this);
+                .AsUnit();
         }
 
         public string Path
@@ -41,29 +40,13 @@ namespace Simple.Wpf.Template.ViewModels
             set { SetPropertyAndNotify(ref _json, value, () => Json); }
         }
 
+        public IObservable<Unit> Added { get; }
+
         protected override IObservable<bool> InitialiseCanConfirm()
         {
             return this.ObservePropertyChanged(x => Path, x => Json)
-                .Select(x => !string.IsNullOrEmpty(Path) && IsPathAvailable(Path) && IsValidJson(Json))
+                .Select(x => !string.IsNullOrEmpty(Path) && IsPathAvailable(Path) && JsonHelper.IsValid(Json))
                 .StartWith(false);
-        }
-
-        private static bool IsValidJson(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return false;
-            }
-
-            try
-            {
-                JToken.Parse(value);
-                return true;
-            }
-            catch (JsonReaderException)
-            {
-                return false;
-            }
         }
 
         private bool IsPathAvailable(string value)

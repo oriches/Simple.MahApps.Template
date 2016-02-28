@@ -3,6 +3,7 @@ namespace Simple.Wpf.Template.Tests
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reactive;
     using System.Reactive.Linq;
     using System.Threading.Tasks;
     using Models;
@@ -30,8 +31,10 @@ namespace Simple.Wpf.Template.Tests
             _diagnostics = new Mock<IDiagnosticsViewModel>();
 
             var addResourceViewModel = new Mock<IAddResourceViewModel>();
-
             _addResourceFactory = x => addResourceViewModel.Object;
+
+            var metadataViewModel = new Mock<IMetadataViewModel>();
+            _metadataFactory = x => metadataViewModel.Object;
         }
 
         private Mock<IMessageService> _messageService;
@@ -40,6 +43,7 @@ namespace Simple.Wpf.Template.Tests
         private Mock<IRestClient> _restClient;
 
         private Func<IEnumerable<Metadata>, IAddResourceViewModel> _addResourceFactory;
+        private Func<Metadata, IMetadataViewModel> _metadataFactory;
 
         [Test]
         public void is_offline_when_request_times_out()
@@ -55,8 +59,12 @@ namespace Simple.Wpf.Template.Tests
                 .Returns(task);
 
             // ACT
-            var viewModel = new MainViewModel(_addResourceFactory, _diagnostics.Object, _messageService.Object,
-                _restClient.Object, SchedulerService);
+            var viewModel = new MainViewModel(_addResourceFactory,
+                _metadataFactory, 
+                _diagnostics.Object,
+                _messageService.Object,
+                _restClient.Object,
+                SchedulerService);
 
             TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
 
@@ -75,8 +83,14 @@ namespace Simple.Wpf.Template.Tests
                 .Returns(Task.FromResult(heartbeatResponse.Object));
 
             // ACT
-            var viewModel = new MainViewModel(_addResourceFactory, _diagnostics.Object, _messageService.Object,
-                _restClient.Object, SchedulerService);
+            var viewModel = new MainViewModel(_addResourceFactory,
+                _metadataFactory,
+                _diagnostics.Object,
+                _messageService.Object,
+                _restClient.Object,
+                SchedulerService);
+
+            TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
 
             // ASSERT
             Assert.That(viewModel.IsServerOnline, Is.False);
@@ -99,8 +113,12 @@ namespace Simple.Wpf.Template.Tests
                 .Returns(Task.FromResult(resourceResponse.Object));
 
             // ACT
-            var viewModel = new MainViewModel(_addResourceFactory, _diagnostics.Object, _messageService.Object,
-                _restClient.Object, SchedulerService);
+            var viewModel = new MainViewModel(_addResourceFactory,
+                _metadataFactory,
+                _diagnostics.Object,
+                _messageService.Object,
+                _restClient.Object,
+                SchedulerService);
 
             TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
 
@@ -109,7 +127,7 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
-        public void populates_resources()
+        public void populates_metadata()
         {
             // ARRANGE
             var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
@@ -118,29 +136,75 @@ namespace Simple.Wpf.Template.Tests
             _restClient.Setup(x => x.GetAsync<Heartbeat>(It.Is<Uri>(y => y == Constants.Server.Hearbeat.Url)))
                 .Returns(Task.FromResult(heartbeatResponse.Object));
 
-            var resources = new[]
+            var metadata = new[]
                             {
                                 new Metadata(new Uri("http://localhost/foo"), true)
                             };
 
+            var metadataViewModel = new Mock<IMetadataViewModel>();
+            metadataViewModel.Setup(x => x.Metadata).Returns(metadata.First());
+            metadataViewModel.Setup(x => x.Deleted).Returns(Observable.Never<Unit>());
+
+            _metadataFactory = x => metadataViewModel.Object;
+
             var resourceResponse = new Mock<IRestResponse<IEnumerable<Metadata>>>();
-            resourceResponse.Setup(x => x.Resource).Returns(resources);
+            resourceResponse.Setup(x => x.Resource).Returns(metadata);
 
             _restClient.Setup(x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
                 .Returns(Task.FromResult(resourceResponse.Object));
 
             // ACT
-            var viewModel = new MainViewModel(_addResourceFactory, _diagnostics.Object, _messageService.Object,
-                _restClient.Object, SchedulerService);
+            var viewModel = new MainViewModel(_addResourceFactory,
+                _metadataFactory,
+                _diagnostics.Object,
+                _messageService.Object,
+                _restClient.Object,
+                SchedulerService);
 
             TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
 
             // ASSERT
-            var result = viewModel.Metadata.Cast<Metadata>();
+            var result = viewModel.Metadata.Cast<IMetadataViewModel>().Select(x => x.Metadata);
 
             Assert.That(result, Is.Not.Empty);
-            Assert.That(result.First().Url, Is.EqualTo(resources.First().Url));
-            Assert.That(result.First().Immutable, Is.EqualTo(resources.First().Immutable));
+            Assert.That(result.First().Url, Is.EqualTo(metadata.First().Url));
+            Assert.That(result.First().Immutable, Is.EqualTo(metadata.First().Immutable));
+        }
+
+        [Test]
+        public void adds_metadata()
+        {
+            // ARRANGE
+            var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
+            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+
+            _restClient.Setup(x => x.GetAsync<Heartbeat>(It.IsAny<Uri>()))
+                .Returns(Task.FromResult(heartbeatResponse.Object));
+
+            var resourceResponse = new Mock<IRestResponse<IEnumerable<Metadata>>>();
+            resourceResponse.Setup(x => x.Resource).Returns(new Metadata[0]);
+
+            _restClient.Setup(x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
+                .Returns(Task.FromResult(resourceResponse.Object));
+
+            var addResourceViewModel = new Mock<IAddResourceViewModel>();
+            addResourceViewModel.Setup(x => x.Added).Returns(Observable.Return(Unit.Default));
+            _addResourceFactory = x => addResourceViewModel.Object;
+
+            // ACT
+            var viewModel = new MainViewModel(_addResourceFactory,
+                _metadataFactory,
+                _diagnostics.Object,
+                _messageService.Object,
+                _restClient.Object,
+                SchedulerService);
+
+            TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
+
+            viewModel.AddCommand.Execute(null);
+
+            // ASSERT
+            addResourceViewModel.VerifyAll();
         }
     }
 }

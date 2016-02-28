@@ -29,11 +29,17 @@ namespace Simple.Wpf.Template.Tests
             var messageService = new Mock<IMessageService>();
 
             var addResourceViewModel = new Mock<IAddResourceViewModel>();
-
             Func<IEnumerable<Metadata>, IAddResourceViewModel> addResourceFactory = x => addResourceViewModel.Object;
 
-            _mainViewModel = new MainViewModel(addResourceFactory, _diagnostics.Object, messageService.Object,
-                _restClient.Object, SchedulerService);
+            var metadataViewModel = new Mock<IMetadataViewModel>();
+            Func<Metadata, IMetadataViewModel> metadataFactory = x => metadataViewModel.Object;
+
+            _mainViewModel = new MainViewModel(addResourceFactory,
+                metadataFactory,
+                _diagnostics.Object,
+                messageService.Object,
+                _restClient.Object,
+                SchedulerService);
         }
 
         private Mock<IOverlayService> _overlayService;

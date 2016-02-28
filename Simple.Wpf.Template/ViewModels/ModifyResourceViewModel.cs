@@ -1,21 +1,37 @@
 namespace Simple.Wpf.Template.ViewModels
 {
     using System;
+    using System.Reactive;
     using System.Reactive.Linq;
+    using System.Reactive.Threading.Tasks;
     using Extensions;
+    using Helpers;
     using Models;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using Rest;
+    using Services;
 
     public sealed class ModifyResourceViewModel : CloseableViewModel, IModifyResourceViewModel
     {
-        private readonly Metadata _metadata;
         private string _json;
 
-        public ModifyResourceViewModel(Metadata metadata)
+        public ModifyResourceViewModel(Metadata metadata, IRestClient restClient, ISchedulerService schedulerService)
         {
-            _metadata = metadata;
             Path = metadata.Url.ToString().Replace(Constants.Server.BaseUri, string.Empty);
+
+            Observable.Return(Unit.Default)
+                .ActivateGestures()
+                .SelectMany(x => restClient.GetAsync<object>(metadata.Url).ToObservable(), (x, y) => y)
+                .Select(x => JsonConvert.SerializeObject(x.Resource, Formatting.Indented))
+                .ObserveOn(schedulerService.Dispatcher)
+                .Do(x => Json = x)
+                .SelectMany(x => Confirmed, (x, y) => y)
+                .ActivateGestures()
+                .ObserveOn(schedulerService.TaskPool)
+                .SelectMany(x => restClient.PutAsync(metadata.Url, new Resource(Json)).ToObservable(), (x, y) => y)
+                .Take(1)
+                .Subscribe()
+                .DisposeWith(this);
         }
 
         public string Path { get; }
@@ -28,27 +44,9 @@ namespace Simple.Wpf.Template.ViewModels
 
         protected override IObservable<bool> InitialiseCanConfirm()
         {
-            return this.ObservePropertyChanged(x => Path, x => Json)
-                .Select(x => IsValidJson(Json))
+            return this.ObservePropertyChanged(x => Json)
+                .Select(x => JsonHelper.IsValid(Json))
                 .StartWith(false);
-        }
-
-        private static bool IsValidJson(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return false;
-            }
-
-            try
-            {
-                JToken.Parse(value);
-                return true;
-            }
-            catch (JsonReaderException)
-            {
-                return false;
-            }
         }
     }
 }

@@ -3,8 +3,7 @@
                     xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels"
                     xmlns:rd="clr-namespace:Simple.Wpf.Template.Resources.ResourceDictionaries"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                    xmlns:b="clr-namespace:Simple.Wpf.Template.Resources.Behaviors"
-                    xmlns:m="clr-namespace:Simple.Wpf.Template.Models">
+                    xmlns:b="clr-namespace:Simple.Wpf.Template.Resources.Behaviors">
 
     <ResourceDictionary.MergedDictionaries>
 
@@ -92,26 +91,52 @@
                                   AutoGenerateColumns="False"
                                   ItemsSource="{Binding Metadata}">
                             <DataGrid.Columns>
+
                                 <DataGridTemplateColumn Header="Resource Url"
                                                         Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type m:Metadata}">
-                                            <TextBlock>
-                                                <Hyperlink NavigateUri="{Binding Url, Mode=OneTime}">
-                                                    <i:Interaction.Behaviors>
-                                                        <b:HyperlinkBehavior />
-                                                    </i:Interaction.Behaviors>  
-                                                    <TextBlock Text="{Binding Url, Mode=OneTime}" />
-                                                </Hyperlink>
-                                            </TextBlock>
+                                        <DataTemplate DataType="{x:Type vm:IMetadataViewModel}">
+
+                                            <Grid Margin="1">
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           VerticalAlignment="Center">
+                                                    <Hyperlink NavigateUri="{Binding Url, Mode=OneTime}">
+                                                        <i:Interaction.Behaviors>
+                                                            <b:HyperlinkBehavior />
+                                                        </i:Interaction.Behaviors>  
+                                                        <TextBlock Text="{Binding Url, Mode=OneTime}" />
+                                                    </Hyperlink>
+                                                </TextBlock>
+
+                                                <Button Grid.Row="0"
+                                                        Grid.Column="1"
+                                                        Content="Modify"
+                                                        Margin="0,0,2,0"
+                                                        VerticalAlignment="top"
+                                                        IsEnabled="{Binding Editable, Mode=OneTime}"
+                                                        Command="{Binding ModifyCommand, Mode=OneTime}"
+                                                        Style="{StaticResource ResourceButtonStyle}" />
+
+                                                <Button Grid.Row="0"
+                                                        Grid.Column="2"
+                                                        Content="Delete"
+                                                        IsEnabled="{Binding Editable, Mode=OneTime}"
+                                                        Command="{Binding DeleteCommand, Mode=OneTime}"
+                                                        Style="{StaticResource ResourceButtonStyle}" />
+
+                                            </Grid>
+
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridCheckBoxColumn Header="Editaqble"
-                                                        IsThreeState="False"
-                                                        IsReadOnly="True"
-                                                        Width="Auto"
-                                                        Binding="{Binding Immutable, Mode=OneTime, Converter={StaticResource BooleanInvertConverter}}" />
                             </DataGrid.Columns>
                         </DataGrid>
 

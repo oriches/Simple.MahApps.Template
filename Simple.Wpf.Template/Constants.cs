@@ -6,6 +6,8 @@ namespace Simple.Wpf.Template
     {
         public static class UI
         {
+            public const string ExceptionTitle = "whoops - something's gone wrong!";
+
             public static class Diagnostics
             {
                 public const string DefaultCpuString = "CPU: 00 %";
@@ -24,7 +26,7 @@ namespace Simple.Wpf.Template
 
         public static class Server
         {
-            public static readonly string BaseUri = "http://localhost:1337/";
+            public static readonly string BaseUri = $"http://{Environment.MachineName}:1337/";
 
             public static readonly Uri MetadataUrl = new Uri(BaseUri + "metadata");
 

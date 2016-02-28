@@ -25,6 +25,7 @@
                 <rd:SharedResourceDictionary Source="Resources/Icons/Icons.xaml" />
 
                 <rd:SharedResourceDictionary Source="Resources/Templates/AddResourceViewModelTemplate.xaml" />
+                <rd:SharedResourceDictionary Source="Resources/Templates/ModifyResourceViewModelTemplate.xaml" />
                 <rd:SharedResourceDictionary Source="Resources/Templates/ExceptionViewModelTemplate.xaml" />
                 <rd:SharedResourceDictionary Source="Resources/Templates/DiagnosticsViewModelTemplate.xaml" />
                 <rd:SharedResourceDictionary Source="Resources/Templates/MainViewModelTemplate.xaml" />

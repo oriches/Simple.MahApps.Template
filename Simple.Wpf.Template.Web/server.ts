@@ -4,7 +4,9 @@ import express = require("express");
 import http = require("http");
 import path = require("path");
 import fs = require("fs");
+import os = require("os");
 import mkdirp = require("mkdirp");
+import rmdir = require("rimraf");
 
 var colors = require("colors");
 import dto = require("./dto");
@@ -19,11 +21,13 @@ var filename = "data.json";
 app.all("*", audit);
 app.get("/heartbeat", getHeartbeat);
 app.get("/metadata", getMetadata);
+app.get("*", getResource);
 app.post("*", postResource);
 app.put("*", putResource);
+app.delete("*", deleteResource);
 app.use(failed);
 
-var server = app.listen(port, "localhost", () => {
+var server = app.listen(port, os.hostname(), () => {
 
     var host = server.address().address;
     var port = server.address().port;
@@ -53,9 +57,21 @@ function failed(err: any, req: any, res: any, next: Function) {
     next();
 }
 
+function writeResourceNotFound(res: http.ServerResponse): http.ServerResponse {
+
+    res.writeHead(404, "Resource not found!");
+    return res;
+}
+
 function writeSuccessfulHeader(res: http.ServerResponse): http.ServerResponse {
 
     res.writeHead(200, { "Content-Type": "application/json" });
+    return res;
+}
+
+function writeSuccessfulEmptyHeader(res: http.ServerResponse): http.ServerResponse {
+
+    res.writeHead(200);
     return res;
 }
 
@@ -92,6 +108,21 @@ function getMetadata(req: http.ServerRequest, res: http.ServerResponse) {
         .end(JSON.stringify(metadata));
 }
 
+function getResource(req: http.ServerRequest, res: http.ServerResponse) {
+
+    if (!doesFileExist(req)) {
+        writeResourceNotFound(res)
+            .end();
+    } else {
+        var fullPath = buildFullPath(req);
+
+        fs.readFile(fullPath, (err, data) => {
+            writeSuccessfulHeader(res)
+                .end(data);
+        });
+    }
+}
+
 function postResource(req: http.ServerRequest, res: http.ServerResponse) {
 
     saveResource(req, res);
@@ -102,13 +133,25 @@ function putResource(req: http.ServerRequest, res: http.ServerResponse) {
     saveResource(req, res);
 }
 
+function deleteResource(req: http.ServerRequest, res: http.ServerResponse) {
+
+    var folder = buildFolder(req);
+
+    if (!doesFileExist(req)) {
+        writeResourceNotFound(res)
+            .end();
+    } else {
+        rmdir(folder, () => {
+            writeSuccessfulEmptyHeader(res)
+                .end();
+        });
+    }
+}
+
 function saveResource(req: http.ServerRequest, res: http.ServerResponse) {
 
-    var folder = (rootPath + req.url)
-        .split("/")
-        .join("\\");
-
-    var fullPath = folder + "\\data.json";
+    var folder = buildFolder(req);
+    var fullPath = buildFullPath(req);
 
     req.on("readable", () => {
         var data = read(req);
@@ -125,6 +168,34 @@ function saveResource(req: http.ServerRequest, res: http.ServerResponse) {
             });
         });
     });
+}
+
+function doesFileExist(req: http.ServerRequest): boolean {
+
+    try {
+
+        var fullPath = buildFullPath(req);
+        var stats = fs.lstatSync(fullPath);
+
+        if (!stats.isFile()) {
+            return false;
+        }
+
+        return true;
+    }
+    catch (err) {
+        return false;
+    }
+}
+
+function buildFullPath(req: http.ServerRequest): string {
+    return buildFolder(req) + "\\data.json";
+}
+
+function buildFolder(req: http.ServerRequest): string {
+    return (rootPath + req.url)
+        .split("/")
+        .join("\\");
 }
 
 function read(req: http.ServerRequest): string {
@@ -154,7 +225,7 @@ function processAnyError(err: any, res: http.ServerResponse): Boolean {
     return false;
 }
 
-function getFiles(dir, files: dto.Dto.File[]) {
+function getFiles(dir, files: dto.Dto.File[]): dto.Dto.File[] {
 
     files = files || [];
 

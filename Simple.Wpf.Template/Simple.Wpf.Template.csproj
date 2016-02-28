@@ -153,6 +153,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="Extensions\SchedulerExtensions.cs" />
+    <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Models\DisposableObject.cs" />
     <Compile Include="Models\Heartbeat.cs" />
     <Compile Include="Models\Message.cs" />
@@ -194,9 +195,11 @@
     <Compile Include="ViewModels\IDiagnosticsViewModel.cs" />
     <Compile Include="ViewModels\IExceptionViewModel.cs" />
     <Compile Include="ViewModels\IMainViewModel.cs" />
+    <Compile Include="ViewModels\IMetadataViewModel.cs" />
     <Compile Include="ViewModels\IModifyResourceViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\MetadataViewModel.cs" />
     <Compile Include="ViewModels\ModifyResourceViewModel.cs" />
     <Compile Include="ViewModels\OverlayViewModel.cs" />
     <Compile Include="ViewModels\ChromeViewModel.cs" />
@@ -214,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\ButtonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Templates\ModifyResourceViewModelTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

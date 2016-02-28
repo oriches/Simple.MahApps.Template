@@ -128,9 +128,11 @@
     <Compile Include="DurationFixtures.cs" />
     <Compile Include="ExceptionViewModelFixtures.cs" />
     <Compile Include="HeartbeatFixtures.cs" />
+    <Compile Include="MetadataViewModelFixtures.cs" />
     <Compile Include="MainViewModelFixtures.cs" />
     <Compile Include="MessageServiceFixtures.cs" />
     <Compile Include="MockSchedulerService.cs" />
+    <Compile Include="ModifyResourceViewModelFixtures.cs" />
     <Compile Include="OverlayServiceFixtures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />

@@ -149,22 +149,24 @@ namespace Simple.Wpf.Template
         {
             Logger.Error(exception);
 
-            var schedulerService = BootStrapper.Resolve<ISchedulerService>();
             var messageService = BootStrapper.Resolve<IMessageService>();
+            var schedulerService = BootStrapper.Resolve<ISchedulerService>();
 
             schedulerService.Dispatcher.Schedule(() =>
-                                                 {
-                                                     var parameters = new Parameter[]
-                                                                      {new NamedParameter("exception", exception)};
-                                                     var viewModel =
-                                                         BootStrapper.Resolve<IExceptionViewModel>(parameters);
+            {
+                var parameters = new Parameter[]
+                                 {
+                                     new NamedParameter("exception", exception)
+                                 };
 
-                                                     viewModel.Closed
-                                                         .Take(1)
-                                                         .Subscribe(x => viewModel.Dispose());
+                var viewModel = BootStrapper.Resolve<IExceptionViewModel>(parameters);
 
-                                                     messageService.Post("whoops - something's gone wrong!", viewModel);
-                                                 });
+                viewModel.Closed
+                    .Take(1)
+                    .Subscribe(x => viewModel.Dispose());
+
+                messageService.Post(Constants.UI.ExceptionTitle, viewModel);
+            });
         }
     }
 }

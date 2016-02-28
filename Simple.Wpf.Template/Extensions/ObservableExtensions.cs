@@ -38,6 +38,11 @@ namespace Simple.Wpf.Template.Extensions
             return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onError);
         }
 
+        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, IScheduler scheduler)
+        {
+            return observable.Subscribe(x => OnNextInvoke(y => { }, x, scheduler));
+        }
+
         public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted,
             IScheduler scheduler)
         {

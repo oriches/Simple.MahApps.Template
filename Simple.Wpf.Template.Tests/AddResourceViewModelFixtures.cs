@@ -10,7 +10,7 @@ namespace Simple.Wpf.Template.Tests
     using ViewModels;
 
     [TestFixture]
-    public sealed class AddResourceViewModelFixtures : BaseServiceFixtures
+    public sealed class AddResourceViewModelFixtures : BaseViewModelFixtures
     {
         private Mock<IRestClient> _restClient;
 
@@ -25,7 +25,7 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
-        public void can_not_add_resoruce_when_json_invalid()
+        public void can_not_add_resource_when_json_invalid()
         {
             // ARRANGE
             var metadata = Enumerable.Empty<Metadata>();
@@ -44,7 +44,7 @@ namespace Simple.Wpf.Template.Tests
         }
 
         [Test]
-        public void can_not_add_resoruce_when_path_is_empty()
+        public void can_not_add_resource_when_path_is_empty()
         {
             // ARRANGE
             var metadata = Enumerable.Empty<Metadata>();
@@ -73,6 +73,8 @@ namespace Simple.Wpf.Template.Tests
                                 Path = "test/1",
                                 Json = "{}"
                             };
+
+            viewModel.Added.Subscribe();
 
             // ACT
             viewModel.ConfirmCommand.Execute(null);
