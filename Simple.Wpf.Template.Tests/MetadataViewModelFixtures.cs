@@ -19,7 +19,7 @@ namespace Simple.Wpf.Template.Tests
         private Func<Metadata, IModifyResourceViewModel> _modifyResourceFactory;
         private Mock<IModifyResourceViewModel> _modifyResourceViewModel;
         private Mock<IExceptionViewModel> _exceptionViewModel;
-        private Func<IExceptionViewModel> _exceptionFactory;
+        private Func<Exception, IExceptionViewModel> _exceptionFactory;
 
         [SetUp]
         public void Setup()
@@ -41,7 +41,7 @@ namespace Simple.Wpf.Template.Tests
             _exceptionViewModel = new Mock<IExceptionViewModel>();
             _exceptionViewModel.Setup(x => x.Closed).Returns(Observable.Return(Unit.Default));
             _exceptionViewModel.Setup(x => x.Dispose());
-            _exceptionFactory = () => _exceptionViewModel.Object;
+            _exceptionFactory = x => _exceptionViewModel.Object;
         }
 
         [Test]
