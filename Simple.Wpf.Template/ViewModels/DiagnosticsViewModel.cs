@@ -24,11 +24,11 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x => Cpu = x,
-                    e =>
-                    {
-                        Logger.Error(e);
-                        Cpu = Constants.UI.Diagnostics.DefaultCpuString;
-                    })
+                e =>
+                {
+                    Logger.Error(e);
+                    Cpu = Constants.UI.Diagnostics.DefaultCpuString;
+                })
                 .DisposeWith(this);
 
             diagnosticsService.Memory
@@ -36,15 +36,16 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x =>
-                           {
-                               ManagedMemory = x.ManagedMemory;
-                               TotalMemory = x.TotalMemory;
-                           }, e =>
-                              {
-                                  Logger.Error(e);
-                                  ManagedMemory = Constants.UI.Diagnostics.DefaultManagedMemoryString;
-                                  TotalMemory = Constants.UI.Diagnostics.DefaultTotalMemoryString;
-                              })
+                {
+                    ManagedMemory = x.ManagedMemory;
+                    TotalMemory = x.TotalMemory;
+                },
+                e =>
+                {
+                    Logger.Error(e);
+                    ManagedMemory = Constants.UI.Diagnostics.DefaultManagedMemoryString;
+                    TotalMemory = Constants.UI.Diagnostics.DefaultTotalMemoryString;
+                })
                 .DisposeWith(this);
         }
 

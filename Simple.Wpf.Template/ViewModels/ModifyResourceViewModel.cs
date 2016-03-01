@@ -21,6 +21,7 @@ namespace Simple.Wpf.Template.ViewModels
 
             Observable.Return(Unit.Default)
                 .ActivateGestures()
+                .ObserveOn(schedulerService.TaskPool)
                 .SelectMany(x => restClient.GetAsync<object>(metadata.Url).ToObservable(), (x, y) => y)
                 .Select(x => JsonConvert.SerializeObject(x.Resource, Formatting.Indented))
                 .ObserveOn(schedulerService.Dispatcher)

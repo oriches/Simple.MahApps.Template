@@ -36,10 +36,10 @@ namespace Simple.Wpf.Template.ViewModels
 
             ConfirmCommand.ActivateGestures()
                 .Subscribe(x =>
-                           {
-                               _confirmed.OnNext(Unit.Default);
-                               _closed.OnNext(Unit.Default);
-                           })
+                {
+                    _confirmed.OnNext(Unit.Default);
+                    _closed.OnNext(Unit.Default);
+                })
                 .DisposeWith(this);
 
             DenyCommand = ReactiveCommand.Create(InitialiseCanDeny())
@@ -47,10 +47,10 @@ namespace Simple.Wpf.Template.ViewModels
 
             DenyCommand.ActivateGestures()
                 .Subscribe(x =>
-                           {
-                               _denied.OnNext(Unit.Default);
-                               _closed.OnNext(Unit.Default);
-                           })
+                {
+                    _denied.OnNext(Unit.Default);
+                    _closed.OnNext(Unit.Default);
+                })
                 .DisposeWith(this);
         }
 

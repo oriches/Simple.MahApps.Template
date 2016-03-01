@@ -69,7 +69,8 @@ namespace Simple.Wpf.Template.ViewModels
                        var viewModel = _exceptionFactory(x);
 
                         viewModel.Closed
-                            .Take(1).Subscribe(yx => viewModel.Dispose());
+                            .Take(1)
+                            .Subscribe(yx => viewModel.Dispose());
 
                         _messageService.Post(Constants.UI.ExceptionTitle, viewModel);
                     });
