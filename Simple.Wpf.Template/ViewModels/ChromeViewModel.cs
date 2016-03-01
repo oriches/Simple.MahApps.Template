@@ -1,6 +1,7 @@
 namespace Simple.Wpf.Template.ViewModels
 {
     using System;
+    using System.Reactive.Disposables;
     using Commands;
     using Extensions;
     using Services;
@@ -22,11 +23,14 @@ namespace Simple.Wpf.Template.ViewModels
 
             CloseOverlayCommand.Subscribe(x => ClearOverlay())
                 .DisposeWith(this);
+
+            Disposable.Create(() => CloseOverlayCommand = null)
+               .DisposeWith(this);
         }
 
         public IMainViewModel Main { get; }
 
-        public ReactiveCommand<object> CloseOverlayCommand { get; }
+        public ReactiveCommand<object> CloseOverlayCommand { get; private set; }
 
         public bool HasOverlay => _overlay != null;
 

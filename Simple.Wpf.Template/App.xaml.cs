@@ -44,8 +44,7 @@ namespace Simple.Wpf.Template
             Logger.Info("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
 
             Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
-            RenderCapability.TierChanged +=
-                (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
+            RenderCapability.TierChanged += (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
 
             base.OnStartup(e);
 
@@ -79,7 +78,8 @@ namespace Simple.Wpf.Template
             {
                 var dianosticsService = BootStrapper.Resolve<IDiagnosticsService>();
 
-                BootStrapper.Resolve<IHeartbeatService>().Listen
+                BootStrapper.Resolve<IHeartbeatService>()
+                    .Listen
                     .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
                     .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
                     .SafeSubscribe(x =>
@@ -123,13 +123,13 @@ namespace Simple.Wpf.Template
             return Disposable.Create(timer.Stop);
         }
 
-        private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs args)
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
             Logger.Info("Unhandled app domain exception");
             HandleException(args.ExceptionObject as Exception);
         }
 
-        private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        private static void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
         {
             Logger.Info("Unhandled dispatcher thread exception");
             args.Handled = true;
@@ -137,7 +137,7 @@ namespace Simple.Wpf.Template
             HandleException(args.Exception);
         }
 
-        private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
+        private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
         {
             Logger.Info("Unhandled task exception");
             args.SetObserved();

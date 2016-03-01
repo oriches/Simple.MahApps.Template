@@ -50,12 +50,10 @@ namespace Simple.Wpf.Template.ViewModels
             _metadata = new RangeObservableCollection<IMetadataViewModel>();
             _collectionView = new ListCollectionView(_metadata);
 
-            RefreshCommand = ReactiveCommand.Create(
-                this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
+            RefreshCommand = ReactiveCommand.Create(this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
                 .DisposeWith(this);
 
-            AddCommand = ReactiveCommand.Create(
-                this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
+            AddCommand = ReactiveCommand.Create(this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
                 .DisposeWith(this);
             
             ObserveServerHeartbeat()
@@ -79,6 +77,12 @@ namespace Simple.Wpf.Template.ViewModels
 
             Disposable.Create(DisposeOfMetadata)
                 .DisposeWith(this);
+
+            Disposable.Create(() =>
+            {
+                AddCommand = null;
+                RefreshCommand = null;
+            }).DisposeWith(this);
         }
 
         public IEnumerable Metadata => _collectionView;
@@ -101,9 +105,9 @@ namespace Simple.Wpf.Template.ViewModels
             private set { SetPropertyAndNotify(ref _serverStatus, value, () => ServerStatus); }
         }
 
-        public ReactiveCommand<object> AddCommand { get; }
+        public ReactiveCommand<object> AddCommand { get; private set; }
 
-        public ReactiveCommand<object> RefreshCommand { get; }
+        public ReactiveCommand<object> RefreshCommand { get; private set; }
 
         public IDiagnosticsViewModel Diagnostics { get; }
 
@@ -143,17 +147,16 @@ namespace Simple.Wpf.Template.ViewModels
         {
             return _restClient.GetAsync<IEnumerable<Metadata>>(Constants.Server.MetadataUrl)
                 .ToObservable()
+                .Take(1)
                 .Select(x => x.Resource.ToArray())
                 .Catch<Metadata[], Exception>(x => Observable.Return(EmptyMetadatas))
-                .Take(1)
                 .Select(x => x.Select(y => _metadataFactory(y)));
         }
 
         private IObservable<Unit> ObserveRefresh()
         {
             return RefreshCommand.ActivateGestures()
-                .AsUnit()
-                .StartWith(Unit.Default);
+                .AsUnit();
         }
 
         private IObservable<Unit> ObserveResourceAdded()

@@ -1,6 +1,7 @@
 namespace Simple.Wpf.Template.ViewModels
 {
     using System;
+    using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using Commands;
     using Extensions;
@@ -55,24 +56,34 @@ namespace Simple.Wpf.Template.ViewModels
 
             Closed.Take(1)
                 .Subscribe(x =>
-                           {
-                               // Force all other potential exceptions to be realized
-                               // from the Finalizer thread to surface to the UI
-                               GC.Collect(2, GCCollectionMode.Forced);
-                               GC.WaitForPendingFinalizers();
-                           })
+                {
+                    // Force all other potential exceptions to be realized
+                    // from the Finalizer thread to surface to the UI
+                    GC.Collect(2, GCCollectionMode.Forced);
+                    GC.WaitForPendingFinalizers();
+                })
+                .DisposeWith(this);
+
+            Disposable.Create(() =>
+                {
+                    CopyCommand = null;
+                    ContinueCommand = null;
+                    ExitCommand = null;
+                    RestartCommand = null;
+                    OpenLogFolderCommand = null;
+                })
                 .DisposeWith(this);
         }
 
-        public ReactiveCommand<object> CopyCommand { get; }
+        public ReactiveCommand<object> CopyCommand { get; private set; }
 
-        public ReactiveCommand<object> OpenLogFolderCommand { get; }
+        public ReactiveCommand<object> OpenLogFolderCommand { get; private set; }
 
-        public ReactiveCommand<object> ContinueCommand { get; }
+        public ReactiveCommand<object> ContinueCommand { get; private set; }
 
-        public ReactiveCommand<object> ExitCommand { get; }
+        public ReactiveCommand<object> ExitCommand { get; private set; }
 
-        public ReactiveCommand<object> RestartCommand { get; }
+        public ReactiveCommand<object> RestartCommand { get; private set; }
 
         public string Message => _exception?.Message;
 

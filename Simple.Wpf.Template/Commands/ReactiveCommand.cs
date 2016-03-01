@@ -1,11 +1,14 @@
 namespace Simple.Wpf.Template.Commands
 {
     using System;
+    using System.Collections.Generic;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using System.Windows.Input;
+    using Extensions;
     using NLog;
     using Services;
+
 
     public sealed class ReactiveCommand : ReactiveCommand<object>
     {
@@ -28,18 +31,22 @@ namespace Simple.Wpf.Template.Commands
     public class ReactiveCommand<T> : IObservable<T>, ICommand, IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IDisposable _canDisposable;
-
+        private readonly List<EventHandler> _eventHandlers;
         private readonly Subject<T> _execute;
-        private bool _currentCanExecute;
 
+        private bool _currentCanExecute;
+        
         protected ReactiveCommand(IObservable<bool> canExecute)
         {
+            _eventHandlers = new List<EventHandler>();
+
             _canDisposable = canExecute.Subscribe(x =>
-                                                  {
-                                                      _currentCanExecute = x;
-                                                      CommandManager.InvalidateRequerySuggested();
-                                                  });
+            {
+                _currentCanExecute = x;
+                CommandManager.InvalidateRequerySuggested();
+            });
 
             _execute = new Subject<T>();
         }
@@ -58,17 +65,28 @@ namespace Simple.Wpf.Template.Commands
         {
             return _currentCanExecute;
         }
-
+        
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add
+            {
+                _eventHandlers.Add(value);
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                _eventHandlers.Remove(value);
+                CommandManager.RequerySuggested -= value;
+            }
         }
 
         public void Dispose()
         {
             using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
             {
+                _eventHandlers.ForEach(x => CommandManager.RequerySuggested -= x);
+                _eventHandlers.Clear();
+
                 _canDisposable.Dispose();
 
                 _execute.OnCompleted();

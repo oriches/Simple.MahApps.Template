@@ -2,6 +2,7 @@ namespace Simple.Wpf.Template.ViewModels
 {
     using System;
     using System.Reactive;
+    using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using Commands;
@@ -52,9 +53,17 @@ namespace Simple.Wpf.Template.ViewModels
                     _closed.OnNext(Unit.Default);
                 })
                 .DisposeWith(this);
+
+            Disposable.Create(() =>
+                {
+                    DenyCommand = null;
+                    ConfirmCommand = null;
+                    CancelCommand = null;
+                })
+                .DisposeWith(this);
         }
 
-        public ReactiveCommand<object> CancelCommand { get; }
+        public ReactiveCommand<object> CancelCommand { get; private set;  }
         public ReactiveCommand<object> ConfirmCommand { get; protected set; }
         public ReactiveCommand<object> DenyCommand { get; protected set; }
 

@@ -49,6 +49,8 @@ namespace Simple.Wpf.Template.Services
                                {
                                    _show.OnNext(nextMessage);
                                }
+
+                               viewModel.Dispose();
                            });
 
             bool show;

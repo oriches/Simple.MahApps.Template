@@ -154,6 +154,7 @@
     <Compile Include="Extensions\ObservableExtensions.cs" />
     <Compile Include="Extensions\SchedulerExtensions.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
+    <Compile Include="Helpers\WeakEventHandlerManager.cs" />
     <Compile Include="Models\DisposableObject.cs" />
     <Compile Include="Models\Heartbeat.cs" />
     <Compile Include="Models\Message.cs" />

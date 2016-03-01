@@ -13,23 +13,26 @@ namespace Simple.Wpf.Template.ViewModels
 
     public sealed class ModifyResourceViewModel : CloseableViewModel, IModifyResourceViewModel
     {
+        private readonly IRestClient _restClient;
         private string _json;
 
         public ModifyResourceViewModel(Metadata metadata, IRestClient restClient, ISchedulerService schedulerService)
         {
+            _restClient = restClient;
+
             Path = metadata.Url.ToString().Replace(Constants.Server.BaseUri, string.Empty);
 
             Observable.Return(Unit.Default)
                 .ActivateGestures()
                 .ObserveOn(schedulerService.TaskPool)
-                .SelectMany(x => restClient.GetAsync<object>(metadata.Url).ToObservable(), (x, y) => y)
-                .Select(x => JsonConvert.SerializeObject(x.Resource, Formatting.Indented))
+                .SelectMany(x => ObserveGetResource(metadata), (x, y) => y)
                 .ObserveOn(schedulerService.Dispatcher)
                 .Do(x => Json = x)
-                .SelectMany(x => Confirmed, (x, y) => y)
+                .AsUnit()
+                .Merge(Confirmed)
                 .ActivateGestures()
                 .ObserveOn(schedulerService.TaskPool)
-                .SelectMany(x => restClient.PutAsync(metadata.Url, new Resource(Json)).ToObservable(), (x, y) => y)
+                .SelectMany(x => ObservePutResource(metadata), (x, y) => y)
                 .Take(1)
                 .Subscribe()
                 .DisposeWith(this);
@@ -48,6 +51,22 @@ namespace Simple.Wpf.Template.ViewModels
             return this.ObservePropertyChanged(x => Json)
                 .Select(x => JsonHelper.IsValid(Json))
                 .StartWith(false);
+        }
+
+        private IObservable<string> ObserveGetResource(Metadata metadata)
+        {
+            return _restClient.GetAsync<object>(metadata.Url)
+                .ToObservable()
+                .Take(1)
+                .Select(x => JsonConvert.SerializeObject(x.Resource, Formatting.Indented));
+        }
+
+        private IObservable<Unit> ObservePutResource(Metadata metadata)
+        {
+            return _restClient.PutAsync(metadata.Url, new Resource(Json))
+                .ToObservable()
+                .Take(1)
+                .AsUnit();
         }
     }
 }
