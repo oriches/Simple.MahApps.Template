@@ -198,6 +198,7 @@
     <Compile Include="ViewModels\IMainViewModel.cs" />
     <Compile Include="ViewModels\IMetadataViewModel.cs" />
     <Compile Include="ViewModels\IModifyResourceViewModel.cs" />
+    <Compile Include="ViewModels\ITransientViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\MetadataViewModel.cs" />

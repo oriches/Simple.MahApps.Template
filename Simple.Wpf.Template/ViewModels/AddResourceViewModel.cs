@@ -23,7 +23,8 @@ namespace Simple.Wpf.Template.ViewModels
             _urls = metadata.Select(x => x.Url.ToString());
 
             Added = Confirmed
-                .SelectMany(x => restClient.PostAsync(BuildUrl(), new Resource(_json)).ToObservable().Take(1), (x, y) => y)
+                .SelectMany(x => restClient.PostAsync(BuildUrl(), new Resource(_json)).ToObservable(), (x, y) => y)
+                .Take(1)
                 .AsUnit();
         }
         

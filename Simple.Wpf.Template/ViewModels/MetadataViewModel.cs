@@ -2,7 +2,6 @@ namespace Simple.Wpf.Template.ViewModels
 {
     using System;
     using System.Reactive;
-    using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Threading.Tasks;
     using Commands;
@@ -60,7 +59,8 @@ namespace Simple.Wpf.Template.ViewModels
         private IObservable<Unit> ObserveDelete()
         {
             return DeleteCommand.ActivateGestures()
-                .SelectMany(x => _restClient.DeleteAsync(Url).ToObservable().Take(1), (x, y) => y)
+                .SelectMany(x => _restClient.DeleteAsync(Url).ToObservable(), (x, y) => y)
+                .Take(1)
                 .AsUnit()
                 .Catch<Unit, Exception>(x =>
                 {

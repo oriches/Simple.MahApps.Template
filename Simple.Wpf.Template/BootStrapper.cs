@@ -1,6 +1,7 @@
 namespace Simple.Wpf.Template
 {
     using System;
+    using System.Diagnostics;
     using System.Reflection;
     using Autofac;
     using Autofac.Core;
@@ -45,17 +46,31 @@ namespace Simple.Wpf.Template
                 .SingleInstance()
                 .AsImplementedInterfaces();
 
-            // the metadata view model instances are transitory and created on the fly, if these are tracked by the container then they
-            // won't be disposed of in a timely manner
             builder.RegisterAssemblyTypes(assembly)
-                .Where(t => t != typeof(MetadataViewModel))
                 .Where(t => t.Name.EndsWith("ViewModel"))
+                .Where(t => !t.IsAssignableFrom(typeof(ITransientViewModel)))
                 .AsImplementedInterfaces();
 
-            builder.RegisterType<MetadataViewModel>()
+            // several view model instances are transitory and created on the fly, if these are tracked by the container then they
+            // won't be disposed of in a timely manner
+
+            var transientType = typeof (ITransientViewModel);
+
+            builder.RegisterAssemblyTypes(assembly)
+                .Where(t => t.Name.EndsWith("ViewModel"))
+                .Where(t =>
+                       {
+                           var isAssignable = transientType.IsAssignableFrom(t);
+                           if (isAssignable)
+                           {
+                               Debug.WriteLine("Transient view model - " + t.Name);
+                           }
+
+                           return isAssignable;
+                       })
                 .AsImplementedInterfaces()
                 .ExternallyOwned();
-                
+
             _rootScope = builder.Build();
         }
 

@@ -42,9 +42,9 @@ namespace Simple.Wpf.Template.Resources.Views
 
             return this.ShowMetroDialogAsync(dialog, settings)
                 .ToObservable()
-                .Take(1)
-                .SelectMany(x => dialog.CloseableContent.Closed.Take(1), (x, y) => x)
-                .SelectMany(x => this.HideMetroDialogAsync(dialog).ToObservable().Take(1), (x, y) => x);
+                .SelectMany(x => dialog.CloseableContent.Closed, (x, y) => x)
+                .SelectMany(x => this.HideMetroDialogAsync(dialog).ToObservable(), (x, y) => x)
+                .Take(1);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Simple.Wpf.Template.ViewModels
     using Commands;
     using Models;
 
-    public interface IMetadataViewModel : IDisposable
+    public interface IMetadataViewModel : ITransientViewModel
     {
         Uri Url { get; }
         bool Editable { get; }
