@@ -77,12 +77,6 @@ namespace Simple.Wpf.Template.ViewModels
 
             Disposable.Create(DisposeOfMetadata)
                 .DisposeWith(this);
-
-            Disposable.Create(() =>
-            {
-                AddCommand = null;
-                RefreshCommand = null;
-            }).DisposeWith(this);
         }
 
         public IEnumerable Metadata => _collectionView;
@@ -105,9 +99,9 @@ namespace Simple.Wpf.Template.ViewModels
             private set { SetPropertyAndNotify(ref _serverStatus, value, () => ServerStatus); }
         }
 
-        public ReactiveCommand<object> AddCommand { get; private set; }
+        public ReactiveCommand<object> AddCommand { get; }
 
-        public ReactiveCommand<object> RefreshCommand { get; private set; }
+        public ReactiveCommand<object> RefreshCommand { get; }
 
         public IDiagnosticsViewModel Diagnostics { get; }
 
@@ -131,15 +125,17 @@ namespace Simple.Wpf.Template.ViewModels
 
         private void DisposeOfMetadata()
         {
-            var old = _metadata.ToArray();
+            var items = _metadata.ToArray();
+
             _metadata.Clear();
 
-            old.ForEach(x => x.Dispose());
+            items.ForEach(x => x.Dispose());
         }
 
         private void ProcessMetadata(IEnumerable<IMetadataViewModel> viewModels)
         {
             DisposeOfMetadata();
+
             _metadata.AddRange(viewModels);
         }
 

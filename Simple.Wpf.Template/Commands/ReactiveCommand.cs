@@ -5,11 +5,9 @@ namespace Simple.Wpf.Template.Commands
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using System.Windows.Input;
-    using Extensions;
     using NLog;
     using Services;
-
-
+    
     public sealed class ReactiveCommand : ReactiveCommand<object>
     {
         private ReactiveCommand(IObservable<bool> canExecute)

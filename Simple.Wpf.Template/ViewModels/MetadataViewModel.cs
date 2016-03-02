@@ -43,12 +43,6 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
 
             Deleted = ObserveDelete();
-
-            Disposable.Create(() =>
-            {
-                ModifyCommand = null;
-                DeleteCommand = null;
-            }).DisposeWith(this);
         }
 
         public Metadata Metadata { get; }
@@ -57,9 +51,9 @@ namespace Simple.Wpf.Template.ViewModels
 
         public bool Editable => !Metadata.Immutable;
 
-        public ReactiveCommand<object> ModifyCommand { get; private set; }
+        public ReactiveCommand<object> ModifyCommand { get; }
 
-        public ReactiveCommand<object> DeleteCommand { get; private set; }
+        public ReactiveCommand<object> DeleteCommand { get; }
 
         public IObservable<Unit> Deleted { get; }
 

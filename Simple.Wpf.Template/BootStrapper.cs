@@ -45,10 +45,17 @@ namespace Simple.Wpf.Template
                 .SingleInstance()
                 .AsImplementedInterfaces();
 
+            // the metadata view model instances are transitory and created on the fly, if these are tracked by the container then they
+            // won't be disposed of in a timely manner
             builder.RegisterAssemblyTypes(assembly)
+                .Where(t => t != typeof(MetadataViewModel))
                 .Where(t => t.Name.EndsWith("ViewModel"))
                 .AsImplementedInterfaces();
 
+            builder.RegisterType<MetadataViewModel>()
+                .AsImplementedInterfaces()
+                .ExternallyOwned();
+                
             _rootScope = builder.Build();
         }
 
