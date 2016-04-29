@@ -24,7 +24,6 @@ namespace Simple.Wpf.Template.Tests
             ObservableExtensions.GestureService = GestureService.Object;
 
             TestScheduler = new TestScheduler();
-            TestScheduler.AdvanceTo(DateTimeOffset.Now.Ticks);
 
             SchedulerService = new MockSchedulerService(TestScheduler);
         }

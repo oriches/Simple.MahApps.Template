@@ -62,7 +62,7 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged(x => x.IsOnline)
                 .Where(x => x.IsOnline)
                 .AsUnit()
-                .Merge(ObserveRefresh())
+                .Merge(ObserveRefresh(), _schedulerService.Dispatcher)
                 .ActivateGestures()
                 .SelectMany(x => ObserveMetadata(), (x, y) => y)
                 .ObserveOn(_schedulerService.Dispatcher)
@@ -70,8 +70,7 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
 
             ObserveResourceAdded()
-                .Merge(ObserveResourceDeleted())
-                .ObserveOn(_schedulerService.Dispatcher)
+                .Merge(ObserveResourceDeleted(), _schedulerService.Dispatcher)
                 .Subscribe(x => RefreshCommand.Execute(null))
                 .DisposeWith(this);
 
@@ -107,7 +106,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         private IObservable<Status> ObserveServerHeartbeat()
         {
-            return Observable.Timer(DateTimeOffset.Now, Constants.Server.Hearbeat.Interval, _schedulerService.TaskPool)
+            return Observable.Timer(Constants.Server.Hearbeat.Interval, _schedulerService.TaskPool)
                 .SelectMany(x => _restClient.GetAsync<Heartbeat>(Constants.Server.Hearbeat.Url).ToObservable())
                 .Select(x => new Status(x.Resource.Timestamp))
                 .Timeout(Constants.Server.Hearbeat.Timeout, _schedulerService.TaskPool)
