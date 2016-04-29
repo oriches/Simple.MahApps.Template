@@ -18,7 +18,7 @@ namespace Simple.Wpf.Template.Models
 
         public virtual void Dispose()
         {
-            using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
+            using (Duration.Measure(Logger, "Dispose - " + GetType().FullName))
                 _disposable.Dispose();
         }
 

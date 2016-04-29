@@ -53,16 +53,6 @@ namespace Simple.Wpf.Template.ViewModels
                 .ActivateGestures()
                 .Subscribe(x => Restart())
                 .DisposeWith(this);
-
-            Closed.Take(1)
-                .Subscribe(x =>
-                {
-                    // Force all other potential exceptions to be realized
-                    // from the Finalizer thread to surface to the UI
-                    GC.Collect(2, GCCollectionMode.Forced);
-                    GC.WaitForPendingFinalizers();
-                })
-                .DisposeWith(this);
         }
 
         public ReactiveCommand<object> CopyCommand { get; }

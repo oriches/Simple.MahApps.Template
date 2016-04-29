@@ -7,7 +7,7 @@ namespace Simple.Wpf.Template.Commands
     using System.Windows.Input;
     using NLog;
     using Services;
-    
+
     public sealed class ReactiveCommand : ReactiveCommand<object>
     {
         private ReactiveCommand(IObservable<bool> canExecute)
@@ -80,7 +80,7 @@ namespace Simple.Wpf.Template.Commands
 
         public void Dispose()
         {
-            using (Duration.Measure(Logger, "Dispose - " + GetType().Name))
+            using (Duration.Measure(Logger, "Dispose - " + GetType().FullName))
             {
                 _eventHandlers.ForEach(x => CommandManager.RequerySuggested -= x);
                 _eventHandlers.Clear();

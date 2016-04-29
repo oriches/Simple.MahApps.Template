@@ -163,7 +163,15 @@ namespace Simple.Wpf.Template
 
                 viewModel.Closed
                     .Take(1)
-                    .Subscribe(x => viewModel.Dispose());
+                    .Subscribe(x =>
+                    {
+                        viewModel.Dispose();
+
+                        // Force all other potential exceptions to be realized
+                        // from the Finalizer thread to surface to the UI
+                        GC.Collect(2, GCCollectionMode.Forced);
+                        GC.WaitForPendingFinalizers();
+                    });
 
                 messageService.Post(Constants.UI.ExceptionTitle, viewModel);
             });

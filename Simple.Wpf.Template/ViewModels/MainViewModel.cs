@@ -151,8 +151,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         private IObservable<Unit> ObserveRefresh()
         {
-            return RefreshCommand.ActivateGestures()
-                .AsUnit();
+            return RefreshCommand.AsUnit();
         }
 
         private IObservable<Unit> ObserveResourceAdded()
