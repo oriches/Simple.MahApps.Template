@@ -15,7 +15,7 @@ namespace Simple.Wpf.Template.Tests
 
         public Mock<IGestureService> GestureService { get; private set; }
 
-        [OneTimeSetUp]
+        [SetUp]
         public void BaseSetup()
         {
             GestureService = new Mock<IGestureService>();
@@ -24,6 +24,7 @@ namespace Simple.Wpf.Template.Tests
             ObservableExtensions.GestureService = GestureService.Object;
 
             TestScheduler = new TestScheduler();
+            TestScheduler.AdvanceTo(DateTimeOffset.Now.Ticks);
 
             SchedulerService = new MockSchedulerService(TestScheduler);
         }
