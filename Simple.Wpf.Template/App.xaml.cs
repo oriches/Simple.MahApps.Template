@@ -23,7 +23,6 @@ namespace Simple.Wpf.Template
     public partial class App
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly CompositeDisposable _disposable;
 
         public App()
@@ -40,63 +39,77 @@ namespace Simple.Wpf.Template
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            Logger.Info("Starting");
-            Logger.Info("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
-
-            Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
-            RenderCapability.TierChanged += (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier/0x10000);
-
-            base.OnStartup(e);
-
-            BootStrapper.Start();
-
-            var messageService = BootStrapper.Resolve<IMessageService>();
-            var schedulerService = BootStrapper.Resolve<ISchedulerService>();
-
-            ObservableExtensions.GestureService = BootStrapper.Resolve<IGestureService>();
-
-            var window = new MainWindow(messageService, schedulerService);
-
-            // The window has to be created before the root visual - all to do with the idling service initialising correctly...
-            window.DataContext = BootStrapper.RootVisual;
-
-            window.Closed += (s, a) =>
-                             {
-                                 _disposable.Dispose();
-                                 BootStrapper.Stop();
-                             };
-
-            Current.Exit += (s, a) =>
-                            {
-                                Logger.Info("Bye Bye!");
-                                LogManager.Flush();
-                            };
-
-            window.Show();
-
-            if (Logger.IsInfoEnabled)
+            using (Services.Duration.Measure(Logger, "OnStartup - " + GetType().Name))
             {
-                var dianosticsService = BootStrapper.Resolve<IDiagnosticsService>();
+                Logger.Info("Starting");
+                Logger.Info("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
 
-                BootStrapper.Resolve<IHeartbeatService>()
-                    .Listen
-                    .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
-                    .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
-                    .SafeSubscribe(x =>
-                                   {
-                                       var message =
-                                           $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
+                Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
+                RenderCapability.TierChanged += (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
 
-                                       Debug.WriteLine(message);
-                                       Logger.Info(message);
-                                   }, schedulerService.Dispatcher)
-                    .DisposeWith(_disposable);
-            }
+                base.OnStartup(e);
+
+                BootStrapper.Start();
+                _disposable.Add(Disposable.Create(BootStrapper.Stop));
+
+                var messageService = BootStrapper.Resolve<IMessageService>();
+                var schedulerService = BootStrapper.Resolve<ISchedulerService>();
+
+                ObservableExtensions.GestureService = BootStrapper.Resolve<IGestureService>();
+
+                var window = new MainWindow(messageService, schedulerService);
+
+                // The window has to be created before the root visual - all to do with the idling service initialising correctly...
+                window.DataContext = BootStrapper.RootVisual;
+
+                window.Closed += (s, a) => HandleWindowClose();
+                Current.Exit += (s, a) => HandleExit();
+
+                window.Show();
+
+                if (Logger.IsInfoEnabled)
+                {
+                    ObserveHeartbeat(schedulerService)
+                         .DisposeWith(_disposable);
+                }
 
 #if DEBUG
-            _disposable.Add(ObserveUiFreeze());
+                ObserveUiFreeze()
+                    .DisposeWith(_disposable);
 #endif
-            Logger.Info("Started");
+                Logger.Info("Started");
+            }
+        }
+
+        private void HandleWindowClose()
+        {
+            Logger.Info("Window closed");
+            _disposable.Dispose();
+        }
+
+        private static void HandleExit()
+        {
+            Logger.Info("Bye Bye!");
+            LogManager.Flush();
+        }
+
+
+        private static IDisposable ObserveHeartbeat(ISchedulerService schedulerService)
+        {
+            var dianosticsService = BootStrapper.Resolve<IDiagnosticsService>();
+
+            return BootStrapper.Resolve<IHeartbeatService>()
+                .Listen
+                .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
+                .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
+                .SafeSubscribe(x =>
+                               {
+                                   var message =
+                                       $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
+
+                                   Debug.WriteLine(message);
+                                   Logger.Info(message);
+                               }, schedulerService.Dispatcher);
         }
 
         private static IDisposable ObserveUiFreeze()
