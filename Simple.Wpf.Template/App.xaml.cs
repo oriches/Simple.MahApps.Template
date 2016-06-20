@@ -42,7 +42,10 @@ namespace Simple.Wpf.Template
             using (Services.Duration.Measure(Logger, "OnStartup - " + GetType().Name))
             {
                 Logger.Info("Starting");
-                Logger.Info("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
+
+                var dispatcherThreadInfo = string.Format("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
+                Debug.WriteLine(dispatcherThreadInfo);
+                Logger.Info(dispatcherThreadInfo);
 
                 Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
                 RenderCapability.TierChanged += (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);

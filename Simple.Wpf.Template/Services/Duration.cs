@@ -4,6 +4,7 @@ namespace Simple.Wpf.Template.Services
     using System.Diagnostics;
     using System.Globalization;
     using System.Reactive.Disposables;
+    using System.Threading;
     using NLog;
 
     public sealed class Duration : IDisposable
@@ -25,7 +26,10 @@ namespace Simple.Wpf.Template.Services
         {
             _stopWatch.Stop();
 
-            var message = $"{_context}, duration = {_stopWatch.ElapsedMilliseconds} ms";
+            var message = string.Format("{0}, thread_id = {1}, duration = {2}ms",
+                _context,
+                Thread.CurrentThread.ManagedThreadId,
+                _stopWatch.ElapsedMilliseconds);
 
             Debug.WriteLine(message);
             _logger.Debug(message);
