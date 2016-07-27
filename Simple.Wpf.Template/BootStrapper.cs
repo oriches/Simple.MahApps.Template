@@ -6,6 +6,7 @@ namespace Simple.Wpf.Template
     using Autofac;
     using Autofac.Core;
     using Rest;
+    using Services;
     using ViewModels;
 
     public static class BootStrapper
@@ -35,39 +36,36 @@ namespace Simple.Wpf.Template
             }
 
             var builder = new ContainerBuilder();
-            var assembly = Assembly.GetExecutingAssembly();
-
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(t => t.Name.EndsWith("Service"))
-                .SingleInstance()
-                .AsImplementedInterfaces();
+            var assemblies = new[] { Assembly.GetExecutingAssembly() };
 
             builder.RegisterType<RestClient>()
                 .SingleInstance()
                 .AsImplementedInterfaces();
 
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(t => t.Name.EndsWith("ViewModel"))
-                .Where(t => !t.IsAssignableFrom(typeof(ITransientViewModel)))
+            builder.RegisterAssemblyTypes(assemblies)
+                .Where(t => typeof(IService).IsAssignableFrom(t))
+                .SingleInstance()
+                .AsImplementedInterfaces();
+
+            builder.RegisterAssemblyTypes(assemblies)
+                .Where(t => typeof(IViewModel).IsAssignableFrom(t) && !typeof(ITransientViewModel).IsAssignableFrom(t))
                 .AsImplementedInterfaces();
 
             // several view model instances are transitory and created on the fly, if these are tracked by the container then they
             // won't be disposed of in a timely manner
 
-            var transientType = typeof (ITransientViewModel);
-
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(t => t.Name.EndsWith("ViewModel"))
+            builder.RegisterAssemblyTypes(assemblies)
+                .Where(t => typeof(IViewModel).IsAssignableFrom(t))
                 .Where(t =>
-                       {
-                           var isAssignable = transientType.IsAssignableFrom(t);
-                           if (isAssignable)
-                           {
-                               Debug.WriteLine("Transient view model - " + t.Name);
-                           }
+                {
+                    var isAssignable = typeof(ITransientViewModel).IsAssignableFrom(t);
+                    if (isAssignable)
+                    {
+                        Debug.WriteLine("Transient view model - " + t.Name);
+                    }
 
-                           return isAssignable;
-                       })
+                    return isAssignable;
+                })
                 .AsImplementedInterfaces()
                 .ExternallyOwned();
 

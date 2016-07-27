@@ -3,7 +3,7 @@ namespace Simple.Wpf.Template.Services
     using System;
     using Models;
 
-    public interface IDiagnosticsService
+    public interface IDiagnosticsService : IService
     {
         IObservable<string> Log { get; }
 

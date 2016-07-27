@@ -71,6 +71,7 @@ namespace Simple.Wpf.Template.ViewModels
 
             ObserveResourceAdded()
                 .Merge(ObserveResourceDeleted(), _schedulerService.Dispatcher)
+                .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x => RefreshCommand.Execute(null))
                 .DisposeWith(this);
 

@@ -167,6 +167,7 @@
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Services\IApplicationService.cs" />
     <Compile Include="Services\IHeartbeatService.cs" />
+    <Compile Include="Services\IService.cs" />
     <Compile Include="Services\LimitedMemoryTarget.cs" />
     <Compile Include="Models\MemoryUnits.cs" />
     <Compile Include="Services\NLogFormattedThreadIdLayoutRenderer.cs" />
