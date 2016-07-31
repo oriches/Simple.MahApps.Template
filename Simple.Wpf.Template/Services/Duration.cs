@@ -26,10 +26,8 @@ namespace Simple.Wpf.Template.Services
         {
             _stopWatch.Stop();
 
-            var message = string.Format("{0}, thread_id = {1}, duration = {2}ms",
-                _context,
-                Thread.CurrentThread.ManagedThreadId,
-                _stopWatch.ElapsedMilliseconds);
+            var message =
+                $"{_context}, thread_id = {Thread.CurrentThread.ManagedThreadId}, duration = {_stopWatch.ElapsedMilliseconds}ms";
 
             Debug.WriteLine(message);
             _logger.Debug(message);

@@ -43,12 +43,14 @@ namespace Simple.Wpf.Template
             {
                 Logger.Info("Starting");
 
-                var dispatcherThreadInfo = string.Format("Dispatcher managed thread identifier = {0}", Thread.CurrentThread.ManagedThreadId);
+                var dispatcherThreadInfo =
+                    $"Dispatcher managed thread identifier = {Thread.CurrentThread.ManagedThreadId}";
                 Debug.WriteLine(dispatcherThreadInfo);
                 Logger.Info(dispatcherThreadInfo);
 
-                Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
-                RenderCapability.TierChanged += (s, a) => Logger.Info("WPF rendering capability (tier) = {0}", RenderCapability.Tier / 0x10000);
+                Logger.Info($"WPF rendering capability (tier) = {RenderCapability.Tier/0x10000}");
+                RenderCapability.TierChanged += (s, a) =>
+                    Logger.Info($"WPF rendering capability (tier) = {RenderCapability.Tier/0x10000}");
 
                 base.OnStartup(e);
 
@@ -131,7 +133,7 @@ namespace Simple.Wpf.Template
 
                               if (delta > Constants.UI.Diagnostics.UiFreeze)
                               {
-                                  Debug.WriteLine("UI Freeze = {0} ms", delta.TotalMilliseconds);
+                                  Debug.WriteLine($"UI Freeze = {delta.TotalMilliseconds} ms");
                               }
                           };
 

@@ -44,7 +44,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         protected override IObservable<bool> InitialiseCanConfirm()
         {
-            return this.ObservePropertyChanged(x => Path, x => Json)
+            return this.ObservePropertyChanged( x => Path, x => Json)
                 .Where(x => !string.IsNullOrEmpty(Path))
                 .Select(x => IsPathAvailable(Path) && JsonHelper.IsValid(Json))
                 .StartWith(false);
