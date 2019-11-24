@@ -1,7 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Dto;
 (function (Dto) {
-    var Metadata = (function () {
+    var Metadata = /** @class */ (function () {
         function Metadata(url, immutable) {
             this.url = url;
             this.immutable = immutable;
@@ -9,14 +10,14 @@ var Dto;
         return Metadata;
     }());
     Dto.Metadata = Metadata;
-    var Resource = (function () {
+    var Resource = /** @class */ (function () {
         function Resource(json) {
             this.json = json;
         }
         return Resource;
     }());
     Dto.Resource = Resource;
-    var File = (function () {
+    var File = /** @class */ (function () {
         function File(fullPath, relativePath, relativePathithoutFilename) {
             this.fullPath = fullPath;
             this.relativePath = relativePath;

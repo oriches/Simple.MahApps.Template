@@ -1,5 +1,6 @@
-/// <reference path="dto.ts" />
 "use strict";
+/// <reference path="dto.ts" />
+Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var path = require("path");
 var fs = require("fs");
