@@ -1,13 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Wpf.Template", "Simple.Wpf.Template\Simple.Wpf.Template.csproj", "{3C3ED4EA-DC15-4286-B023-4951DFDDCB35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Wpf.Template.Tests", "Simple.Wpf.Template.Tests\Simple.Wpf.Template.Tests.csproj", "{7F37C3C0-31CF-45A4-AD11-0B2B661240D3}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Simple.Wpf.Template.Web", "Simple.Wpf.Template.Web\Simple.Wpf.Template.Web.njsproj", "{F298685F-571D-4340-AA2E-4AA4A558C47E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3C3ED4EA-DC15-4286-B023-4951DFDDCB35} = {3C3ED4EA-DC15-4286-B023-4951DFDDCB35}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +33,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CACF9374-10B9-4258-9462-74AD752950E8}
 	EndGlobalSection
 EndGlobal

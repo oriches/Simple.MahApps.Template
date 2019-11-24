@@ -12,6 +12,7 @@
  * Module dependencies.
  */
 
+var merge = require('utils-merge')
 var parseUrl = require('parseurl');
 var qs = require('qs');
 
@@ -22,7 +23,7 @@ var qs = require('qs');
  */
 
 module.exports = function query(options) {
-  var opts = Object.create(options || null);
+  var opts = merge({}, options)
   var queryparse = qs.parse;
 
   if (typeof options === 'function') {
@@ -30,14 +31,9 @@ module.exports = function query(options) {
     opts = undefined;
   }
 
-  if (opts !== undefined) {
-    if (opts.allowDots === undefined) {
-      opts.allowDots = false;
-    }
-
-    if (opts.allowPrototypes === undefined) {
-      opts.allowPrototypes = true;
-    }
+  if (opts !== undefined && opts.allowPrototypes === undefined) {
+    // back-compat for qs module
+    opts.allowPrototypes = true;
   }
 
   return function query(req, res, next){
