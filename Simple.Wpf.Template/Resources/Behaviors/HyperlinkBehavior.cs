@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows.Documents;
-using System.Windows.Interactivity;
 using System.Windows.Navigation;
+using Microsoft.Xaml.Behaviors;
 using Simple.Wpf.Template.Services;
 
 namespace Simple.Wpf.Template.Resources.Behaviors

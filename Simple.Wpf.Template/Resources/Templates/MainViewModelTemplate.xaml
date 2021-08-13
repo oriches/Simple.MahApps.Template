@@ -1,9 +1,9 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:b1="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:vm="clr-namespace:Simple.Wpf.Template.ViewModels"
                     xmlns:rd="clr-namespace:Simple.Wpf.Template.Resources.ResourceDictionaries"
-                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                    xmlns:b="clr-namespace:Simple.Wpf.Template.Resources.Behaviors">
+                    xmlns:b2="clr-namespace:Simple.Wpf.Template.Resources.Behaviors">
 
     <ResourceDictionary.MergedDictionaries>
 
@@ -109,9 +109,9 @@
                                                            Grid.Column="0"
                                                            VerticalAlignment="Center">
                                                     <Hyperlink NavigateUri="{Binding Url, Mode=OneTime}">
-                                                        <i:Interaction.Behaviors>
-                                                            <b:HyperlinkBehavior />
-                                                        </i:Interaction.Behaviors>
+                                                        <b1:Interaction.Behaviors>
+                                                            <b2:HyperlinkBehavior />
+                                                        </b1:Interaction.Behaviors>
                                                         <TextBlock Text="{Binding Url, Mode=OneTime}" />
                                                     </Hyperlink>
                                                 </TextBlock>
