@@ -107,7 +107,7 @@ interface String {
     bgWhite: string;
 
     reset: string;
-    bold: string;
+    bold: number;
     dim: string;
     italic: string;
     underline: string;

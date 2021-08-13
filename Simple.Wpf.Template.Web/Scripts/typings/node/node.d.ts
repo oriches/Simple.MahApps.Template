@@ -828,8 +828,7 @@ declare module "dns" {
 
     export function lookup(domain: string, callback: (err: Error, address: string, family: number) => void): string;
 
-    export function resolve(domain: string, rrtype: string, callback: (err: Error, addresses: string[]) => void): string
-        [];
+    export function resolve(domain: string, rrtype: string, callback: (err: Error, addresses: string[]) => void): string[];
 
     export function resolve(domain: string, callback: (err: Error, addresses: string[]) => void): string[];
 
