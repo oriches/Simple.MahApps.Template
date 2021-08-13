@@ -1,15 +1,13 @@
+using System;
+using Moq;
+using NUnit.Framework;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using Moq;
-    using NUnit.Framework;
-    using Services;
-    using ViewModels;
-    using ObservableExtensions = Extensions.ObservableExtensions;
-
-
     [TestFixture]
-    public sealed class ExceptionViewModelFixtures: BaseServiceFixtures
+    public sealed class ExceptionViewModelFixtures : BaseServiceFixtures
     {
         [SetUp]
         public void Setup()
@@ -52,7 +50,8 @@ namespace Simple.Wpf.Template.Tests
         public void can_not_open_log_folder_when_there_is_no_log_folder()
         {
             // ARRANGE
-            _applicationService.SetupGet(x => x.LogFolder).Returns((string) null);
+            _applicationService.SetupGet(x => x.LogFolder)
+                .Returns((string) null);
 
             var viewModel = new ExceptionViewModel(null, _applicationService.Object);
 
@@ -67,7 +66,8 @@ namespace Simple.Wpf.Template.Tests
         public void can_open_log_folder_when_there_is_a_log_folder()
         {
             // ARRANGE
-            _applicationService.SetupGet(x => x.LogFolder).Returns(@"c:\temp\log.txt");
+            _applicationService.SetupGet(x => x.LogFolder)
+                .Returns(@"c:\temp\log.txt");
 
             var viewModel = new ExceptionViewModel(null, _applicationService.Object);
 
@@ -155,7 +155,8 @@ namespace Simple.Wpf.Template.Tests
         public void opens_log_folder()
         {
             // ARRANGE
-            _applicationService.SetupGet(x => x.LogFolder).Returns(@"c:\temp\log.txt");
+            _applicationService.SetupGet(x => x.LogFolder)
+                .Returns(@"c:\temp\log.txt");
             _applicationService.Setup(x => x.OpenFolder(@"c:\temp\log.txt"));
 
             var viewModel = new ExceptionViewModel(null, _applicationService.Object);

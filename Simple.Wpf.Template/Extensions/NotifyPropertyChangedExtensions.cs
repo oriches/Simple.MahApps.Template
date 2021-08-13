@@ -1,11 +1,11 @@
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reactive.Linq;
+
 namespace Simple.Wpf.Template.Extensions
 {
-    using System;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reactive.Linq;
-
     public static class NotifyPropertyChangedExtensions
     {
         public static IObservable<PropertyChangedEventArgs> ObservePropertyChanged<TSource, TValue>(this TSource source,
@@ -23,7 +23,7 @@ namespace Simple.Wpf.Template.Extensions
         public static IObservable<PropertyChangedEventArgs> ObservePropertyChanged(this INotifyPropertyChanged source)
         {
             return Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-                h => source.PropertyChanged += h, h => source.PropertyChanged -= h)
+                    h => source.PropertyChanged += h, h => source.PropertyChanged -= h)
                 .Select(x => x.EventArgs);
         }
     }

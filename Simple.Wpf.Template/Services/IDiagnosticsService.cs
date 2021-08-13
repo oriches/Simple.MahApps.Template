@@ -1,8 +1,8 @@
+using System;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System;
-    using Models;
-
     public interface IDiagnosticsService : IService
     {
         IObservable<string> Log { get; }

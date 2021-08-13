@@ -1,7 +1,7 @@
+using Simple.Wpf.Template.Commands;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using Commands;
-
     public interface IChromeViewModel : IViewModel
     {
         IMainViewModel Main { get; }

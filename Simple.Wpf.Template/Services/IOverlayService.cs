@@ -1,8 +1,8 @@
+using System;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System;
-    using ViewModels;
-
     public interface IOverlayService : IService
     {
         IObservable<OverlayViewModel> Show { get; }

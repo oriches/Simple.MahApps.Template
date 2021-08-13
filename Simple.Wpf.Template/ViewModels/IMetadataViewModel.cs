@@ -1,10 +1,10 @@
+using System;
+using System.Reactive;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive;
-    using Commands;
-    using Models;
-
     public interface IMetadataViewModel : ITransientViewModel
     {
         Uri Url { get; }
@@ -12,6 +12,6 @@ namespace Simple.Wpf.Template.ViewModels
         Metadata Metadata { get; }
         ReactiveCommand<object> ModifyCommand { get; }
         ReactiveCommand<object> DeleteCommand { get; }
-        IObservable<Unit> Deleted { get; } 
+        IObservable<Unit> Deleted { get; }
     }
 }

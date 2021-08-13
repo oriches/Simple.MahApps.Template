@@ -1,9 +1,9 @@
-﻿namespace Simple.Wpf.Template.Tests
-{
-    using System.Reactive.Concurrency;
-    using Microsoft.Reactive.Testing;
-    using Services;
+﻿using System.Reactive.Concurrency;
+using Microsoft.Reactive.Testing;
+using Simple.Wpf.Template.Services;
 
+namespace Simple.Wpf.Template.Tests
+{
     public sealed class MockSchedulerService : ISchedulerService
     {
         private readonly TestScheduler _testScheduler;

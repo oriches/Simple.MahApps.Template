@@ -1,16 +1,16 @@
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using NLog;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
-    using Extensions;
-    using Models;
-    using NLog;
-
     public sealed class DiagnosticsService : DisposableObject, IDiagnosticsService
     {
         private readonly IConnectableObservable<Counters> _countersObservable;
@@ -23,7 +23,8 @@ namespace Simple.Wpf.Template.Services
 
         public DiagnosticsService(IIdleService idleService, ISchedulerService schedulerService)
         {
-            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            using (Duration.Measure(Logger, "Constructor - " + GetType()
+                .Name))
             {
                 _schedulerService = schedulerService;
 
@@ -38,7 +39,8 @@ namespace Simple.Wpf.Template.Services
                     .ObserveOn(schedulerService.TaskPool)
                     .CombineLatest(
                         idleService.Idling.Buffer(Constants.UI.Diagnostics.DiagnosticsIdleBuffer,
-                            schedulerService.TaskPool).Where(x => x.Any()), (x, y) => x)
+                                schedulerService.TaskPool)
+                            .Where(x => x.Any()), (x, y) => x)
                     .Replay(1);
 
                 _loggingTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
@@ -165,7 +167,7 @@ namespace Simple.Wpf.Template.Services
         {
             try
             {
-                return value == 0 ? 0 : value/Environment.ProcessorCount;
+                return value == 0 ? 0 : value / Environment.ProcessorCount;
             }
             catch (OverflowException)
             {
@@ -178,16 +180,12 @@ namespace Simple.Wpf.Template.Services
             var currentProcess = Process.GetCurrentProcess();
             foreach (var instance in new PerformanceCounterCategory("Process").GetInstanceNames()
                 .Where(x => x.StartsWith(currentProcess.ProcessName, StringComparison.InvariantCulture)))
-            {
                 try
                 {
                     using (var counter = new PerformanceCounter("Process", "ID Process", instance, true))
                     {
                         var val = (int) counter.RawValue;
-                        if (val == currentProcess.Id)
-                        {
-                            return instance;
-                        }
+                        if (val == currentProcess.Id) return instance;
                     }
                 }
                 catch (ArgumentException)
@@ -205,7 +203,6 @@ namespace Simple.Wpf.Template.Services
                 catch (UnauthorizedAccessException)
                 {
                 }
-            }
 
             throw new ArgumentException(
                 $@"Could not find performance counter instance name for current process, name '{"ARG0"}'",
@@ -214,17 +211,11 @@ namespace Simple.Wpf.Template.Services
 
         private void ConnectCountersObservable()
         {
-            if (_countersConnected)
-            {
-                return;
-            }
+            if (_countersConnected) return;
 
             lock (_sync)
             {
-                if (_countersConnected)
-                {
-                    return;
-                }
+                if (_countersConnected) return;
 
                 var disposable = _countersObservable.Connect();
                 _disposable.Add(disposable);
@@ -239,13 +230,14 @@ namespace Simple.Wpf.Template.Services
             return Observable.Interval(Constants.UI.Diagnostics.DiagnosticsLogInterval, _schedulerService.TaskPool)
                 .Synchronize()
                 .Select(x =>
-                        {
-                            var currentLog = _loggingTarget.Logs.ToArray();
-                            var delta = currentLog.Except(existingLog).ToArray();
-                            existingLog = currentLog;
+                {
+                    var currentLog = _loggingTarget.Logs.ToArray();
+                    var delta = currentLog.Except(existingLog)
+                        .ToArray();
+                    existingLog = currentLog;
 
-                            return delta;
-                        })
+                    return delta;
+                })
                 .Where(x => x.Any())
                 .SelectMany(x => x);
         }
@@ -253,66 +245,66 @@ namespace Simple.Wpf.Template.Services
         private IObservable<Counters> CreatePerformanceCounters()
         {
             return Observable.Create<Counters>(x =>
-                                               {
-                                                   var disposable = new CompositeDisposable();
+            {
+                var disposable = new CompositeDisposable();
 
-                                                   try
-                                                   {
-                                                       var processName = GetProcessInstanceName();
+                try
+                {
+                    var processName = GetProcessInstanceName();
 
-                                                       Logger.Info(
-                                                           "Creating performance counter 'Working Set'");
+                    Logger.Info(
+                        "Creating performance counter 'Working Set'");
 
-                                                       var workingSetCounter =
-                                                           new PerformanceCounter("Process",
-                                                               "Working Set", processName);
-                                                       disposable.Add(workingSetCounter);
+                    var workingSetCounter =
+                        new PerformanceCounter("Process",
+                            "Working Set", processName);
+                    disposable.Add(workingSetCounter);
 
-                                                       Logger.Info(
-                                                           "Creating performance counter '% Processor Time'");
+                    Logger.Info(
+                        "Creating performance counter '% Processor Time'");
 
-                                                       var cpuCounter =
-                                                           new PerformanceCounter("Process",
-                                                               "% Processor Time", processName);
-                                                       disposable.Add(cpuCounter);
+                    var cpuCounter =
+                        new PerformanceCounter("Process",
+                            "% Processor Time", processName);
+                    disposable.Add(cpuCounter);
 
-                                                       using (
-                                                           Duration.Measure(Logger,
-                                                               "Initialising performance counters (after creation)")
-                                                           )
-                                                       {
-                                                           workingSetCounter.NextValue();
-                                                           cpuCounter.NextValue();
-                                                       }
+                    using (
+                        Duration.Measure(Logger,
+                            "Initialising performance counters (after creation)")
+                    )
+                    {
+                        workingSetCounter.NextValue();
+                        cpuCounter.NextValue();
+                    }
 
-                                                       x.OnNext(new Counters(workingSetCounter,
-                                                           cpuCounter));
+                    x.OnNext(new Counters(workingSetCounter,
+                        cpuCounter));
 
-                                                       Logger.Info("Ready");
-                                                   }
-                                                   catch (ArgumentException exn)
-                                                   {
-                                                       LogFailToCreatePerformanceCounter(x, exn);
-                                                   }
-                                                   catch (InvalidOperationException exn)
-                                                   {
-                                                       LogFailToCreatePerformanceCounter(x, exn);
-                                                   }
-                                                   catch (Win32Exception exn)
-                                                   {
-                                                       LogFailToCreatePerformanceCounter(x, exn);
-                                                   }
-                                                   catch (PlatformNotSupportedException exn)
-                                                   {
-                                                       LogFailToCreatePerformanceCounter(x, exn);
-                                                   }
-                                                   catch (UnauthorizedAccessException exn)
-                                                   {
-                                                       LogFailToCreatePerformanceCounter(x, exn);
-                                                   }
+                    Logger.Info("Ready");
+                }
+                catch (ArgumentException exn)
+                {
+                    LogFailToCreatePerformanceCounter(x, exn);
+                }
+                catch (InvalidOperationException exn)
+                {
+                    LogFailToCreatePerformanceCounter(x, exn);
+                }
+                catch (Win32Exception exn)
+                {
+                    LogFailToCreatePerformanceCounter(x, exn);
+                }
+                catch (PlatformNotSupportedException exn)
+                {
+                    LogFailToCreatePerformanceCounter(x, exn);
+                }
+                catch (UnauthorizedAccessException exn)
+                {
+                    LogFailToCreatePerformanceCounter(x, exn);
+                }
 
-                                                   return disposable;
-                                               });
+                return disposable;
+            });
         }
 
         internal sealed class Counters

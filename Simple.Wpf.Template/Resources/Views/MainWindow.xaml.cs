@@ -1,12 +1,12 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using MahApps.Metro.Controls.Dialogs;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.Resources.Views
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Reactive.Threading.Tasks;
-    using MahApps.Metro.Controls.Dialogs;
-    using Services;
-
     public partial class MainWindow
     {
         private readonly IDisposable _disposable;
@@ -34,16 +34,17 @@ namespace Simple.Wpf.Template.Resources.Views
         private IObservable<Unit> ShowDialogAsync(MessageDialog dialog)
         {
             var settings = new MetroDialogSettings
-                           {
-                               AnimateShow = true,
-                               AnimateHide = true,
-                               ColorScheme = MetroDialogColorScheme.Accented
-                           };
+            {
+                AnimateShow = true,
+                AnimateHide = true,
+                ColorScheme = MetroDialogColorScheme.Accented
+            };
 
             return this.ShowMetroDialogAsync(dialog, settings)
                 .ToObservable()
                 .SelectMany(x => dialog.CloseableContent.Closed, (x, y) => x)
-                .SelectMany(x => this.HideMetroDialogAsync(dialog).ToObservable(), (x, y) => x)
+                .SelectMany(x => this.HideMetroDialogAsync(dialog)
+                    .ToObservable(), (x, y) => x)
                 .Take(1);
         }
     }

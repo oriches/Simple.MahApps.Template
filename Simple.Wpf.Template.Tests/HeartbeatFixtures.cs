@@ -1,12 +1,12 @@
-﻿namespace Simple.Wpf.Template.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reactive;
-    using Microsoft.Reactive.Testing;
-    using NUnit.Framework;
-    using Services;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive;
+using Microsoft.Reactive.Testing;
+using NUnit.Framework;
+using Simple.Wpf.Template.Services;
 
+namespace Simple.Wpf.Template.Tests
+{
     [TestFixture]
     public class HeartbeatFixtures
     {

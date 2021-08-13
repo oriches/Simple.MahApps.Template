@@ -1,12 +1,11 @@
+using System;
+using System.Reactive.Linq;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using Commands;
-    using Extensions;
-    using Services;
-
     public sealed class ExceptionViewModel : CloseableViewModel, IExceptionViewModel
     {
         private readonly IApplicationService _applicationService;

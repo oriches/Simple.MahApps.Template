@@ -1,10 +1,10 @@
+using System;
+using System.Reactive.Disposables;
+using NLog;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.Models
 {
-    using System;
-    using System.Reactive.Disposables;
-    using NLog;
-    using Services;
-
     public abstract class DisposableObject : IDisposable
     {
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -18,8 +18,11 @@ namespace Simple.Wpf.Template.Models
 
         public virtual void Dispose()
         {
-            using (Duration.Measure(Logger, "Dispose - " + GetType().FullName))
+            using (Duration.Measure(Logger, "Dispose - " + GetType()
+                .FullName))
+            {
                 _disposable.Dispose();
+            }
         }
 
         public static implicit operator CompositeDisposable(DisposableObject disposable)

@@ -1,7 +1,7 @@
+using System;
+
 namespace Simple.Wpf.Template
 {
-    using System;
-
     public static class Constants
     {
         public static class UI

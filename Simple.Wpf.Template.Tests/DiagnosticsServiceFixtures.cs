@@ -1,19 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Subjects;
+using Microsoft.Reactive.Testing;
+using Moq;
+using NLog;
+using NUnit.Framework;
+using Simple.Wpf.Template.Helpers;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reactive;
-    using System.Reactive.Subjects;
-    using Helpers;
-    using Microsoft.Reactive.Testing;
-    using Models;
-    using Moq;
-    using NLog;
-    using NUnit.Framework;
-    using Services;
-
-    [TestFixture, Ignore("Inconsistent when running through NCrunch")]
+    [TestFixture]
+    [Ignore("Inconsistent when running through NCrunch")]
     public sealed class DiagnosticsServiceFixtures
     {
         [SetUp]
@@ -25,7 +26,8 @@ namespace Simple.Wpf.Template.Tests
             _idleService = new Mock<IIdleService>();
 
             _idling = new Subject<Unit>();
-            _idleService.Setup(x => x.Idling).Returns(_idling);
+            _idleService.Setup(x => x.Idling)
+                .Returns(_idling);
         }
 
         private TestScheduler _testScheduler;

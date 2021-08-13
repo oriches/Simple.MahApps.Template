@@ -1,12 +1,12 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Extensions;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
-    using Commands;
-    using Extensions;
-
     public abstract class CloseableViewModel : BaseViewModel, ICloseableViewModel
     {
         private readonly Subject<Unit> _closed;

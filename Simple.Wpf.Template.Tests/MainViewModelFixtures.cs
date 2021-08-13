@@ -1,18 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Moq;
+using NUnit.Framework;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Threading.Tasks;
-    using Models;
-    using Moq;
-    using NUnit.Framework;
-    using Rest;
-    using Services;
-    using ViewModels;
-
     [TestFixture]
     public sealed class MainViewModelFixtures : BaseViewModelFixtures
     {
@@ -20,9 +20,12 @@ namespace Simple.Wpf.Template.Tests
         public void Setup()
         {
             _diagnosticsService = new Mock<IDiagnosticsService>();
-            _diagnosticsService.Setup(x => x.Cpu).Returns(Observable.Never<int>);
-            _diagnosticsService.Setup(x => x.Memory).Returns(Observable.Never<Memory>);
-            _diagnosticsService.Setup(x => x.Log).Returns(Observable.Never<string>);
+            _diagnosticsService.Setup(x => x.Cpu)
+                .Returns(Observable.Never<int>);
+            _diagnosticsService.Setup(x => x.Memory)
+                .Returns(Observable.Never<Memory>);
+            _diagnosticsService.Setup(x => x.Log)
+                .Returns(Observable.Never<string>);
 
             _restClient = new Mock<IRestClient>();
 
@@ -50,7 +53,8 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
-            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+            heartbeatResponse.Setup(x => x.Resource)
+                .Returns(new Heartbeat("some timestamp"));
 
             var task = Task.Delay(Constants.Server.Hearbeat.Timeout.Add(TimeSpan.FromMilliseconds(100)))
                 .ContinueWith(x => heartbeatResponse.Object);
@@ -60,7 +64,7 @@ namespace Simple.Wpf.Template.Tests
 
             // ACT
             var viewModel = new MainViewModel(_addResourceFactory,
-                _metadataFactory, 
+                _metadataFactory,
                 _diagnostics.Object,
                 _messageService.Object,
                 _restClient.Object,
@@ -77,7 +81,8 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
-            heartbeatResponse.Setup(x => x.Resource).Throws(new Exception("Foo"));
+            heartbeatResponse.Setup(x => x.Resource)
+                .Throws(new Exception("Foo"));
 
             _restClient.Setup(x => x.GetAsync<Heartbeat>(It.Is<Uri>(y => y == Constants.Server.Hearbeat.Url)))
                 .Returns(Task.FromResult(heartbeatResponse.Object));
@@ -101,15 +106,18 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
-            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+            heartbeatResponse.Setup(x => x.Resource)
+                .Returns(new Heartbeat("some timestamp"));
 
             _restClient.Setup(x => x.GetAsync<Heartbeat>(It.IsAny<Uri>()))
                 .Returns(Task.FromResult(heartbeatResponse.Object));
 
             var resourceResponse = new Mock<IRestResponse<IEnumerable<Metadata>>>();
-            resourceResponse.Setup(x => x.Resource).Returns(new Metadata[0]);
+            resourceResponse.Setup(x => x.Resource)
+                .Returns(new Metadata[0]);
 
-            _restClient.Setup(x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
+            _restClient.Setup(
+                    x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
                 .Returns(Task.FromResult(resourceResponse.Object));
 
             // ACT
@@ -131,26 +139,31 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
-            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+            heartbeatResponse.Setup(x => x.Resource)
+                .Returns(new Heartbeat("some timestamp"));
 
             _restClient.Setup(x => x.GetAsync<Heartbeat>(It.Is<Uri>(y => y == Constants.Server.Hearbeat.Url)))
                 .Returns(Task.FromResult(heartbeatResponse.Object));
 
             var metadata = new[]
-                            {
-                                new Metadata(new Uri("http://localhost/foo"), true)
-                            };
+            {
+                new Metadata(new Uri("http://localhost/foo"), true)
+            };
 
             var metadataViewModel = new Mock<IMetadataViewModel>();
-            metadataViewModel.Setup(x => x.Metadata).Returns(metadata.First());
-            metadataViewModel.Setup(x => x.Deleted).Returns(Observable.Never<Unit>());
+            metadataViewModel.Setup(x => x.Metadata)
+                .Returns(metadata.First());
+            metadataViewModel.Setup(x => x.Deleted)
+                .Returns(Observable.Never<Unit>());
 
             _metadataFactory = x => metadataViewModel.Object;
 
             var resourceResponse = new Mock<IRestResponse<IEnumerable<Metadata>>>();
-            resourceResponse.Setup(x => x.Resource).Returns(metadata);
+            resourceResponse.Setup(x => x.Resource)
+                .Returns(metadata);
 
-            _restClient.Setup(x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
+            _restClient.Setup(
+                    x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
                 .Returns(Task.FromResult(resourceResponse.Object));
 
             // ACT
@@ -164,11 +177,16 @@ namespace Simple.Wpf.Template.Tests
             TestScheduler.AdvanceBy(Constants.Server.Hearbeat.Interval.Add(TimeSpan.FromMilliseconds(100)));
 
             // ASSERT
-            var result = viewModel.Metadata.Cast<IMetadataViewModel>().Select(x => x.Metadata);
+            var result = viewModel.Metadata.Cast<IMetadataViewModel>()
+                .Select(x => x.Metadata);
 
             Assert.That(result, Is.Not.Empty);
-            Assert.That(result.First().Url, Is.EqualTo(metadata.First().Url));
-            Assert.That(result.First().Immutable, Is.EqualTo(metadata.First().Immutable));
+            Assert.That(result.First()
+                .Url, Is.EqualTo(metadata.First()
+                .Url));
+            Assert.That(result.First()
+                .Immutable, Is.EqualTo(metadata.First()
+                .Immutable));
         }
 
         [Test]
@@ -176,19 +194,23 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var heartbeatResponse = new Mock<IRestResponse<Heartbeat>>();
-            heartbeatResponse.Setup(x => x.Resource).Returns(new Heartbeat("some timestamp"));
+            heartbeatResponse.Setup(x => x.Resource)
+                .Returns(new Heartbeat("some timestamp"));
 
             _restClient.Setup(x => x.GetAsync<Heartbeat>(It.IsAny<Uri>()))
                 .Returns(Task.FromResult(heartbeatResponse.Object));
 
             var resourceResponse = new Mock<IRestResponse<IEnumerable<Metadata>>>();
-            resourceResponse.Setup(x => x.Resource).Returns(new Metadata[0]);
+            resourceResponse.Setup(x => x.Resource)
+                .Returns(new Metadata[0]);
 
-            _restClient.Setup(x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
+            _restClient.Setup(
+                    x => x.GetAsync<IEnumerable<Metadata>>(It.Is<Uri>(y => y == Constants.Server.MetadataUrl)))
                 .Returns(Task.FromResult(resourceResponse.Object));
 
             var addResourceViewModel = new Mock<IAddResourceViewModel>();
-            addResourceViewModel.Setup(x => x.Added).Returns(Observable.Return(Unit.Default));
+            addResourceViewModel.Setup(x => x.Added)
+                .Returns(Observable.Return(Unit.Default));
             _addResourceFactory = x => addResourceViewModel.Object;
 
             // ACT

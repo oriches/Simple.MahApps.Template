@@ -1,13 +1,13 @@
+using System;
+using System.Reactive.Subjects;
+using Moq;
+using NUnit.Framework;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Reactive.Subjects;
-    using Models;
-    using Moq;
-    using NUnit.Framework;
-    using Services;
-    using ViewModels;
-
     [TestFixture]
     public sealed class DiagnosticsViewModelFixtures : BaseViewModelFixtures
     {
@@ -17,13 +17,16 @@ namespace Simple.Wpf.Template.Tests
             _diagnosticService = new Mock<IDiagnosticsService>();
 
             _cpuSubject = new Subject<int>();
-            _diagnosticService.Setup(x => x.Cpu).Returns(_cpuSubject);
+            _diagnosticService.Setup(x => x.Cpu)
+                .Returns(_cpuSubject);
 
             _memorySubject = new Subject<Memory>();
-            _diagnosticService.Setup(x => x.Memory).Returns(_memorySubject);
+            _diagnosticService.Setup(x => x.Memory)
+                .Returns(_memorySubject);
 
             _logSubject = new Subject<string>();
-            _diagnosticService.Setup(x => x.Log).Returns(_logSubject);
+            _diagnosticService.Setup(x => x.Log)
+                .Returns(_logSubject);
         }
 
         private Mock<IDiagnosticsService> _diagnosticService;
@@ -65,8 +68,8 @@ namespace Simple.Wpf.Template.Tests
         public void disposing_unsubscribes_diagnostics_service_stream()
         {
             // ARRANGE
-            const decimal managedMemory = 1024*1000*4;
-            const decimal totalMemory = 1024*1000*42;
+            const decimal managedMemory = 1024 * 1000 * 4;
+            const decimal totalMemory = 1024 * 1000 * 42;
 
             var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
@@ -101,8 +104,8 @@ namespace Simple.Wpf.Template.Tests
         public void managed_memory_value_is_formatted_when_diagnostics_service_pumps_memory()
         {
             // ARRANGE
-            const decimal managedMemory = 1024*1000*4;
-            const decimal totalMemory = 1024*1000*42;
+            const decimal managedMemory = 1024 * 1000 * 4;
+            const decimal totalMemory = 1024 * 1000 * 42;
 
             var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 
@@ -134,8 +137,8 @@ namespace Simple.Wpf.Template.Tests
         public void total_memory_value_is_formatted_when_diagnostics_service_pumps_memory()
         {
             // ARRANGE
-            const decimal managedMemory = 1024*1000*4;
-            const decimal totalMemory = 1024*1000*42;
+            const decimal managedMemory = 1024 * 1000 * 4;
+            const decimal totalMemory = 1024 * 1000 * 42;
 
             var viewModel = new DiagnosticsViewModel(_diagnosticService.Object, SchedulerService);
 

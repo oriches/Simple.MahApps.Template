@@ -1,25 +1,26 @@
+using System;
+using System.Diagnostics;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Threading;
+using Autofac;
+using Autofac.Core;
+using NLog;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Helpers;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Resources.Views;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+using Duration = Simple.Wpf.Template.Services.Duration;
+using ObservableExtensions = Simple.Wpf.Template.Extensions.ObservableExtensions;
+
 namespace Simple.Wpf.Template
 {
-    using System;
-    using System.Diagnostics;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Media;
-    using System.Windows.Threading;
-    using Autofac;
-    using Autofac.Core;
-    using Extensions;
-    using Helpers;
-    using Models;
-    using NLog;
-    using Resources.Views;
-    using Services;
-    using ViewModels;
-    using ObservableExtensions = Extensions.ObservableExtensions;
-
     public partial class App
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -39,7 +40,8 @@ namespace Simple.Wpf.Template
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            using (Services.Duration.Measure(Logger, "OnStartup - " + GetType().Name))
+            using (Duration.Measure(Logger, "OnStartup - " + GetType()
+                .Name))
             {
                 Logger.Info("Starting");
 
@@ -48,9 +50,9 @@ namespace Simple.Wpf.Template
                 Debug.WriteLine(dispatcherThreadInfo);
                 Logger.Info(dispatcherThreadInfo);
 
-                Logger.Info($"WPF rendering capability (tier) = {RenderCapability.Tier/0x10000}");
+                Logger.Info($"WPF rendering capability (tier) = {RenderCapability.Tier / 0x10000}");
                 RenderCapability.TierChanged += (s, a) =>
-                    Logger.Info($"WPF rendering capability (tier) = {RenderCapability.Tier/0x10000}");
+                    Logger.Info($"WPF rendering capability (tier) = {RenderCapability.Tier / 0x10000}");
 
                 base.OnStartup(e);
 
@@ -73,10 +75,8 @@ namespace Simple.Wpf.Template
                 window.Show();
 
                 if (Logger.IsInfoEnabled)
-                {
                     ObserveHeartbeat(schedulerService)
-                         .DisposeWith(_disposable);
-                }
+                        .DisposeWith(_disposable);
 
 #if DEBUG
                 ObserveUiFreeze()
@@ -108,34 +108,32 @@ namespace Simple.Wpf.Template
                 .SelectMany(x => dianosticsService.Memory.Take(1), (x, y) => y)
                 .SelectMany(x => dianosticsService.Cpu.Take(1), (x, y) => new Tuple<Memory, int>(x, y))
                 .SafeSubscribe(x =>
-                               {
-                                   var message =
-                                       $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
+                {
+                    var message =
+                        $"Heartbeat (Memory={x.Item1.WorkingSetPrivateAsString()}, CPU={x.Item2}%)";
 
-                                   Debug.WriteLine(message);
-                                   Logger.Info(message);
-                               }, schedulerService.Dispatcher);
+                    Debug.WriteLine(message);
+                    Logger.Info(message);
+                }, schedulerService.Dispatcher);
         }
 
         private static IDisposable ObserveUiFreeze()
         {
             var timer = new DispatcherTimer(DispatcherPriority.Normal)
-                        {
-                            Interval = Constants.UI.Diagnostics.UiFreezeTimer
-                        };
+            {
+                Interval = Constants.UI.Diagnostics.UiFreezeTimer
+            };
 
             var previous = DateTime.Now;
             timer.Tick += (sender, args) =>
-                          {
-                              var current = DateTime.Now;
-                              var delta = current - previous;
-                              previous = current;
+            {
+                var current = DateTime.Now;
+                var delta = current - previous;
+                previous = current;
 
-                              if (delta > Constants.UI.Diagnostics.UiFreeze)
-                              {
-                                  Debug.WriteLine($"UI Freeze = {delta.TotalMilliseconds} ms");
-                              }
-                          };
+                if (delta > Constants.UI.Diagnostics.UiFreeze)
+                    Debug.WriteLine($"UI Freeze = {delta.TotalMilliseconds} ms");
+            };
 
             timer.Start();
             return Disposable.Create(timer.Stop);
@@ -173,9 +171,9 @@ namespace Simple.Wpf.Template
             schedulerService.Dispatcher.Schedule(() =>
             {
                 var parameters = new Parameter[]
-                                 {
-                                     new NamedParameter("exception", exception)
-                                 };
+                {
+                    new NamedParameter("exception", exception)
+                };
 
                 var viewModel = BootStrapper.Resolve<IExceptionViewModel>(parameters);
 

@@ -1,13 +1,13 @@
+using System;
+using System.Reactive.Disposables;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System;
-    using System.Reactive.Disposables;
-    using System.Windows;
-    using System.Windows.Input;
-    using System.Windows.Threading;
-    using Extensions;
-    using Models;
-
     public sealed class GesturesService : DisposableObject, IGestureService
     {
         private readonly DispatcherTimer _timer;
@@ -16,7 +16,8 @@ namespace Simple.Wpf.Template.Services
 
         public GesturesService()
         {
-            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            using (Duration.Measure(Logger, "Constructor - " + GetType()
+                .Name))
             {
                 _timer = new DispatcherTimer(TimeSpan.Zero, DispatcherPriority.ApplicationIdle, TimerCallback,
                     Application.Current.Dispatcher);
@@ -39,10 +40,7 @@ namespace Simple.Wpf.Template.Services
                 _isBusy = busy;
                 Mouse.OverrideCursor = busy ? Cursors.Wait : null;
 
-                if (_isBusy)
-                {
-                    _timer.Start();
-                }
+                if (_isBusy) _timer.Start();
             }
         }
 

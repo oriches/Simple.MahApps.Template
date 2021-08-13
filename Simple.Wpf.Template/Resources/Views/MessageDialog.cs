@@ -1,10 +1,10 @@
+using System.Windows.Markup;
+using MahApps.Metro.Controls.Dialogs;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Resources.Views
 {
-    using System.Windows.Markup;
-    using MahApps.Metro.Controls.Dialogs;
-    using Models;
-    using ViewModels;
-
     [ContentProperty("DialogBody")]
     public sealed class MessageDialog : BaseMetroDialog
     {

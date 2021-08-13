@@ -1,20 +1,20 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Reactive.Threading.Tasks;
-    using Commands;
-    using Extensions;
-    using Models;
-    using Rest;
-    using Services;
-
     public sealed class MetadataViewModel : BaseViewModel, IMetadataViewModel
     {
         private readonly Func<Exception, IExceptionViewModel> _exceptionFactory;
-        private readonly IRestClient _restClient;
         private readonly IMessageService _messageService;
+        private readonly IRestClient _restClient;
         private readonly ISchedulerService _schedulerService;
 
         public MetadataViewModel(Metadata metadata,
@@ -59,15 +59,17 @@ namespace Simple.Wpf.Template.ViewModels
         private IObservable<Unit> ObserveDelete()
         {
             return DeleteCommand.ActivateGestures()
-                .SelectMany(x => _restClient.DeleteAsync(Url).ToObservable(), (x, y) => y)
+                .SelectMany(x => _restClient.DeleteAsync(Url)
+                    .ToObservable(), (x, y) => y)
                 .Take(1)
                 .AsUnit()
                 .Catch<Unit, Exception>(x =>
                 {
-                    _schedulerService.Dispatcher.Schedule(() => _messageService.Post(Constants.UI.ExceptionTitle, _exceptionFactory(x)));
+                    _schedulerService.Dispatcher.Schedule(() =>
+                        _messageService.Post(Constants.UI.ExceptionTitle, _exceptionFactory(x)));
 
                     return ObserveDelete();
                 });
-        } 
+        }
     }
 }

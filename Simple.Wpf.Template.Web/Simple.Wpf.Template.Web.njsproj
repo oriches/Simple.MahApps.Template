@@ -6,6 +6,7 @@
     <Name>Simple.Wpf.Template.Web</Name>
     <RootNamespace>Simple.Wpf.Template.Web</RootNamespace>
     <LaunchUrl>http://localhost</LaunchUrl>
+    <TypeScriptToolsVersion>4.1</TypeScriptToolsVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

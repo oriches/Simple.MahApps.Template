@@ -1,31 +1,31 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Windows.Data;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Collections;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reactive;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using System.Reactive.Threading.Tasks;
-    using System.Windows.Data;
-    using Collections;
-    using Commands;
-    using Extensions;
-    using Models;
-    using Rest;
-    using Services;
-
     public sealed class MainViewModel : BaseViewModel, IMainViewModel
     {
         private static readonly Metadata[] EmptyMetadatas = new Metadata[0];
 
         private readonly Func<IEnumerable<Metadata>, IAddResourceViewModel> _addResourceFactory;
-        private readonly Func<Metadata, IMetadataViewModel> _metadataFactory;
 
         private readonly ListCollectionView _collectionView;
         private readonly IMessageService _messageService;
         private readonly RangeObservableCollection<IMetadataViewModel> _metadata;
+        private readonly Func<Metadata, IMetadataViewModel> _metadataFactory;
         private readonly IRestClient _restClient;
         private readonly ISchedulerService _schedulerService;
 
@@ -50,12 +50,14 @@ namespace Simple.Wpf.Template.ViewModels
             _metadata = new RangeObservableCollection<IMetadataViewModel>();
             _collectionView = new ListCollectionView(_metadata);
 
-            RefreshCommand = ReactiveCommand.Create(this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
+            RefreshCommand = ReactiveCommand.Create(this.ObservePropertyChanged(x => IsServerOnline)
+                    .Select(x => IsServerOnline))
                 .DisposeWith(this);
 
-            AddCommand = ReactiveCommand.Create(this.ObservePropertyChanged(x => IsServerOnline).Select(x => IsServerOnline))
+            AddCommand = ReactiveCommand.Create(this.ObservePropertyChanged(x => IsServerOnline)
+                    .Select(x => IsServerOnline))
                 .DisposeWith(this);
-            
+
             ObserveServerHeartbeat()
                 .ObserveOn(_schedulerService.Dispatcher)
                 .Do(UpdateStatus)
@@ -85,7 +87,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         public bool IsServerOnline
         {
-            get { return _isServerOnline; }
+            get => _isServerOnline;
             private set
             {
                 _isServerOnline = value;
@@ -95,7 +97,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         public string ServerStatus
         {
-            get { return _serverStatus; }
+            get => _serverStatus;
             private set { SetPropertyAndNotify(ref _serverStatus, value, () => ServerStatus); }
         }
 
@@ -108,17 +110,21 @@ namespace Simple.Wpf.Template.ViewModels
         private IObservable<Status> ObserveServerHeartbeat()
         {
             return Observable.Timer(Constants.Server.Hearbeat.Interval, _schedulerService.TaskPool)
-                .SelectMany(x => _restClient.GetAsync<Heartbeat>(Constants.Server.Hearbeat.Url).ToObservable())
+                .SelectMany(x => _restClient.GetAsync<Heartbeat>(Constants.Server.Hearbeat.Url)
+                    .ToObservable())
                 .Select(x => new Status(x.Resource.Timestamp))
                 .Timeout(Constants.Server.Hearbeat.Timeout, _schedulerService.TaskPool)
-                .Catch<Status, Exception>(x => ObserveServerHeartbeat().StartWith(new Status(x)));
+                .Catch<Status, Exception>(x => ObserveServerHeartbeat()
+                    .StartWith(new Status(x)));
         }
 
         private void UpdateStatus(Status status)
         {
             ServerStatus = status.IsOnline
                 ? $"Online ({status.Timestamp})"
-                : (status.HasTimedOut ? "Offline (Timed out)" : "Offline (Error)");
+                : status.HasTimedOut
+                    ? "Offline (Timed out)"
+                    : "Offline (Error)";
 
             IsServerOnline = status.IsOnline;
         }

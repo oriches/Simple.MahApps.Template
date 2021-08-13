@@ -1,13 +1,13 @@
+using System;
+using System.Linq;
+using System.Threading;
+using NLog;
+using NUnit.Framework;
+using Simple.Wpf.Template.Helpers;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Linq;
-    using System.Threading;
-    using Helpers;
-    using NLog;
-    using NUnit.Framework;
-    using Services;
-
     [TestFixture]
     public class DurationFixtures
     {

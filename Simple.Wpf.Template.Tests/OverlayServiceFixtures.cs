@@ -1,12 +1,12 @@
+using System;
+using System.Reactive.Disposables;
+using Moq;
+using NUnit.Framework;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Reactive.Disposables;
-    using Moq;
-    using NUnit.Framework;
-    using Services;
-    using ViewModels;
-
     [TestFixture]
     public sealed class OverlayServiceFixtures
     {

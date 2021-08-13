@@ -1,7 +1,7 @@
+using System.Collections.Generic;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System.Collections.Generic;
-
     public interface IDateOfBirthViewModel : ICloseableViewModel
     {
         IEnumerable<int> Days { get; }
