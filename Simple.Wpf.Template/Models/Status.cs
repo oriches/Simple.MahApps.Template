@@ -1,7 +1,7 @@
+using System;
+
 namespace Simple.Wpf.Template.Models
 {
-    using System;
-
     public sealed class Status : IEquatable<Status>
     {
         public Status(Exception exception)
@@ -17,7 +17,7 @@ namespace Simple.Wpf.Template.Models
         public Exception Exception { get; }
         public string Timestamp { get; }
         public bool IsOnline => !string.IsNullOrEmpty(Timestamp);
-        public bool HasTimedOut => Exception != null && Exception.GetType() == typeof (TimeoutException);
+        public bool HasTimedOut => Exception != null && Exception.GetType() == typeof(TimeoutException);
 
         public bool Equals(Status other)
         {
@@ -37,7 +37,7 @@ namespace Simple.Wpf.Template.Models
         {
             unchecked
             {
-                return ((Exception?.GetHashCode() ?? 0)*397) ^ (Timestamp?.GetHashCode() ?? 0);
+                return ((Exception?.GetHashCode() ?? 0) * 397) ^ (Timestamp?.GetHashCode() ?? 0);
             }
         }
 

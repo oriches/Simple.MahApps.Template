@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reactive.Disposables;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Helpers;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq.Expressions;
-    using System.Reactive.Disposables;
-    using Extensions;
-    using Helpers;
-    using Models;
-
     public abstract class BaseViewModel : DisposableObject, IViewModel
     {
         private static readonly PropertyChangedEventArgs EmptyChangeArgs = new PropertyChangedEventArgs(string.Empty);
@@ -22,10 +22,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         public IDisposable SuspendNotifications()
         {
-            if (_suspendedNotifications == null)
-            {
-                _suspendedNotifications = new SuspendedNotifications(this);
-            }
+            if (_suspendedNotifications == null) _suspendedNotifications = new SuspendedNotifications(this);
 
             return _suspendedNotifications.AddRef();
         }
@@ -72,10 +69,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         protected virtual bool SetPropertyAndNotify<T>(ref T existingValue, T newValue, Expression<Func<T>> expression)
         {
-            if (EqualityComparer<T>.Default.Equals(existingValue, newValue))
-            {
-                return false;
-            }
+            if (EqualityComparer<T>.Default.Equals(existingValue, newValue)) return false;
 
             existingValue = newValue;
             OnPropertyChanged(expression);
@@ -109,12 +103,9 @@ namespace Simple.Wpf.Template.ViewModels
             {
                 ++_refCount;
                 return Disposable.Create(() =>
-                                         {
-                                             if (--_refCount == 0)
-                                             {
-                                                 Dispose();
-                                             }
-                                         });
+                {
+                    if (--_refCount == 0) Dispose();
+                });
             }
         }
     }

@@ -1,7 +1,7 @@
+using System;
+
 namespace Simple.Wpf.Template.Models
 {
-    using System;
-
     public sealed class Metadata : IEquatable<Metadata>
     {
         public Metadata(Uri url, bool immutable)

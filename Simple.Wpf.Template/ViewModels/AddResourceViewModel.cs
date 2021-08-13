@@ -1,16 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Helpers;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Reactive.Threading.Tasks;
-    using Extensions;
-    using Helpers;
-    using Models;
-    using Rest;
-
     public sealed class AddResourceViewModel : CloseableViewModel, IAddResourceViewModel
     {
         private readonly IEnumerable<string> _urls;
@@ -23,20 +23,21 @@ namespace Simple.Wpf.Template.ViewModels
             _urls = metadata.Select(x => x.Url.ToString());
 
             Added = Confirmed
-                .SelectMany(x => restClient.PostAsync(BuildUrl(), new Resource(_json)).ToObservable(), (x, y) => y)
+                .SelectMany(x => restClient.PostAsync(BuildUrl(), new Resource(_json))
+                    .ToObservable(), (x, y) => y)
                 .Take(1)
                 .AsUnit();
         }
-        
+
         public string Path
         {
-            get { return _path; }
+            get => _path;
             set { SetPropertyAndNotify(ref _path, value, () => Path); }
         }
 
         public string Json
         {
-            get { return _json; }
+            get => _json;
             set { SetPropertyAndNotify(ref _json, value, () => Json); }
         }
 
@@ -44,7 +45,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         protected override IObservable<bool> InitialiseCanConfirm()
         {
-            return this.ObservePropertyChanged( x => Path, x => Json)
+            return this.ObservePropertyChanged(x => Path, x => Json)
                 .Where(x => !string.IsNullOrEmpty(Path))
                 .Select(x => IsPathAvailable(Path) && JsonHelper.IsValid(Json))
                 .StartWith(false);

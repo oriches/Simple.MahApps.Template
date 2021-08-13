@@ -1,13 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Windows.Input;
+using NLog;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.Commands
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
-    using System.Windows.Input;
-    using NLog;
-    using Services;
-
     public sealed class ReactiveCommand : ReactiveCommand<object>
     {
         private ReactiveCommand(IObservable<bool> canExecute)
@@ -17,7 +17,8 @@ namespace Simple.Wpf.Template.Commands
 
         public new static ReactiveCommand<object> Create()
         {
-            return ReactiveCommand<object>.Create(Observable.Return(true).StartWith(true));
+            return ReactiveCommand<object>.Create(Observable.Return(true)
+                .StartWith(true));
         }
 
         public new static ReactiveCommand<object> Create(IObservable<bool> canExecute)
@@ -35,7 +36,7 @@ namespace Simple.Wpf.Template.Commands
         private readonly Subject<T> _execute;
 
         private bool _currentCanExecute;
-        
+
         protected ReactiveCommand(IObservable<bool> canExecute)
         {
             _eventHandlers = new List<EventHandler>();
@@ -51,19 +52,16 @@ namespace Simple.Wpf.Template.Commands
 
         public virtual void Execute(object parameter)
         {
-            var typedParameter = parameter is T ? (T) parameter : default(T);
+            var typedParameter = parameter is T ? (T) parameter : default;
 
-            if (CanExecute(typedParameter))
-            {
-                _execute.OnNext(typedParameter);
-            }
+            if (CanExecute(typedParameter)) _execute.OnNext(typedParameter);
         }
 
         public virtual bool CanExecute(object parameter)
         {
             return _currentCanExecute;
         }
-        
+
         public event EventHandler CanExecuteChanged
         {
             add
@@ -80,7 +78,8 @@ namespace Simple.Wpf.Template.Commands
 
         public void Dispose()
         {
-            using (Duration.Measure(Logger, "Dispose - " + GetType().FullName))
+            using (Duration.Measure(Logger, "Dispose - " + GetType()
+                .FullName))
             {
                 _eventHandlers.ForEach(x => CommandManager.RequerySuggested -= x);
                 _eventHandlers.Clear();

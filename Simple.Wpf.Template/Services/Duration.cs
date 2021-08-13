@@ -1,12 +1,12 @@
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reactive.Disposables;
+using System.Threading;
+using NLog;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.Reactive.Disposables;
-    using System.Threading;
-    using NLog;
-
     public sealed class Duration : IDisposable
     {
         private readonly string _context;
@@ -35,15 +35,9 @@ namespace Simple.Wpf.Template.Services
 
         public static IDisposable Measure(Logger logger, string context, params object[] args)
         {
-            if (!logger.IsDebugEnabled)
-            {
-                return Disposable.Empty;
-            }
+            if (!logger.IsDebugEnabled) return Disposable.Empty;
 
-            if (args != null)
-            {
-                context = string.Format(CultureInfo.InvariantCulture, context, args);
-            }
+            if (args != null) context = string.Format(CultureInfo.InvariantCulture, context, args);
 
             return new Duration(logger, context);
         }

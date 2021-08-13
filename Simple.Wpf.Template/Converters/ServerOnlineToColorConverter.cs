@@ -1,10 +1,10 @@
-﻿namespace Simple.Wpf.Template.Converters
-{
-    using System;
-    using System.Globalization;
-    using System.Windows.Data;
-    using System.Windows.Media;
+﻿using System;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
 
+namespace Simple.Wpf.Template.Converters
+{
     public sealed class ServerOnlineToColorConverter : IValueConverter
     {
         public SolidColorBrush Online { get; set; }
@@ -15,10 +15,7 @@
         {
             try
             {
-                if (value == null)
-                {
-                    return Offline;
-                }
+                if (value == null) return Offline;
 
                 var isOnline = (bool) value;
                 return isOnline ? Online : Offline;

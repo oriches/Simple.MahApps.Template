@@ -1,12 +1,12 @@
+using System;
+using Microsoft.Reactive.Testing;
+using Moq;
+using NUnit.Framework;
+using Simple.Wpf.Template.Services;
+using ObservableExtensions = Simple.Wpf.Template.Extensions.ObservableExtensions;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using Microsoft.Reactive.Testing;
-    using Moq;
-    using NUnit.Framework;
-    using Services;
-    using ObservableExtensions = Extensions.ObservableExtensions;
-
     public abstract class BaseViewModelFixtures
     {
         public MockSchedulerService SchedulerService { get; private set; }
@@ -19,7 +19,8 @@ namespace Simple.Wpf.Template.Tests
         public void BaseSetup()
         {
             GestureService = new Mock<IGestureService>();
-            GestureService.Setup(x => x.SetBusy()).Verifiable();
+            GestureService.Setup(x => x.SetBusy())
+                .Verifiable();
 
             ObservableExtensions.GestureService = GestureService.Object;
 

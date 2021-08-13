@@ -1,5 +1,4 @@
-﻿export module Dto
-{
+﻿export module Dto {
     export class Metadata {
         constructor(url: string, immutable: boolean) {
             this.url = url;

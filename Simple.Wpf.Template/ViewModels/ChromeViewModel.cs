@@ -1,11 +1,11 @@
+using System;
+using System.Reactive.Disposables;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive.Disposables;
-    using Commands;
-    using Extensions;
-    using Services;
-
     public sealed class ChromeViewModel : BaseViewModel, IChromeViewModel
     {
         private OverlayViewModel _overlay;
@@ -25,7 +25,7 @@ namespace Simple.Wpf.Template.ViewModels
                 .DisposeWith(this);
 
             Disposable.Create(() => CloseOverlayCommand = null)
-               .DisposeWith(this);
+                .DisposeWith(this);
         }
 
         public IMainViewModel Main { get; }
@@ -50,10 +50,7 @@ namespace Simple.Wpf.Template.ViewModels
         {
             using (SuspendNotifications())
             {
-                if (_overlay != null)
-                {
-                    ClearOverlay();
-                }
+                if (_overlay != null) ClearOverlay();
 
                 UpdateOverlayImpl(overlay);
             }

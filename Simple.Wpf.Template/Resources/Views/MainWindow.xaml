@@ -8,7 +8,7 @@
                 xmlns:viewModels="clr-namespace:Simple.Wpf.Template.ViewModels"
                 Title="MainWindow"
                 BorderThickness="1"
-                BorderBrush="{StaticResource AccentColorBrush}"
+                BorderBrush="{StaticResource MahApps.Brushes.Accent}"
                 d:DataContext="{d:DesignInstance viewModels:ChromeViewModel}">
 
     <mh:MetroWindow.Flyouts>

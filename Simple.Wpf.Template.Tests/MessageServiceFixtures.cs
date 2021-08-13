@@ -1,14 +1,14 @@
+using System;
+using System.Linq;
+using Moq;
+using NUnit.Framework;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Linq;
-    using Models;
-    using Moq;
-    using NUnit.Framework;
-    using Rest;
-    using Services;
-    using ViewModels;
-
     [TestFixture]
     public sealed class MessageServiceFixtures : BaseServiceFixtures
     {

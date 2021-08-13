@@ -1,8 +1,8 @@
+using System;
+using System.Reactive;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive;
-
     public interface ICloseableViewModel : ITransientViewModel
     {
         IObservable<Unit> Closed { get; }

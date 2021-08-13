@@ -1,7 +1,7 @@
+using System.Reactive.Concurrency;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System.Reactive.Concurrency;
-
     public interface ISchedulerService : IService
     {
         IScheduler Dispatcher { get; }

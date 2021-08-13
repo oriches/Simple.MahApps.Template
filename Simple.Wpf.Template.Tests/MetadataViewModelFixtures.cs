@@ -1,26 +1,19 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Moq;
+using NUnit.Framework;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Threading.Tasks;
-    using Models;
-    using Moq;
-    using NUnit.Framework;
-    using Rest;
-    using Services;
-    using ViewModels;
-
     [TestFixture]
     public sealed class MetadataViewModelFixtures : BaseViewModelFixtures
     {
-        private Mock<IRestClient> _restClient;
-        private Mock<IMessageService> _messageService;
-        private Func<Metadata, IModifyResourceViewModel> _modifyResourceFactory;
-        private Mock<IModifyResourceViewModel> _modifyResourceViewModel;
-        private Mock<IExceptionViewModel> _exceptionViewModel;
-        private Func<Exception, IExceptionViewModel> _exceptionFactory;
-
         [SetUp]
         public void Setup()
         {
@@ -30,7 +23,9 @@ namespace Simple.Wpf.Template.Tests
             var task = Task.FromResult(result.Object);
 
             _restClient = new Mock<IRestClient>();
-            _restClient.Setup(x => x.DeleteAsync(It.IsAny<Uri>())).Returns(() => task).Verifiable();
+            _restClient.Setup(x => x.DeleteAsync(It.IsAny<Uri>()))
+                .Returns(() => task)
+                .Verifiable();
 
             _messageService = new Mock<IMessageService>();
             _messageService.Setup(x => x.Post(It.IsAny<string>(), It.IsAny<ICloseableViewModel>()));
@@ -39,10 +34,18 @@ namespace Simple.Wpf.Template.Tests
             _modifyResourceFactory = x => _modifyResourceViewModel.Object;
 
             _exceptionViewModel = new Mock<IExceptionViewModel>();
-            _exceptionViewModel.Setup(x => x.Closed).Returns(Observable.Return(Unit.Default));
+            _exceptionViewModel.Setup(x => x.Closed)
+                .Returns(Observable.Return(Unit.Default));
             _exceptionViewModel.Setup(x => x.Dispose());
             _exceptionFactory = x => _exceptionViewModel.Object;
         }
+
+        private Mock<IRestClient> _restClient;
+        private Mock<IMessageService> _messageService;
+        private Func<Metadata, IModifyResourceViewModel> _modifyResourceFactory;
+        private Mock<IModifyResourceViewModel> _modifyResourceViewModel;
+        private Mock<IExceptionViewModel> _exceptionViewModel;
+        private Func<Exception, IExceptionViewModel> _exceptionFactory;
 
         [Test]
         public void delete()
@@ -50,7 +53,8 @@ namespace Simple.Wpf.Template.Tests
             // ARRANGE
             var metadata = new Metadata(new Uri("http://localhost/test/1"), true);
 
-            var viewModel = new MetadataViewModel(metadata, _modifyResourceFactory, _exceptionFactory, _restClient.Object, _messageService.Object, SchedulerService);
+            var viewModel = new MetadataViewModel(metadata, _modifyResourceFactory, _exceptionFactory,
+                _restClient.Object, _messageService.Object, SchedulerService);
 
             TestScheduler.AdvanceBy(TimeSpan.FromMilliseconds(100));
 
@@ -74,9 +78,11 @@ namespace Simple.Wpf.Template.Tests
             // ARRANGE
             var metadata = new Metadata(new Uri("http://localhost/test/1"), true);
 
-            _restClient.Setup(x => x.DeleteAsync(It.IsAny<Uri>())).Throws(new Exception("Foo"));
+            _restClient.Setup(x => x.DeleteAsync(It.IsAny<Uri>()))
+                .Throws(new Exception("Foo"));
 
-            var viewModel = new MetadataViewModel(metadata, _modifyResourceFactory, _exceptionFactory, _restClient.Object, _messageService.Object, SchedulerService);
+            var viewModel = new MetadataViewModel(metadata, _modifyResourceFactory, _exceptionFactory,
+                _restClient.Object, _messageService.Object, SchedulerService);
 
             TestScheduler.AdvanceBy(TimeSpan.FromMilliseconds(100));
 
@@ -90,7 +96,9 @@ namespace Simple.Wpf.Template.Tests
 
             var result = new Mock<IRestResponse>();
             var task = Task.FromResult(result.Object);
-            _restClient.Setup(x => x.DeleteAsync(It.IsAny<Uri>())).Returns(() => task).Verifiable();
+            _restClient.Setup(x => x.DeleteAsync(It.IsAny<Uri>()))
+                .Returns(() => task)
+                .Verifiable();
 
             viewModel.DeleteCommand.Execute(null);
 
@@ -108,7 +116,8 @@ namespace Simple.Wpf.Template.Tests
             // ARRANGE
             var metadata = new Metadata(new Uri("http://localhost/test/1"), true);
 
-            var viewModel = new MetadataViewModel(metadata, _modifyResourceFactory, _exceptionFactory, _restClient.Object, _messageService.Object, SchedulerService);
+            var viewModel = new MetadataViewModel(metadata, _modifyResourceFactory, _exceptionFactory,
+                _restClient.Object, _messageService.Object, SchedulerService);
 
             TestScheduler.AdvanceBy(TimeSpan.FromMilliseconds(100));
 

@@ -26,7 +26,7 @@
                     Margin="5"
                     Padding="5"
                     BorderThickness="1"
-                    BorderBrush="{StaticResource AccentColorBrush}">
+                    BorderBrush="{StaticResource MahApps.Brushes.Accent}">
 
                 <Grid>
 
@@ -111,7 +111,7 @@
                                                     <Hyperlink NavigateUri="{Binding Url, Mode=OneTime}">
                                                         <i:Interaction.Behaviors>
                                                             <b:HyperlinkBehavior />
-                                                        </i:Interaction.Behaviors>  
+                                                        </i:Interaction.Behaviors>
                                                         <TextBlock Text="{Binding Url, Mode=OneTime}" />
                                                     </Hyperlink>
                                                 </TextBlock>
@@ -150,7 +150,7 @@
                     Margin="5,0,5,5"
                     Padding="5,0"
                     BorderThickness="1"
-                    BorderBrush="{StaticResource AccentColorBrush}">
+                    BorderBrush="{StaticResource MahApps.Brushes.Accent}">
 
                 <ContentPresenter Content="{Binding Path=Diagnostics}" />
 

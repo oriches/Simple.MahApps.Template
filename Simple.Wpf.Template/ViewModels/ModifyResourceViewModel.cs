@@ -1,16 +1,16 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using Newtonsoft.Json;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Helpers;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Reactive.Threading.Tasks;
-    using Extensions;
-    using Helpers;
-    using Models;
-    using Newtonsoft.Json;
-    using Rest;
-    using Services;
-
     public sealed class ModifyResourceViewModel : CloseableViewModel, IModifyResourceViewModel
     {
         private readonly IRestClient _restClient;
@@ -20,7 +20,8 @@ namespace Simple.Wpf.Template.ViewModels
         {
             _restClient = restClient;
 
-            Path = metadata.Url.ToString().Replace(Constants.Server.BaseUri, string.Empty);
+            Path = metadata.Url.ToString()
+                .Replace(Constants.Server.BaseUri, string.Empty);
 
             Observable.Return(Unit.Default)
                 .ActivateGestures()
@@ -42,7 +43,7 @@ namespace Simple.Wpf.Template.ViewModels
 
         public string Json
         {
-            get { return _json; }
+            get => _json;
             set { SetPropertyAndNotify(ref _json, value, () => Json); }
         }
 

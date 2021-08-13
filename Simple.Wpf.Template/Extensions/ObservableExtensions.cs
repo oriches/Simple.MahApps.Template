@@ -1,13 +1,13 @@
+using System;
+using System.Reactive;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Threading;
+using Simple.Wpf.Template.Commands;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.Extensions
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Concurrency;
-    using System.Reactive.Linq;
-    using System.Threading;
-    using Commands;
-    using Services;
-
     public static class ObservableExtensions
     {
         public static IGestureService GestureService;
@@ -24,10 +24,7 @@ namespace Simple.Wpf.Template.Extensions
 
         public static IObservable<T> ActivateGestures<T>(this IObservable<T> observable)
         {
-            if (GestureService == null)
-            {
-                throw new Exception("GestureService has not been initialised");
-            }
+            if (GestureService == null) throw new Exception("GestureService has not been initialised");
 
             return observable.Do(x => GestureService.SetBusy());
         }
@@ -75,7 +72,7 @@ namespace Simple.Wpf.Template.Extensions
             }
             catch (Exception exn)
             {
-                scheduler.Schedule(() => { throw exn; });
+                Scheduler.Schedule(scheduler, () => { throw exn; });
             }
         }
     }

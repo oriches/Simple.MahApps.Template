@@ -1,12 +1,12 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.Services
 {
-    using System;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
-    using Extensions;
-    using Models;
-
     public sealed class HeartbeatService : DisposableObject, IHeartbeatService
     {
         private readonly IConnectableObservable<Unit> _listen;
@@ -18,7 +18,8 @@ namespace Simple.Wpf.Template.Services
 
         public HeartbeatService(TimeSpan interval, ISchedulerService schedulerService)
         {
-            using (Duration.Measure(Logger, "Constructor - " + GetType().Name))
+            using (Duration.Measure(Logger, "Constructor - " + GetType()
+                .Name))
             {
                 _listen = Observable.Interval(interval, schedulerService.TaskPool)
                     .Select(x => Unit.Default)

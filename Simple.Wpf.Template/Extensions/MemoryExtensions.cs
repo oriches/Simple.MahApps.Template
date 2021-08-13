@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using Simple.Wpf.Template.Models;
+
 namespace Simple.Wpf.Template.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using Models;
-
     public static class MemoryExtensions
     {
         private static readonly IDictionary<MemoryUnits, string> UnitsAsString = new Dictionary<MemoryUnits, string>();
@@ -12,7 +12,7 @@ namespace Simple.Wpf.Template.Extensions
         private static readonly IDictionary<MemoryUnits, decimal> UnitsMulitpler =
             new Dictionary<MemoryUnits, decimal>();
 
-        private static readonly Type MemoryUnitsType = typeof (MemoryUnits);
+        private static readonly Type MemoryUnitsType = typeof(MemoryUnits);
 
         public static string WorkingSetPrivateAsString(this Memory memory)
         {
@@ -26,18 +26,15 @@ namespace Simple.Wpf.Template.Extensions
 
         private static string ValueAsString(Func<decimal> valueFunc, MemoryUnits units, int decimalPlaces)
         {
-            return $"{decimal.Round(valueFunc()*GetMultipler(units), decimalPlaces):0.00} {GetUnitString(units)}";
+            return $"{decimal.Round(valueFunc() * GetMultipler(units), decimalPlaces):0.00} {GetUnitString(units)}";
         }
 
         private static decimal GetMultipler(MemoryUnits units)
         {
             decimal unitsMulitpler;
-            if (UnitsMulitpler.TryGetValue(units, out unitsMulitpler))
-            {
-                return unitsMulitpler;
-            }
+            if (UnitsMulitpler.TryGetValue(units, out unitsMulitpler)) return unitsMulitpler;
 
-            unitsMulitpler = 1/Convert.ToDecimal(units);
+            unitsMulitpler = 1 / Convert.ToDecimal(units);
 
             UnitsMulitpler.Add(units, unitsMulitpler);
             return unitsMulitpler;
@@ -46,13 +43,11 @@ namespace Simple.Wpf.Template.Extensions
         private static string GetUnitString(MemoryUnits units)
         {
             string unitsString;
-            if (UnitsAsString.TryGetValue(units, out unitsString))
-            {
-                return unitsString;
-            }
+            if (UnitsAsString.TryGetValue(units, out unitsString)) return unitsString;
 
             var memInfo = MemoryUnitsType.GetMember(units.ToString());
-            var attributes = memInfo[0].GetCustomAttributes(typeof (DescriptionAttribute), false);
+            var attributes = memInfo[0]
+                .GetCustomAttributes(typeof(DescriptionAttribute), false);
             unitsString = ((DescriptionAttribute) attributes[0]).Description;
 
             UnitsAsString.Add(units, unitsString);

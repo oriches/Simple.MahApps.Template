@@ -1,8 +1,8 @@
+using System;
+using Newtonsoft.Json;
+
 namespace Simple.Wpf.Template.Models
 {
-    using System;
-    using Newtonsoft.Json;
-
     public sealed class Resource : IEquatable<Resource>
     {
         public Resource(string json)
@@ -10,8 +10,7 @@ namespace Simple.Wpf.Template.Models
             Json = json;
         }
 
-        [JsonProperty(PropertyName = "json")]
-        public string Json { get; }
+        [JsonProperty(PropertyName = "json")] public string Json { get; }
 
         public bool Equals(Resource other)
         {

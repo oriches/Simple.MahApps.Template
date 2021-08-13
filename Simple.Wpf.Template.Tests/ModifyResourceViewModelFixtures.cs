@@ -1,19 +1,16 @@
+using System;
+using System.Threading.Tasks;
+using Moq;
+using NUnit.Framework;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Threading.Tasks;
-    using Models;
-    using Moq;
-    using NUnit.Framework;
-    using Rest;
-    using ViewModels;
-
     [TestFixture]
     public sealed class ModifyResourceViewModelFixtures : BaseViewModelFixtures
     {
-        private Mock<IRestClient> _restClient;
-        private Metadata _metadata;
-
         [SetUp]
         public void Setup()
         {
@@ -22,14 +19,22 @@ namespace Simple.Wpf.Template.Tests
             _restClient = new Mock<IRestClient>();
 
             var getResult = new Mock<IRestResponse<object>>();
-            getResult.Setup(x => x.Resource).Returns(new Resource("{\"foo\" : \"bar\"}"));
+            getResult.Setup(x => x.Resource)
+                .Returns(new Resource("{\"foo\" : \"bar\"}"));
             var getTask = Task.FromResult(getResult.Object);
-            _restClient.Setup(x => x.GetAsync<object>(It.IsAny<Uri>())).Returns(() => getTask).Verifiable();
+            _restClient.Setup(x => x.GetAsync<object>(It.IsAny<Uri>()))
+                .Returns(() => getTask)
+                .Verifiable();
 
             var putResult = new Mock<IRestResponse>();
             var putTask = Task.FromResult(putResult.Object);
-            _restClient.Setup(x => x.PutAsync(It.IsAny<Uri>(), It.IsAny<Resource>())).Returns(() => putTask).Verifiable();
+            _restClient.Setup(x => x.PutAsync(It.IsAny<Uri>(), It.IsAny<Resource>()))
+                .Returns(() => putTask)
+                .Verifiable();
         }
+
+        private Mock<IRestClient> _restClient;
+        private Metadata _metadata;
 
         [Test]
         public void can_not_add_resource_when_json_invalid()
@@ -55,7 +60,7 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             var viewModel = new ModifyResourceViewModel(_metadata, _restClient.Object, SchedulerService);
-            
+
             viewModel.Confirmed.Subscribe();
 
             TestScheduler.AdvanceBy(TimeSpan.FromMilliseconds(100));

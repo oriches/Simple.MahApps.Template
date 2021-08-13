@@ -1,12 +1,12 @@
+using System;
+using System.Globalization;
+using System.Reactive.Linq;
+using Simple.Wpf.Template.Extensions;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+
 namespace Simple.Wpf.Template.ViewModels
 {
-    using System;
-    using System.Globalization;
-    using System.Reactive.Linq;
-    using Extensions;
-    using Models;
-    using Services;
-
     public sealed class DiagnosticsViewModel : BaseViewModel, IDiagnosticsViewModel
     {
         private string _cpu;
@@ -24,11 +24,11 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x => Cpu = x,
-                e =>
-                {
-                    Logger.Error(e);
-                    Cpu = Constants.UI.Diagnostics.DefaultCpuString;
-                })
+                    e =>
+                    {
+                        Logger.Error(e);
+                        Cpu = Constants.UI.Diagnostics.DefaultCpuString;
+                    })
                 .DisposeWith(this);
 
             diagnosticsService.Memory
@@ -36,34 +36,34 @@ namespace Simple.Wpf.Template.ViewModels
                 .DistinctUntilChanged()
                 .ObserveOn(schedulerService.Dispatcher)
                 .Subscribe(x =>
-                {
-                    ManagedMemory = x.ManagedMemory;
-                    TotalMemory = x.TotalMemory;
-                },
-                e =>
-                {
-                    Logger.Error(e);
-                    ManagedMemory = Constants.UI.Diagnostics.DefaultManagedMemoryString;
-                    TotalMemory = Constants.UI.Diagnostics.DefaultTotalMemoryString;
-                })
+                    {
+                        ManagedMemory = x.ManagedMemory;
+                        TotalMemory = x.TotalMemory;
+                    },
+                    e =>
+                    {
+                        Logger.Error(e);
+                        ManagedMemory = Constants.UI.Diagnostics.DefaultManagedMemoryString;
+                        TotalMemory = Constants.UI.Diagnostics.DefaultTotalMemoryString;
+                    })
                 .DisposeWith(this);
         }
 
         public string Cpu
         {
-            get { return _cpu; }
+            get => _cpu;
             set { SetPropertyAndNotify(ref _cpu, value, () => Cpu); }
         }
 
         public string ManagedMemory
         {
-            get { return _managedMemory; }
+            get => _managedMemory;
             set { SetPropertyAndNotify(ref _managedMemory, value, () => ManagedMemory); }
         }
 
         public string TotalMemory
         {
-            get { return _totalMemory; }
+            get => _totalMemory;
             set { SetPropertyAndNotify(ref _totalMemory, value, () => TotalMemory); }
         }
 

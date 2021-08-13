@@ -44,7 +44,7 @@ declare module "colors" {
     }
 
     module e {
-        export function setTheme(theme:any): void;
+        export function setTheme(theme: any): void;
 
         export var black: Color;
         export var red: Color;

@@ -10,16 +10,20 @@
 
  =============================================== */
 
-/// <reference path="../node/node.d.ts" />
 /// <reference path="../serve-static/serve-static.d.ts" />
 
 declare module Express {
 
     // These open interfaces may be extended in an application-specific manner via declaration merging.
     // See for example method-override.d.ts (https://github.com/borisyankov/DefinitelyTyped/blob/master/method-override/method-override.d.ts)
-    export interface Request { }
-    export interface Response { }
-    export interface Application { }
+    export interface Request {
+    }
+
+    export interface Response {
+    }
+
+    export interface Application {
+    }
 }
 
 
@@ -44,7 +48,7 @@ declare module "express" {
         }
 
         interface IRouterMatcher<T> {
-            (name: string|RegExp, ...handlers: RequestHandler[]): T;
+            (name: string | RegExp, ...handlers: RequestHandler[]): T;
         }
 
         interface IRouter<T> extends RequestHandler {
@@ -102,19 +106,20 @@ declare module "express" {
             route(path: string): IRoute;
 
             use(...handler: RequestHandler[]): T;
-            use(handler: ErrorRequestHandler|RequestHandler): T;
+            use(handler: ErrorRequestHandler | RequestHandler): T;
             use(path: string, ...handler: RequestHandler[]): T;
-            use(path: string, handler: ErrorRequestHandler|RequestHandler): T;
+            use(path: string, handler: ErrorRequestHandler | RequestHandler): T;
             use(path: string[], ...handler: RequestHandler[]): T;
             use(path: string[], handler: ErrorRequestHandler): T;
             use(path: RegExp, ...handler: RequestHandler[]): T;
             use(path: RegExp, handler: ErrorRequestHandler): T;
-            use(path:string, router:Router): T;
+            use(path: string, router: Router): T;
         }
 
         export function Router(options?: any): Router;
 
-        export interface Router extends IRouter<Router> {}
+        export interface Router extends IRouter<Router> {
+        }
 
         interface CookieOptions {
             maxAge?: number;
@@ -126,7 +131,9 @@ declare module "express" {
             secure?: boolean;
         }
 
-        interface Errback { (err: Error): void; }
+        interface Errback {
+            (err: Error): void;
+        }
 
         interface Request extends http.ServerRequest, Express.Request {
 
@@ -151,7 +158,7 @@ declare module "express" {
              *
              * @param name
              */
-            get (name: string): string;
+            get(name: string): string;
 
             header(name: string): string;
 
@@ -206,7 +213,7 @@ declare module "express" {
              * For more information, or if you have issues or concerns, see accepts.
              * @param charset
              */
-            acceptsCharsets(charset?: string|string[]): string[];
+            acceptsCharsets(charset?: string | string[]): string[];
 
             /**
              * Returns the first accepted encoding of the specified encodings,
@@ -216,7 +223,7 @@ declare module "express" {
              * For more information, or if you have issues or concerns, see accepts.
              * @param encoding
              */
-            acceptsEncodings(encoding?: string|string[]): string[];
+            acceptsEncodings(encoding?: string | string[]): string[];
 
             /**
              * Returns the first accepted language of the specified languages,
@@ -227,7 +234,7 @@ declare module "express" {
              *
              * @param lang
              */
-            acceptsLanguages(lang?: string|string[]): string[];
+            acceptsLanguages(lang?: string | string[]): string[];
 
             /**
              * Parse Range header field,
@@ -417,7 +424,7 @@ declare module "express" {
             value: string;
             quality: number;
             type: string;
-            subtype:  string;
+            subtype: string;
         }
 
         interface Send {
@@ -697,7 +704,7 @@ declare module "express" {
              *
              * @param field
              */
-            get (field: string): string;
+            get(field: string): string;
 
             /**
              * Clear cookie `name`.
@@ -788,8 +795,8 @@ declare module "express" {
              *  - `cache`     boolean hinting to the engine it should cache
              *  - `filename`  filename of the view being rendered
              */
-            render(view: string, options?: Object, callback?: (err: Error, html: string) => void ): void;
-            render(view: string, callback?: (err: Error, html: string) => void ): void;
+            render(view: string, options?: Object, callback?: (err: Error, html: string) => void): void;
+            render(view: string, callback?: (err: Error, html: string) => void): void;
 
             locals: any;
 
@@ -809,7 +816,8 @@ declare module "express" {
             (req: Request, res: Response, next: NextFunction): any;
         }
 
-        interface Handler extends RequestHandler {}
+        interface Handler extends RequestHandler {
+        }
 
         interface RequestParamHandler {
             (req: Request, res: Response, next: NextFunction, param: any): any;
@@ -878,7 +886,7 @@ declare module "express" {
             set(setting: string, val: any): Application;
             get: {
                 (name: string): any; // Getter
-                (name: string|RegExp, ...handlers: RequestHandler[]): Application;
+                (name: string | RegExp, ...handlers: RequestHandler[]): Application;
             };
 
             /**

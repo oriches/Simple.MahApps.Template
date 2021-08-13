@@ -1,16 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Reactive.Disposables;
+using System.Reactive.Subjects;
+using Moq;
+using NUnit.Framework;
+using Simple.Rest.Common;
+using Simple.Wpf.Template.Models;
+using Simple.Wpf.Template.Services;
+using Simple.Wpf.Template.ViewModels;
+
 namespace Simple.Wpf.Template.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reactive.Disposables;
-    using System.Reactive.Subjects;
-    using Models;
-    using Moq;
-    using NUnit.Framework;
-    using Rest;
-    using Services;
-    using ViewModels;
-
     [TestFixture]
     public sealed class ChromeViewModelFixtures : BaseViewModelFixtures
     {
@@ -20,7 +20,8 @@ namespace Simple.Wpf.Template.Tests
             _overlayService = new Mock<IOverlayService>();
 
             _show = new Subject<OverlayViewModel>();
-            _overlayService.Setup(x => x.Show).Returns(_show);
+            _overlayService.Setup(x => x.Show)
+                .Returns(_show);
 
             _restClient = new Mock<IRestClient>();
 
