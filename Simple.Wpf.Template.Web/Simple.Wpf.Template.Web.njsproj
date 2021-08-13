@@ -39,6 +39,9 @@
   <ItemGroup>
     <Content Include="resources\test2\data.json" />
     <Content Include="resources\test\data.json" />
+    <Content Include="tsconfig.json">
+      <SubType>Code</SubType>
+    </Content>
     <TypeScriptCompile Include="Scripts\typings\colors\colors.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\express\express.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\mime\mime.d.ts" />
@@ -68,8 +71,8 @@
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TypeScriptTarget>ES2019</TypeScriptTarget>
-    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptTarget>ES2020</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
