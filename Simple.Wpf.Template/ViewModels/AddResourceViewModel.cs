@@ -32,24 +32,22 @@ namespace Simple.Wpf.Template.ViewModels
         public string Path
         {
             get => _path;
-            set { SetPropertyAndNotify(ref _path, value, () => Path); }
+            set => SetPropertyAndNotify(ref _path, value, () => Path);
         }
 
         public string Json
         {
             get => _json;
-            set { SetPropertyAndNotify(ref _json, value, () => Json); }
+            set => SetPropertyAndNotify(ref _json, value, () => Json);
         }
 
         public IObservable<Unit> Added { get; }
 
-        protected override IObservable<bool> InitialiseCanConfirm()
-        {
-            return this.ObservePropertyChanged(x => Path, x => Json)
+        protected override IObservable<bool> InitialiseCanConfirm() =>
+            this.ObservePropertyChanged(x => Path, x => Json)
                 .Where(x => !string.IsNullOrEmpty(Path))
                 .Select(x => IsPathAvailable(Path) && JsonHelper.IsValid(Json))
                 .StartWith(false);
-        }
 
         private bool IsPathAvailable(string value)
         {

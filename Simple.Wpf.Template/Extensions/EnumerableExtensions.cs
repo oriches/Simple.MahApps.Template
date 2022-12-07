@@ -13,9 +13,7 @@ namespace Simple.Wpf.Template.Extensions
             return enumerable;
         }
 
-        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> enumerable)
-        {
-            return new ObservableCollection<T>(enumerable);
-        }
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> enumerable) =>
+            new ObservableCollection<T>(enumerable);
     }
 }

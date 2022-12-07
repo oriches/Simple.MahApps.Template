@@ -62,14 +62,8 @@ namespace Simple.Wpf.Template.ViewModels
         public IObservable<Unit> Denied => _denied;
         public IObservable<Unit> Confirmed => _confirmed;
 
-        protected virtual IObservable<bool> InitialiseCanConfirm()
-        {
-            return Observable.Return(true);
-        }
+        protected virtual IObservable<bool> InitialiseCanConfirm() => Observable.Return(true);
 
-        protected virtual IObservable<bool> InitialiseCanDeny()
-        {
-            return Observable.Return(true);
-        }
+        protected virtual IObservable<bool> InitialiseCanDeny() => Observable.Return(true);
     }
 }

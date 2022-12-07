@@ -24,7 +24,7 @@ namespace Simple.Wpf.Template.Services
         public DiagnosticsService(IIdleService idleService, ISchedulerService schedulerService)
         {
             using (Duration.Measure(Logger, "Constructor - " + GetType()
-                .Name))
+                       .Name))
             {
                 _schedulerService = schedulerService;
 
@@ -43,7 +43,7 @@ namespace Simple.Wpf.Template.Services
                             .Where(x => x.Any()), (x, y) => x)
                     .Replay(1);
 
-                _loggingTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
+                _loggingTarget = (LimitedMemoryTarget)LogManager.Configuration.FindTargetByName("memory");
             }
         }
 
@@ -179,12 +179,12 @@ namespace Simple.Wpf.Template.Services
         {
             var currentProcess = Process.GetCurrentProcess();
             foreach (var instance in new PerformanceCounterCategory("Process").GetInstanceNames()
-                .Where(x => x.StartsWith(currentProcess.ProcessName, StringComparison.InvariantCulture)))
+                         .Where(x => x.StartsWith(currentProcess.ProcessName, StringComparison.InvariantCulture)))
                 try
                 {
                     using (var counter = new PerformanceCounter("Process", "ID Process", instance, true))
                     {
-                        var val = (int) counter.RawValue;
+                        var val = (int)counter.RawValue;
                         if (val == currentProcess.Id) return instance;
                     }
                 }
@@ -242,9 +242,8 @@ namespace Simple.Wpf.Template.Services
                 .SelectMany(x => x);
         }
 
-        private IObservable<Counters> CreatePerformanceCounters()
-        {
-            return Observable.Create<Counters>(x =>
+        private IObservable<Counters> CreatePerformanceCounters() =>
+            Observable.Create<Counters>(x =>
             {
                 var disposable = new CompositeDisposable();
 
@@ -305,7 +304,6 @@ namespace Simple.Wpf.Template.Services
 
                 return disposable;
             });
-        }
 
         internal sealed class Counters
         {

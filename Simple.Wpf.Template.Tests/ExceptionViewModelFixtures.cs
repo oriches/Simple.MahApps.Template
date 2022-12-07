@@ -10,10 +10,7 @@ namespace Simple.Wpf.Template.Tests
     public sealed class ExceptionViewModelFixtures : BaseServiceFixtures
     {
         [SetUp]
-        public void Setup()
-        {
-            _applicationService = new Mock<IApplicationService>();
-        }
+        public void Setup() => _applicationService = new Mock<IApplicationService>();
 
         private Mock<IApplicationService> _applicationService;
 
@@ -51,7 +48,7 @@ namespace Simple.Wpf.Template.Tests
         {
             // ARRANGE
             _applicationService.SetupGet(x => x.LogFolder)
-                .Returns((string) null);
+                .Returns((string)null);
 
             var viewModel = new ExceptionViewModel(null, _applicationService.Object);
 

@@ -8,7 +8,6 @@ import os = require("os");
 import mkdirp = require("mkdirp");
 import rmdir = require("rimraf");
 
-import colors = require("colors");
 import dto = require("./dto");
 
 var port = process.env.port || 1337;

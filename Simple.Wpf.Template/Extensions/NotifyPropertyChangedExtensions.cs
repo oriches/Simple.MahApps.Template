@@ -20,11 +20,10 @@ namespace Simple.Wpf.Template.Extensions
                 .Where(x => names.Contains(x.PropertyName));
         }
 
-        public static IObservable<PropertyChangedEventArgs> ObservePropertyChanged(this INotifyPropertyChanged source)
-        {
-            return Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+        public static IObservable<PropertyChangedEventArgs>
+            ObservePropertyChanged(this INotifyPropertyChanged source) =>
+            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                     h => source.PropertyChanged += h, h => source.PropertyChanged -= h)
                 .Select(x => x.EventArgs);
-        }
     }
 }

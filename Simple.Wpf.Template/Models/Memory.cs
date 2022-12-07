@@ -4,15 +4,12 @@ namespace Simple.Wpf.Template.Models
 {
     public struct Memory : IEquatable<Memory>
     {
-        public bool Equals(Memory other)
-        {
-            return WorkingSetPrivate == other.WorkingSetPrivate && Managed == other.Managed;
-        }
+        public bool Equals(Memory other) => WorkingSetPrivate == other.WorkingSetPrivate && Managed == other.Managed;
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is Memory && Equals((Memory) obj);
+            return obj is Memory && Equals((Memory)obj);
         }
 
         public override int GetHashCode()
@@ -23,15 +20,9 @@ namespace Simple.Wpf.Template.Models
             }
         }
 
-        public static bool operator ==(Memory left, Memory right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(Memory left, Memory right) => left.Equals(right);
 
-        public static bool operator !=(Memory left, Memory right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(Memory left, Memory right) => !left.Equals(right);
 
         public Memory(decimal workingSetPrivate, decimal managed)
         {

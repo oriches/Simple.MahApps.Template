@@ -12,16 +12,10 @@ namespace Simple.Wpf.Template.Tests
     public class DurationFixtures
     {
         [SetUp]
-        public void SetUp()
-        {
-            DurationMutex.WaitOne();
-        }
+        public void SetUp() => DurationMutex.WaitOne();
 
         [TearDown]
-        public void TearDown()
-        {
-            DurationMutex.ReleaseMutex();
-        }
+        public void TearDown() => DurationMutex.ReleaseMutex();
 
         // Unable to mock out Logger class successfully because method are not marked as virtual,
         // This means have manipulate a real instance of the NLog which involves making test synchonrous to make
@@ -37,7 +31,7 @@ namespace Simple.Wpf.Template.Tests
             // ARRANGE
             LogHelper.ReconfigureLoggerToLevel(LogLevel.Info);
             var logger = LogManager.GetCurrentClassLogger();
-            var memoryTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
+            var memoryTarget = (LimitedMemoryTarget)LogManager.Configuration.FindTargetByName("memory");
 
             var message = $"Message 1 - {Guid.NewGuid()}";
 
@@ -59,7 +53,7 @@ namespace Simple.Wpf.Template.Tests
             // ARRANGE
             LogHelper.ReconfigureLoggerToLevel(LogLevel.Debug);
             var logger = LogManager.GetCurrentClassLogger();
-            var memoryTarget = (LimitedMemoryTarget) LogManager.Configuration.FindTargetByName("memory");
+            var memoryTarget = (LimitedMemoryTarget)LogManager.Configuration.FindTargetByName("memory");
 
             var message = $"Message 1 - {Guid.NewGuid()}";
 

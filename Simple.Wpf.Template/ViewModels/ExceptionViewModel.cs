@@ -66,29 +66,14 @@ namespace Simple.Wpf.Template.ViewModels
 
         public string Message => _exception?.Message;
 
-        private void Copy()
-        {
-            _applicationService.CopyToClipboard(_exception.ToString());
-        }
+        private void Copy() => _applicationService.CopyToClipboard(_exception.ToString());
 
-        private void OpenLogFolder()
-        {
-            _applicationService.OpenFolder(_applicationService.LogFolder);
-        }
+        private void OpenLogFolder() => _applicationService.OpenFolder(_applicationService.LogFolder);
 
-        private void Exit()
-        {
-            _applicationService.Exit();
-        }
+        private void Exit() => _applicationService.Exit();
 
-        private void Restart()
-        {
-            _applicationService.Restart();
-        }
+        private void Restart() => _applicationService.Restart();
 
-        private void Continue()
-        {
-            ConfirmCommand.Execute(null);
-        }
+        private void Continue() => ConfirmCommand.Execute(null);
     }
 }

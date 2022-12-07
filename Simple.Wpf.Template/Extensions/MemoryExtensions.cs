@@ -14,20 +14,14 @@ namespace Simple.Wpf.Template.Extensions
 
         private static readonly Type MemoryUnitsType = typeof(MemoryUnits);
 
-        public static string WorkingSetPrivateAsString(this Memory memory)
-        {
-            return ValueAsString(() => memory.WorkingSetPrivate, MemoryUnits.Mega, 2);
-        }
+        public static string WorkingSetPrivateAsString(this Memory memory) =>
+            ValueAsString(() => memory.WorkingSetPrivate, MemoryUnits.Mega, 2);
 
-        public static string ManagedAsString(this Memory memory)
-        {
-            return ValueAsString(() => memory.Managed, MemoryUnits.Mega, 2);
-        }
+        public static string ManagedAsString(this Memory memory) =>
+            ValueAsString(() => memory.Managed, MemoryUnits.Mega, 2);
 
-        private static string ValueAsString(Func<decimal> valueFunc, MemoryUnits units, int decimalPlaces)
-        {
-            return $"{decimal.Round(valueFunc() * GetMultipler(units), decimalPlaces):0.00} {GetUnitString(units)}";
-        }
+        private static string ValueAsString(Func<decimal> valueFunc, MemoryUnits units, int decimalPlaces) =>
+            $"{decimal.Round(valueFunc() * GetMultipler(units), decimalPlaces):0.00} {GetUnitString(units)}";
 
         private static decimal GetMultipler(MemoryUnits units)
         {
@@ -48,7 +42,7 @@ namespace Simple.Wpf.Template.Extensions
             var memInfo = MemoryUnitsType.GetMember(units.ToString());
             var attributes = memInfo[0]
                 .GetCustomAttributes(typeof(DescriptionAttribute), false);
-            unitsString = ((DescriptionAttribute) attributes[0]).Description;
+            unitsString = ((DescriptionAttribute)attributes[0]).Description;
 
             UnitsAsString.Add(units, unitsString);
             return unitsString;

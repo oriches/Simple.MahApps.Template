@@ -56,9 +56,8 @@ namespace Simple.Wpf.Template.ViewModels
 
         public IObservable<Unit> Deleted { get; }
 
-        private IObservable<Unit> ObserveDelete()
-        {
-            return DeleteCommand.ActivateGestures()
+        private IObservable<Unit> ObserveDelete() =>
+            DeleteCommand.ActivateGestures()
                 .SelectMany(x => _restClient.DeleteAsync(Url)
                     .ToObservable(), (x, y) => y)
                 .Take(1)
@@ -70,6 +69,5 @@ namespace Simple.Wpf.Template.ViewModels
 
                     return ObserveDelete();
                 });
-        }
     }
 }

@@ -15,7 +15,7 @@ namespace Simple.Wpf.Template.Services
         public IdleService(ISchedulerService schedulerService)
         {
             using (Duration.Measure(Logger, "Constructor - " + GetType()
-                .Name))
+                       .Name))
             {
                 var mainWindow = Application.Current.MainWindow;
                 if (mainWindow == null) throw new Exception("Main window has not been created yet!");

@@ -12,15 +12,11 @@ namespace Simple.Wpf.Template.Extensions
     {
         public static IGestureService GestureService;
 
-        public static IObservable<Unit> AsUnit<T>(this IObservable<T> observable)
-        {
-            return observable.Select(x => Unit.Default);
-        }
+        public static IObservable<Unit> AsUnit<T>(this IObservable<T> observable) =>
+            observable.Select(x => Unit.Default);
 
-        public static ReactiveCommand<object> ToCommand(this IObservable<bool> canExecute)
-        {
-            return ReactiveCommand.Create(canExecute);
-        }
+        public static ReactiveCommand<object> ToCommand(this IObservable<bool> canExecute) =>
+            ReactiveCommand.Create(canExecute);
 
         public static IObservable<T> ActivateGestures<T>(this IObservable<T> observable)
         {
@@ -30,39 +26,27 @@ namespace Simple.Wpf.Template.Extensions
         }
 
         public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext,
-            Action<Exception> onError, IScheduler scheduler)
-        {
-            return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onError);
-        }
+            Action<Exception> onError, IScheduler scheduler) =>
+            observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onError);
 
-        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, IScheduler scheduler)
-        {
-            return observable.Subscribe(x => OnNextInvoke(y => { }, x, scheduler));
-        }
+        public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, IScheduler scheduler) =>
+            observable.Subscribe(x => OnNextInvoke(y => { }, x, scheduler));
 
         public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted,
-            IScheduler scheduler)
-        {
-            return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onCompleted);
-        }
+            IScheduler scheduler) =>
+            observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onCompleted);
 
         public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext,
-            IScheduler scheduler)
-        {
-            return observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler));
-        }
+            IScheduler scheduler) =>
+            observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler));
 
         public static void SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action onCompleted,
-            CancellationToken token, IScheduler scheduler)
-        {
+            CancellationToken token, IScheduler scheduler) =>
             observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onCompleted, token);
-        }
 
         public static void SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onError,
-            Action onCompleted, CancellationToken token, IScheduler scheduler)
-        {
+            Action onCompleted, CancellationToken token, IScheduler scheduler) =>
             observable.Subscribe(x => OnNextInvoke(onNext, x, scheduler), onError, onCompleted, token);
-        }
 
         private static void OnNextInvoke<T>(Action<T> onNext, T instance, IScheduler scheduler)
         {

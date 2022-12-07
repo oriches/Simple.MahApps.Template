@@ -17,7 +17,7 @@ namespace Simple.Wpf.Template.Converters
             {
                 if (value == null) return Offline;
 
-                var isOnline = (bool) value;
+                var isOnline = (bool)value;
                 return isOnline ? Online : Offline;
             }
             catch (Exception)
@@ -26,9 +26,7 @@ namespace Simple.Wpf.Template.Converters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return Binding.DoNothing;
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            Binding.DoNothing;
     }
 }

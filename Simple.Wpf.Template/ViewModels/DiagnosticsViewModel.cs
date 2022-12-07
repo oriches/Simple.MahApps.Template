@@ -52,27 +52,25 @@ namespace Simple.Wpf.Template.ViewModels
         public string Cpu
         {
             get => _cpu;
-            set { SetPropertyAndNotify(ref _cpu, value, () => Cpu); }
+            set => SetPropertyAndNotify(ref _cpu, value, () => Cpu);
         }
 
         public string ManagedMemory
         {
             get => _managedMemory;
-            set { SetPropertyAndNotify(ref _managedMemory, value, () => ManagedMemory); }
+            set => SetPropertyAndNotify(ref _managedMemory, value, () => ManagedMemory);
         }
 
         public string TotalMemory
         {
             get => _totalMemory;
-            set { SetPropertyAndNotify(ref _totalMemory, value, () => TotalMemory); }
+            set => SetPropertyAndNotify(ref _totalMemory, value, () => TotalMemory);
         }
 
-        private static string FormatCpu(int cpu)
-        {
-            return cpu < 10
+        private static string FormatCpu(int cpu) =>
+            cpu < 10
                 ? $"CPU: 0{cpu.ToString(CultureInfo.InvariantCulture)} %"
                 : $"CPU: {cpu.ToString(CultureInfo.InvariantCulture)} %";
-        }
 
         private static FormattedMemory FormatMemory(Memory memory)
         {

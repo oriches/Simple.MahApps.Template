@@ -19,7 +19,7 @@ namespace Simple.Wpf.Template.Services
         public HeartbeatService(TimeSpan interval, ISchedulerService schedulerService)
         {
             using (Duration.Measure(Logger, "Constructor - " + GetType()
-                .Name))
+                       .Name))
             {
                 _listen = Observable.Interval(interval, schedulerService.TaskPool)
                     .Select(x => Unit.Default)

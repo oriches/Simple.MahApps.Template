@@ -23,15 +23,9 @@ namespace Simple.Wpf.Template.Services
             }
         }
 
-        public void CopyToClipboard(string text)
-        {
-            Clipboard.SetText(text);
-        }
+        public void CopyToClipboard(string text) => Clipboard.SetText(text);
 
-        public void Exit()
-        {
-            Application.Current.Shutdown();
-        }
+        public void Exit() => Application.Current.Shutdown();
 
         public void Restart()
         {
@@ -39,10 +33,7 @@ namespace Simple.Wpf.Template.Services
             Application.Current.Shutdown();
         }
 
-        public void OpenFolder(string folder)
-        {
-            Process.Start("explorer.exe", folder);
-        }
+        public void OpenFolder(string folder) => Process.Start("explorer.exe", folder);
 
         private static string GetLogFolder()
         {

@@ -44,30 +44,24 @@ namespace Simple.Wpf.Template.ViewModels
         public string Json
         {
             get => _json;
-            set { SetPropertyAndNotify(ref _json, value, () => Json); }
+            set => SetPropertyAndNotify(ref _json, value, () => Json);
         }
 
-        protected override IObservable<bool> InitialiseCanConfirm()
-        {
-            return this.ObservePropertyChanged(x => Json)
+        protected override IObservable<bool> InitialiseCanConfirm() =>
+            this.ObservePropertyChanged(x => Json)
                 .Select(x => JsonHelper.IsValid(Json))
                 .StartWith(false);
-        }
 
-        private IObservable<string> ObserveGetResource(Metadata metadata)
-        {
-            return _restClient.GetAsync<object>(metadata.Url)
+        private IObservable<string> ObserveGetResource(Metadata metadata) =>
+            _restClient.GetAsync<object>(metadata.Url)
                 .ToObservable()
                 .Take(1)
                 .Select(x => JsonConvert.SerializeObject(x.Resource, Formatting.Indented));
-        }
 
-        private IObservable<Unit> ObservePutResource(Metadata metadata)
-        {
-            return _restClient.PutAsync(metadata.Url, new Resource(Json))
+        private IObservable<Unit> ObservePutResource(Metadata metadata) =>
+            _restClient.PutAsync(metadata.Url, new Resource(Json))
                 .ToObservable()
                 .Take(1)
                 .AsUnit();
-        }
     }
 }

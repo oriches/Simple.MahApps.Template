@@ -41,7 +41,7 @@ namespace Simple.Wpf.Template
         protected override void OnStartup(StartupEventArgs e)
         {
             using (Duration.Measure(Logger, "OnStartup - " + GetType()
-                .Name))
+                       .Name))
             {
                 Logger.Info("Starting");
 

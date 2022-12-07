@@ -17,7 +17,7 @@ namespace Simple.Wpf.Template.Services
         public GesturesService()
         {
             using (Duration.Measure(Logger, "Constructor - " + GetType()
-                .Name))
+                       .Name))
             {
                 _timer = new DispatcherTimer(TimeSpan.Zero, DispatcherPriority.ApplicationIdle, TimerCallback,
                     Application.Current.Dispatcher);
@@ -28,10 +28,7 @@ namespace Simple.Wpf.Template.Services
                 .DisposeWith(this);
         }
 
-        public void SetBusy()
-        {
-            SetBusyState(true);
-        }
+        public void SetBusy() => SetBusyState(true);
 
         private void SetBusyState(bool busy)
         {

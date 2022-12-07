@@ -12,7 +12,7 @@ namespace Simple.Wpf.Template.Converters
             {
                 if (value == null) return false;
 
-                var boolValue = (bool) value;
+                var boolValue = (bool)value;
                 return !boolValue;
             }
             catch (Exception)
@@ -21,9 +21,7 @@ namespace Simple.Wpf.Template.Converters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return Binding.DoNothing;
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            Binding.DoNothing;
     }
 }

@@ -4,10 +4,7 @@ namespace Simple.Wpf.Template.Models
 {
     public sealed class Heartbeat : IEquatable<Heartbeat>
     {
-        public Heartbeat(string timestamp)
-        {
-            Timestamp = timestamp;
-        }
+        public Heartbeat(string timestamp) => Timestamp = timestamp;
 
         public string Timestamp { get; }
 
@@ -22,22 +19,13 @@ namespace Simple.Wpf.Template.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is Heartbeat && Equals((Heartbeat) obj);
+            return obj is Heartbeat && Equals((Heartbeat)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Timestamp?.GetHashCode() ?? 0;
-        }
+        public override int GetHashCode() => Timestamp?.GetHashCode() ?? 0;
 
-        public static bool operator ==(Heartbeat left, Heartbeat right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(Heartbeat left, Heartbeat right) => Equals(left, right);
 
-        public static bool operator !=(Heartbeat left, Heartbeat right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(Heartbeat left, Heartbeat right) => !Equals(left, right);
     }
 }

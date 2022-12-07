@@ -8,10 +8,7 @@ namespace Simple.Wpf.Template.Services
     {
         private readonly DispatcherScheduler _dispatcherScheduler;
 
-        public SchedulerService()
-        {
-            _dispatcherScheduler = DispatcherScheduler.Current;
-        }
+        public SchedulerService() => _dispatcherScheduler = DispatcherScheduler.Current;
 
         public IScheduler Dispatcher => _dispatcherScheduler;
 
@@ -29,7 +26,7 @@ namespace Simple.Wpf.Template.Services
             {
                 Func<ThreadStart, Thread> func = x =>
                 {
-                    var thread = new Thread(x) {IsBackground = true};
+                    var thread = new Thread(x) { IsBackground = true };
                     thread.SetApartmentState(ApartmentState.STA);
 
                     return thread;

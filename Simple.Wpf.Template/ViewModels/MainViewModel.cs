@@ -98,7 +98,7 @@ namespace Simple.Wpf.Template.ViewModels
         public string ServerStatus
         {
             get => _serverStatus;
-            private set { SetPropertyAndNotify(ref _serverStatus, value, () => ServerStatus); }
+            private set => SetPropertyAndNotify(ref _serverStatus, value, () => ServerStatus);
         }
 
         public ReactiveCommand<object> AddCommand { get; }
@@ -107,16 +107,14 @@ namespace Simple.Wpf.Template.ViewModels
 
         public IDiagnosticsViewModel Diagnostics { get; }
 
-        private IObservable<Status> ObserveServerHeartbeat()
-        {
-            return Observable.Timer(Constants.Server.Hearbeat.Interval, _schedulerService.TaskPool)
+        private IObservable<Status> ObserveServerHeartbeat() =>
+            Observable.Timer(Constants.Server.Hearbeat.Interval, _schedulerService.TaskPool)
                 .SelectMany(x => _restClient.GetAsync<Heartbeat>(Constants.Server.Hearbeat.Url)
                     .ToObservable())
                 .Select(x => new Status(x.Resource.Timestamp))
                 .Timeout(Constants.Server.Hearbeat.Timeout, _schedulerService.TaskPool)
                 .Catch<Status, Exception>(x => ObserveServerHeartbeat()
                     .StartWith(new Status(x)));
-        }
 
         private void UpdateStatus(Status status)
         {
@@ -145,24 +143,18 @@ namespace Simple.Wpf.Template.ViewModels
             _metadata.AddRange(viewModels);
         }
 
-        private IObservable<IEnumerable<IMetadataViewModel>> ObserveMetadata()
-        {
-            return _restClient.GetAsync<IEnumerable<Metadata>>(Constants.Server.MetadataUrl)
+        private IObservable<IEnumerable<IMetadataViewModel>> ObserveMetadata() =>
+            _restClient.GetAsync<IEnumerable<Metadata>>(Constants.Server.MetadataUrl)
                 .ToObservable()
                 .Take(1)
                 .Select(x => x.Resource.ToArray())
                 .Catch<Metadata[], Exception>(x => Observable.Return(EmptyMetadatas))
                 .Select(x => x.Select(y => _metadataFactory(y)));
-        }
 
-        private IObservable<Unit> ObserveRefresh()
-        {
-            return RefreshCommand.AsUnit();
-        }
+        private IObservable<Unit> ObserveRefresh() => RefreshCommand.AsUnit();
 
-        private IObservable<Unit> ObserveResourceAdded()
-        {
-            return AddCommand.ActivateGestures()
+        private IObservable<Unit> ObserveResourceAdded() =>
+            AddCommand.ActivateGestures()
                 .SelectMany(x =>
                 {
                     var viewModel = _addResourceFactory(_metadata.Select(y => y.Metadata));
@@ -170,14 +162,11 @@ namespace Simple.Wpf.Template.ViewModels
 
                     return viewModel.Added;
                 }, (x, y) => y);
-        }
 
-        private IObservable<Unit> ObserveResourceDeleted()
-        {
-            return _metadata.ObserveCollectionChanged()
+        private IObservable<Unit> ObserveResourceDeleted() =>
+            _metadata.ObserveCollectionChanged()
                 .AsUnit()
                 .SelectMany(x => _metadata.Select(y => y.Deleted), (x, y) => y)
                 .Merge();
-        }
     }
 }

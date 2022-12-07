@@ -30,7 +30,7 @@ namespace Simple.Wpf.Template
             if (_rootScope != null) return;
 
             var builder = new ContainerBuilder();
-            var assemblies = new[] {Assembly.GetExecutingAssembly()};
+            var assemblies = new[] { Assembly.GetExecutingAssembly() };
 
             builder.RegisterType<RestClient>()
                 .SingleInstance()
@@ -63,10 +63,7 @@ namespace Simple.Wpf.Template
             _rootScope = builder.Build();
         }
 
-        public static void Stop()
-        {
-            _rootScope.Dispose();
-        }
+        public static void Stop() => _rootScope.Dispose();
 
         public static T Resolve<T>()
         {

@@ -13,10 +13,7 @@ namespace Simple.Wpf.Template.Tests
     public sealed class MessageServiceFixtures : BaseServiceFixtures
     {
         [SetUp]
-        public void Setup()
-        {
-            _restClient = new Mock<IRestClient>();
-        }
+        public void Setup() => _restClient = new Mock<IRestClient>();
 
         private Mock<IRestClient> _restClient;
 

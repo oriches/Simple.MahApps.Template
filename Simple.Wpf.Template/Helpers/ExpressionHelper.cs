@@ -8,7 +8,7 @@ namespace Simple.Wpf.Template.Helpers
         public static string Name<T>(Expression<Func<T>> expression)
         {
             var lambda = expression as LambdaExpression;
-            var memberExpression = (MemberExpression) lambda.Body;
+            var memberExpression = (MemberExpression)lambda.Body;
 
             return memberExpression.Member.Name;
         }

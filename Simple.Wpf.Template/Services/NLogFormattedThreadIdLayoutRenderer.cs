@@ -12,15 +12,9 @@ namespace Simple.Wpf.Template.Services
     {
         private readonly Func<int> _threadIdFunc;
 
-        public NLogFormattedThreadIdLayoutRenderer()
-        {
-            _threadIdFunc = () => Thread.CurrentThread.ManagedThreadId;
-        }
+        public NLogFormattedThreadIdLayoutRenderer() => _threadIdFunc = () => Thread.CurrentThread.ManagedThreadId;
 
-        public NLogFormattedThreadIdLayoutRenderer(Func<int> threadIdFunc)
-        {
-            _threadIdFunc = threadIdFunc;
-        }
+        public NLogFormattedThreadIdLayoutRenderer(Func<int> threadIdFunc) => _threadIdFunc = threadIdFunc;
 
         protected override void Append(StringBuilder builder, LogEventInfo logEvent)
         {

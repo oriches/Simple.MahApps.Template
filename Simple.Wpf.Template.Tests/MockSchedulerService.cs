@@ -8,10 +8,7 @@ namespace Simple.Wpf.Template.Tests
     {
         private readonly TestScheduler _testScheduler;
 
-        public MockSchedulerService(TestScheduler testScheduler)
-        {
-            _testScheduler = testScheduler;
-        }
+        public MockSchedulerService(TestScheduler testScheduler) => _testScheduler = testScheduler;
 
         public IScheduler Dispatcher => _testScheduler;
 

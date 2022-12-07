@@ -10,10 +10,7 @@ namespace Simple.Wpf.Template.Services
     {
         private readonly Queue<string> _logs = new Queue<string>();
 
-        public LimitedMemoryTarget()
-        {
-            Limit = 1000;
-        }
+        public LimitedMemoryTarget() => Limit = 1000;
 
         public IEnumerable<string> Logs => _logs;
 
